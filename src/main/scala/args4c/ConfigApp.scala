@@ -43,7 +43,7 @@ object ConfigApp  {
       } else if (has("show") || config.hasPath("show")) {
         val c: Config = Try(config.getString("show")).getOrElse("") match {
           case "" | "all" => config
-          case path => configAtPath(config, path)
+          case path => Args4c.configAtPath(config, path)
         }
         f(ShowConfig(c))
       } else {
@@ -52,47 +52,12 @@ object ConfigApp  {
     }
 
     val filteredArgs = args filterNot(_ == "help")
-    val result : T = ArgsAsConfigParser.parseArgs(filteredArgs) match {
+    val result : T = Args4c.parseArgs(filteredArgs) match {
       case Left(err) => f(InvalidInput(args, err))
       case Right(config) => withConfig(config)
     }
 
     result
-  }
-
-  /**
-   * Given a configuration and a path, return the configuration at that path.
-   *
-   * If the path is invalid or points to a value which is NOT a configuration, a "synthetic" configuration will be
-   * created for the path to either hold the value at the path or the default value
-   * @param c the configuration to parse
-   * @param path the configuration path
-   * @param defaultValue the value to display for an invalid path
-   * @return the sub-configuration for the given path
-   */
-  def configAtPath(c: Config, path: String, defaultValue : String = "<invalid path>"): Config = {
-    implicit def asRichC(obj: Any) = new {
-      def asConf = obj match {
-        case javaC: java.util.Collection[_] =>
-          import JavaConversions._
-          ConfigFactory.parseString( s"""${path}="${javaC.mkString(",")}" """)
-        case _ =>
-          ConfigFactory.parseString( s"""${path}="${obj}" """)
-      }
-    }
-
-    val usualSuspects = Seq(
-      (_: Config).getConfig(path),
-      (_: Config).getString(path).asConf,
-      (_: Config).getStringList(path).asConf,
-      (_: Config).getList(path).asConf,
-      (_: Config).getObject(path).asConf)
-    val valueOpt: Option[Config] = usualSuspects collectFirst {
-      case f if Try(f(c)).isSuccess => f(c)
-    }
-    valueOpt getOrElse {
-      ConfigFactory.parseString( s"""${path}="${defaultValue}" """)
-    }
   }
 
 }

@@ -9,60 +9,44 @@ import org.scalatest._
 
 import scala.util.Try
 
-class ArgsAsConfigParserTest extends FunSpec {
+class Args4cTest extends FunSpec {
+
+  import Args4cTest._
 
   describe("AsConfig.unapply") {
     it("should not consider empty files valid configuration files") {
       withTempFile("delete", "me") { file =>
-        assert(ArgsAsConfigParser.AsConfig.unapply(file.getPath).isEmpty, "Empty configuration file")
+        assert(Args4c.AsConfig.unapply(file.getPath).isEmpty, "Empty configuration file")
       }
     }
     it("should parse absolute file paths") {
       withTempFile("delete", "me") { file =>
         file.append("x : y")
         file.getPath match {
-          case ArgsAsConfigParser.AsConfig(c) => assert(c.getString("x") === "y")
+          case Args4c.AsConfig(c) => assert(c.getString("x") === "y")
           case _ => require(false, "AsConfig didn't match an absolute file location")
         }
       }
     }
     it("should not parse invalid urls or file locations") {
-      assert(ArgsAsConfigParser.AsConfig.unapply("thisDoesntExist").isEmpty)
+      assert(Args4c.AsConfig.unapply("thisDoesntExist").isEmpty)
+    }
+  }
+  describe("Args4c.configAtPath") {
+    it("should return the default unfound value non-existent paths") {
+      val notFoundString = "some not found string"
+      val invalidPath = "obj.invalid.path"
+      val conf = Args4c.configAtPath(ConfigAppTest.config, invalidPath, notFoundString)
+      assert(conf.getString(invalidPath) === notFoundString)
+    }
+    it("should return the nested configuration at the given path") {
+      val path = "obj"
+      val conf = Args4c.configAtPath(ConfigAppTest.config, path)
+
+      assert(ConfigAppTest.config.getConfig(path) === conf)
     }
   }
   describe("ArgsAsConfigParser.parseArgs") {
-
-    def withLocalFile(test: File => Unit) = {
-
-      def find(i: Int = 0): File = {
-        val f = i match {
-          case 0 => new java.io.File("ArgsAsConfigParser.parseArgs_test.tmp")
-          case n => new java.io.File(s"ArgsAsConfigParser.parseArgs_test-$n.tmp")
-        }
-        if (f.exists) {
-          find(i + 1)
-        } else {
-          f
-        }
-      }
-      // set up a related temp config file
-      val file = find()
-      try {
-        require(!file.exists && file.createNewFile(), s"Couldn't create ${file.getPath}")
-        test(file)
-
-      } finally {
-        file.delete()
-      }
-    }
-
-    def verifyABConfig(filePath: File => String) = {
-      withLocalFile { file =>
-        file.text = "a : b"
-        val Right(config) = ArgsAsConfigParser.parseArgs(Seq(filePath(file)), ConfigFactory.empty)
-        assert(config.getString("a") === "b")
-      }
-    }
     it("should parse a single user argument as a boolean flag") {
       assert(parseSuccess("-flag").getBoolean("flag") === true)
       assert(parseSuccess("flag").getBoolean("flag") === true)
@@ -79,7 +63,7 @@ class ArgsAsConfigParserTest extends FunSpec {
 
     it("should not parse unexpected '=' signs as input") {
       def verifyFails(args : String*) = {
-        val either = ArgsAsConfigParser.parseArgs(args, ConfigFactory.empty)
+        val either = Args4c.parseArgs(args, ConfigFactory.empty)
         assert(either.isLeft, s"Expected failure due to equal sign in $args but got ${either.right.map{_.root.render}}")
       }
 
@@ -90,7 +74,7 @@ class ArgsAsConfigParserTest extends FunSpec {
     }
     it("should consider 'a=  b=c' as invalid user input for key 'a'") {
       def verifyFails(args : String*) = {
-        val either = ArgsAsConfigParser.parseArgs(args, ConfigFactory.empty)
+        val either = Args4c.parseArgs(args, ConfigFactory.empty)
         assert(either.isLeft, s"Expected an error for the hanging key '-a= in $args but got ${either.right.map{_.root.render}}")
       }
 
@@ -113,7 +97,7 @@ class ArgsAsConfigParserTest extends FunSpec {
           """.stripMargin
 
         def verfiyConfig(args: String*) = {
-          val Right(config) = ArgsAsConfigParser.parseArgs(args.toSeq, ConfigFactory.empty)
+          val Right(config) = Args4c.parseArgs(args.toSeq, ConfigFactory.empty)
           assert(config.getString("a") === "overridden")
           assert(config.getBoolean("file"))
         }
@@ -169,7 +153,7 @@ class ArgsAsConfigParserTest extends FunSpec {
       }
     }
     it("should parse '-a b -c d' as a=b, c=d") {
-      val Right(config) = ArgsAsConfigParser.parseArgs(Seq("-a", "b", "-c", "d"), ConfigFactory.empty)
+      val Right(config) = Args4c.parseArgs(Seq("-a", "b", "-c", "d"), ConfigFactory.empty)
       assert(config.getString("a") === "b")
       assert(config.getString("c") === "d")
     }
@@ -193,16 +177,20 @@ class ArgsAsConfigParserTest extends FunSpec {
       assert(config.getString("c") === "d")
     }
   }
+}
+
+object Args4cTest {
+
 
   // convenience function to call the method under test (ArgsAsConfigParser.parseArgs) with an empty default config
   def parseSuccess(args: String*): Config = {
-    val resultEither = ArgsAsConfigParser.parseArgs(args.toSeq, ConfigFactory.empty)
+    val resultEither = Args4c.parseArgs(args.toSeq, ConfigFactory.empty)
 
     resultEither match {
       case Right(conf) => conf
       case Left(err) =>
         assert(resultEither.isRight, s"Error parsing '$args' : $err")
-        throw new Exception()
+        ???
     }
   }
 
@@ -212,6 +200,41 @@ class ArgsAsConfigParserTest extends FunSpec {
       f(file)
     } finally {
       Try(file.delete())
+    }
+  }
+
+
+  def withLocalFile(test: File => Unit) = {
+
+    def find(i: Int = 0): File = {
+      val f = i match {
+        case 0 => new java.io.File("ArgsAsConfigParser.parseArgs_test.tmp")
+        case n => new java.io.File(s"ArgsAsConfigParser.parseArgs_test-$n.tmp")
+      }
+      if (f.exists) {
+        find(i + 1)
+      } else {
+        f
+      }
+    }
+    // set up a related temp config file
+    val file = find()
+    try {
+      require(!file.exists && file.createNewFile(), s"Couldn't create ${file.getPath}")
+      test(file)
+
+    } finally {
+      file.delete()
+    }
+  }
+
+  def verifyABConfig(filePath: File => String) = {
+    withLocalFile { file =>
+      file.text = "a : b"
+      val Right(config) = Args4c.parseArgs(Seq(filePath(file)), ConfigFactory.empty)
+      new Assertions {
+        assert(config.getString("a") === "b")
+      }
     }
   }
 }
