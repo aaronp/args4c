@@ -1,4 +1,4 @@
-package agora.config
+package args4c
 
 import java.nio.file.{Files, Paths}
 
@@ -57,7 +57,7 @@ object RichConfig {
     ConfigFactory.parseMap(Map(key -> value).asJava, originDesc)
   }
 
-  private[config] object FilePathConfig {
+  private[args4c] object FilePathConfig {
     def unapply(path: String): Option[Config] =
       Option(Paths.get(path))
         .filter(p => Files.exists(p))
@@ -67,13 +67,13 @@ object RichConfig {
         }
   }
 
-  private[config] object UrlPathConfig {
+  private[args4c] object UrlPathConfig {
     def unapply(path: String): Option[Config] = {
       val url = getClass.getClassLoader.getResource(path)
       Option(url).map(ConfigFactory.parseURL)
     }
   }
 
-  private[config] val KeyValue = "(.*)=(.*)".r
+  private[args4c] val KeyValue = "(.*)=(.*)".r
 
 }

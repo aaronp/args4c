@@ -1,14 +1,12 @@
-package agora
-
-import agora.config.RichConfig.LowPriorityImplicits
+import args4c.RichConfig.LowPriorityImplicits
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.sys.SystemProperties
 
-package object config {
+package object args4c {
 
   def configForArgs(args: Array[String], fallback: Config = ConfigFactory.empty): Config = {
-    import agora.config.implicits._
+    import args4c.implicits._
     fallback.withUserArgs(args)
   }
 

@@ -1,11 +1,11 @@
-package agora.config
+package args4c
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{Matchers, WordSpec}
 
 class RichConfigTest extends WordSpec with Matchers {
 
-  import agora.config.implicits._
+  import args4c.implicits._
 
   import scala.collection.JavaConverters._
 

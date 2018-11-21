@@ -15,19 +15,20 @@ Maven:
 ```xml
 <dependency>
     <groupId>args4c</groupId>
-    <artifactId>args4c_2.11</artifactId>
+    <artifactId>args4c_2.12</artifactId>
     <version>0.0.0</version>
 </dependency>
 ```
 
 If using SBT then you want:
 ```scala
-libraryDependencies += "args4c" %% "args4c" % "0.0.0"
+libraryDependencies += "args4c" %% "args4c" % "0.0.4"
 ```
 
 ## Usage
 
 ```scala
+import
 object YourApp {
 
   def main(args : Array[String]) {

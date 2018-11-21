@@ -1,18 +1,18 @@
 name := "args4c"
 
-version := "0.0.0-SNAPSHOT"
-
 organization := "args4c"
 
-scalaVersion := "2.11.6"
-
-crossScalaVersions := Seq("2.10.4", "2.11.6")
+val username            = "aaronp"
+val scalaEleven         = "2.11.8"
+val scalaTwelve         = "2.12.7"
+val defaultScalaVersion = scalaTwelve
+crossScalaVersions := Seq(scalaEleven, scalaTwelve)
 
 publishMavenStyle := true
 
 libraryDependencies += "com.typesafe" % "config" % "1.2.1" % "provided"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
@@ -22,6 +22,13 @@ publishTo := {
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
+credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
+
+buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
+buildInfoPackage := "args4c.build"
+
+// see http://www.scalatest.org/user_guide/using_scalatest_with_sbt
+testOptions in Test += (Tests.Argument(TestFrameworks.ScalaTest, "-h", s"target/scalatest-reports", "-oN"))
 
 pomExtra := {
   <url>https://github.com/aaronp/args4c</url>

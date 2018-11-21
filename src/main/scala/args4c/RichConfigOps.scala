@@ -1,7 +1,7 @@
-package agora.config
+package args4c
 
-import java.net.URL
 import java.util.Map
+import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.ConfigRenderOptions._
 import com.typesafe.config._
@@ -18,6 +18,12 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
 
   def config: Config
 
+  def encrypt(keyBytes: Array[Byte]) = {
+    val input: String = config.root.render(ConfigRenderOptions.concise())
+    val (len, bytes) = Encryption.encryptAES(keyBytes, input)
+    (len, new String(bytes, "UTF-8"))
+  }
+
   import ConfigFactory._
   import RichConfig._
 
@@ -27,11 +33,13 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
   def asDuration(key: String): Duration = {
     config.getString(key).toLowerCase() match {
       case "inf" | "infinite" => Duration.Inf
-      case _                  => asFiniteDuration(key)
+      case _ => asFiniteDuration(key)
     }
   }
 
-  def asFiniteDuration(key: String): FiniteDuration = config.getDuration(key).toMillis.millis
+  def asFiniteDuration(key: String): FiniteDuration = {
+    config.getDuration(key, TimeUnit.MILLISECONDS).millis
+  }
 
   /**
     * If 'show=X' specified, configuration values which contain X in their path.
@@ -80,10 +88,10 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
         asConfig(k, java.util.Arrays.asList(v.split(",", -1): _*))
       case KeyValue(k, v) if isObjectList(k) =>
         sys.error(s"Path '$k' tried to override an object list with '$v'")
-      case KeyValue(k, v)    => asConfig(k, v)
+      case KeyValue(k, v) => asConfig(k, v)
       case FilePathConfig(c) => c
-      case UrlPathConfig(c)  => c
-      case other             => unrecognizedArg(other)
+      case UrlPathConfig(c) => c
+      case other => unrecognizedArg(other)
     }
 
     (configs :+ config).reduce(_ withFallback _)
@@ -161,7 +169,7 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
   def summary(pathFilter: String => Boolean = _ => true): List[StringEntry] = {
     collectAsStrings.collect {
       case (key, stringValue) if pathFilter(key) =>
-        val value  = config.getValue(key)
+        val value = config.getValue(key)
         val origin = s"${value.origin.url()}@${value.origin().lineNumber()}"
         import scala.collection.JavaConverters._
         val comments = value.origin().comments().asScala.toList

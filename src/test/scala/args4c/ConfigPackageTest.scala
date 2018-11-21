@@ -1,4 +1,4 @@
-package agora.config
+package args4c
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{Matchers, WordSpec}
