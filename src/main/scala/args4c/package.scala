@@ -5,7 +5,18 @@ import scala.sys.SystemProperties
 
 package object args4c {
 
-  def configForArgs(args: Array[String], fallback: Config = ConfigFactory.empty): Config = {
+  /** Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:
+    *
+    * $ a configuration file on the classpath or file system
+    * $ a key=value pair
+    *
+    * Left-most values take precedence over right
+    *
+    * @param args
+    * @param fallback
+    * @return a parsed configuration
+    */
+  def configForArgs(args: Array[String], fallback: Config = ConfigFactory.load()): Config = {
     import args4c.implicits._
     fallback.withUserArgs(args)
   }

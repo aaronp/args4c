@@ -18,10 +18,15 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
 
   def config: Config
 
-  def encrypt(keyBytes: Array[Byte]) = {
+  /**
+    *
+    * @param password
+    * @return the encrypted configuration
+    */
+  def encrypt(password: Array[Byte]): String = {
     val input: String = config.root.render(ConfigRenderOptions.concise())
-    val (len, bytes) = Encryption.encryptAES(keyBytes, input)
-    (len, new String(bytes, "UTF-8"))
+    val (_, bytes) = Encryption.encryptAES(password, input)
+    new String(bytes, "UTF-8")
   }
 
   import ConfigFactory._
@@ -65,7 +70,11 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
     }
   }
 
-  /**
+  /** Overlay the given arguments over this configuration, where the arguments are taken to be in the form:
+    *
+    * $ the path to a configuration file, either on the classpath or file system
+    * $ a <key>=<value> pair where the key is a 'path.to.a.configuration.entry'
+    *
     * @param args            the user arguments in the form <key>=<value>, <filePath> or <fileOnTheClasspath>
     * @param unrecognizedArg what to do with malformed user input
     * @return a configuration with the given user-argument overrides applied over top
@@ -118,14 +127,10 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
   /** And example which uses most of the below stuff to showcase what this is for
     * Note : writing a 'diff' using this would be pretty straight forward
     */
-  def uniquePaths: List[String] = unique.paths.toList.sorted
+  def uniquePaths: List[String] = withoutSystem.paths.sorted
 
-  def unique = withoutSystem.filterNot(_.startsWith("akka"))
-
-  /** this config w/o the system props and stuff */
-  def withoutSystem: Config = without(systemEnvironment.or(systemProperties).paths)
-
-  def or(other: Config) = config.withFallback(other)
+  /** this config w/o the system properties or environment variables */
+  def withoutSystem: Config = without(systemEnvironment.withFallback(systemProperties).paths)
 
   def without(other: Config): Config = without(asRichConfig(other).paths)
 
@@ -133,21 +138,26 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
 
   def without(paths: TraversableOnce[String]): Config = paths.foldLeft(config)(_ withoutPath _)
 
-  def filterNot(path: String => Boolean) = without(paths.filter(path))
+  def filterNot(path: String => Boolean): Config = without(paths.filter(path))
 
-  def describe(implicit opts: ConfigRenderOptions = concise().setFormatted(true)) =
-    config.root.render(opts)
+  /** @return the configuration as a json string
+    */
+  def json: String = config.root.render(ConfigRenderOptions.concise().setJson(true))
 
-  def json = config.root.render(ConfigRenderOptions.concise().setJson(true))
-
+  /** @return all the unique paths for this configuration
+    */
   def paths: List[String] = entries.map(_.getKey).toList.sorted
 
+  /** @return the configuration entries as a set of entries
+    */
   def entries: mutable.Set[Map.Entry[String, ConfigValue]] = {
     import scala.collection.JavaConverters._
     config.entrySet().asScala
   }
 
-  def entryPairs = entries.map { entry =>
+  /** @return the configuration entries as a set of entry tuples
+   */
+  def entryPairs: mutable.Set[(String, ConfigValue)] = entries.map { entry =>
     (entry.getKey, entry.getValue)
   }
 
@@ -181,18 +191,32 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
     ConfigUtil.splitPath(p).get(0)
   }
 
+  /** @return the configuration as a set of key/value tuples
+    */
   def collectAsStrings: List[(String, String)] = paths.flatMap { key =>
     Try(config.getString(key)).toOption.map(key ->)
   }
 
+  /** @return the configuration as a map
+    */
   def collectAsMap = collectAsStrings.toMap
 
+  /** @param other
+    * @return the configuration representing the intersection of the two configuration entries
+    */
   def intersect(other: Config): Config = {
     withPaths(other.paths)
   }
 
+  /** @param first the first path to include (keep)
+    * @param theRest any other paths to keep
+    * @return this configuration which only contains the specified paths
+    */
   def withPaths(first: String, theRest: String*): Config = withPaths(first :: theRest.toList)
 
+  /** @param paths
+    * @return this configuration which only contains the specified paths
+    */
   def withPaths(paths: List[String]): Config = {
     paths.map(config.withOnlyPath).reduce(_ withFallback _)
   }

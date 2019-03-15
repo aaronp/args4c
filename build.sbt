@@ -10,6 +10,7 @@ crossScalaVersions := Seq(scalaEleven, scalaTwelve)
 
 libraryDependencies += "com.typesafe" % "config" % "1.3.0" % "provided"
 libraryDependencies ++= List(
+    "com.github.aaronp" %% "eie" % "0.0.3" % "test",
     "org.scalactic" %% "scalactic" % "3.0.4" % "test",
     "org.scalatest" %% "scalatest" % "3.0.4" % "test",
     "org.pegdown" % "pegdown" % "1.6.0" % "test",

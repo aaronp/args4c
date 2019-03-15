@@ -1,22 +1,22 @@
 Args4c
 ====
 
-Args4c is a utility for producing a typesafe config from user argments (e.g. Array[String])
+Args4c is a utility for producing a typesafe config from user arguments (e.g. Array[String]),
+as well as some convenience methods for a config such as filtering, formatting, getting intersections, etc.
 
 The dependency on the typesafe config is 'provided', so should work with the typesafe config
 already on your classpath (or, if there isn't one, you can bring one in)
 
-
 ## Release
 
-Current version is 0.0.0 available on maven central, built for 2.10 and 2.11
+Current version is 0.0.3 available on maven central, built for 2.11 and 2.12
 
 Maven:
 ```xml
 <dependency>
     <groupId>args4c</groupId>
     <artifactId>args4c_2.12</artifactId>
-    <version>0.0.0</version>
+    <version>0.0.4</version>
 </dependency>
 ```
 
@@ -28,11 +28,17 @@ libraryDependencies += "args4c" %% "args4c" % "0.0.4"
 ## Usage
 
 ```scala
-import
+import args4c.implicits._
+import com.typesafe.config._
+
 object YourApp {
-
-  def main(args : Array[String]) {
-
+  def main(args : Array[String]): Unit = {
+    val config = ConfigFactory.load().withUserArgs(args) // or just args4c.configForArgs(args)
+    run(config)
+  }
+  def run(config : Config) = {
+    println(config.summary())
+  
   }
 }
 ```
