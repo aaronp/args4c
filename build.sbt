@@ -8,11 +8,15 @@ val scalaTwelve         = "2.12.7"
 val defaultScalaVersion = scalaTwelve
 crossScalaVersions := Seq(scalaEleven, scalaTwelve)
 
+libraryDependencies += "com.typesafe" % "config" % "1.3.0" % "provided"
+libraryDependencies ++= List(
+    "org.scalactic" %% "scalactic" % "3.0.4" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.4" % "test",
+    "org.pegdown" % "pegdown" % "1.6.0" % "test",
+    "junit" % "junit" % "4.12" % "test"
+  )
+
 publishMavenStyle := true
-
-libraryDependencies += "com.typesafe" % "config" % "1.2.1" % "provided"
-
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"

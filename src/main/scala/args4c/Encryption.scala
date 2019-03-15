@@ -13,6 +13,10 @@ object Encryption {
     java.util.Arrays.copyOf(sha.digest(password), 16)
   }
 
+  /** @param password    the password used for encrypting the text
+    * @param inputString the text to encrypt using AES
+    * @return the total bytes and encrypted text
+    */
   def encryptAES(password: Array[Byte], inputString: String): (Int, Array[Byte]) = {
 
     val input = inputString.getBytes("UTF-8")

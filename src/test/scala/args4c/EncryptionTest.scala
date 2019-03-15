@@ -1,6 +1,6 @@
 package args4c
 
-import org.scalatest.{FunSuite, Matchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
 
 class EncryptionTest extends WordSpec with Matchers {
 
@@ -17,7 +17,7 @@ class EncryptionTest extends WordSpec with Matchers {
       encrypted.toList should not be encrypedWithDifferentPW.toList
       encrypted.toList shouldBe encrypedWithSamePW.toList
 
-      val backAgain = Encryption.decryptAES(key,  encrypted, len)
+      val backAgain = Encryption.decryptAES(key, encrypted, len)
       backAgain shouldBe original
     }
   }
