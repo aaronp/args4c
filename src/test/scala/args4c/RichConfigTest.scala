@@ -5,7 +5,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class RichConfigTest extends WordSpec with Matchers {
 
-  import args4c.implicits._
+  import implicits._
 
   import scala.collection.JavaConverters._
 

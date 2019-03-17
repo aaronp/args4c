@@ -2,6 +2,7 @@ package args4c
 
 import java.nio.file.{Files, Paths}
 
+import com.typesafe.config.impl.ConfigImpl
 import com.typesafe.config.{Config, ConfigFactory, ConfigUtil}
 
 /**
@@ -12,29 +13,6 @@ import com.typesafe.config.{Config, ConfigFactory, ConfigUtil}
 class RichConfig(override val config: Config) extends RichConfigOps
 
 object RichConfig {
-
-  trait LowPriorityImplicits {
-
-    implicit class RichString(val str: String) {
-      def quoted = ConfigUtil.quoteString(str)
-    }
-
-    implicit def asRichConfig(c: Config): RichConfig = new RichConfig(c)
-
-    implicit class RichArgs(val args: Array[String]) {
-      def asConfig(unrecognizedArg: String => Config = ParseArg.Throw): Config = {
-        ConfigFactory.empty().withUserArgs(args, unrecognizedArg)
-      }
-    }
-
-    implicit class RichMap(val map: Map[String, String]) {
-      def asConfig: Config = {
-        import scala.collection.JavaConverters._
-        ConfigFactory.parseMap(map.asJava)
-      }
-    }
-
-  }
 
   /**
     * Contains functions detailing what to do with user command-line input
@@ -52,9 +30,9 @@ object RichConfig {
     val AsBooleanFlag = (a: String) => asConfig(ConfigUtil.quoteString(a), true.toString)
   }
 
-  def asConfig(key: String, value: Any, originDesc: String = "command-line"): Config = {
+  private[args4c] def asConfig(key: String, value: Any, originDesc: String = "command-line"): Config = {
     import scala.collection.JavaConverters._
-    ConfigFactory.parseMap(Map(key -> value).asJava, originDesc)
+    ConfigImpl.fromPathMap(Map(key -> value).asJava, originDesc).toConfig
   }
 
   private[args4c] object FilePathConfig {

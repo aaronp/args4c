@@ -1,10 +1,8 @@
-import args4c.RichConfig.LowPriorityImplicits
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 
 import scala.sys.SystemProperties
 
 package object args4c {
-
   /** Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:
     *
     * $ a configuration file on the classpath or file system
@@ -16,17 +14,15 @@ package object args4c {
     * @param fallback
     * @return a parsed configuration
     */
-  def configForArgs(args: Array[String], fallback: Config = ConfigFactory.load()): Config = {
+  def configForArgs(args: Array[String], fallback: Config = defaultConfig()): Config = {
     import args4c.implicits._
     fallback.withUserArgs(args)
   }
 
   /**
-    * Exposes the entry point for using a RichConfig,
-    *
-    * mostly for converting user-args into a config
+    * @return essentially ConfigFactory.load() but with [[sysEnvAsConfig]] layered over the default application
     */
-  object implicits extends LowPriorityImplicits
+  def defaultConfig(): Config = ConfigFactory.load(sysEnvAsConfig().withFallback(ConfigFactory.defaultApplication()))
 
   def env(key: String): Option[String] = sys.env.get(key)
 
@@ -58,12 +54,39 @@ package object args4c {
   def sysEnvAsConfig(env: Map[String, String] = sys.env): Config = {
     val confMap = env.map {
       case (key, value) => envToPath(key) -> value
-    }
-    import scala.collection.JavaConverters._
-    ConfigFactory.parseMap(confMap.asJava)
+    }.filterKeys(_.nonEmpty)
+    configForMap(confMap)
   }
 
-  def envToPath(str: String) = str.split('_').map(_.toLowerCase).mkString(".")
+  /** @param confMap
+    * @return a config for this map
+    */
+  def configForMap(confMap: Map[String, String]): Config = {
+    import scala.collection.JavaConverters._
+    try {
+      val trimmed = {
+        val keys: Set[String] = confMap.keySet
+        confMap.filterKeys(prefixNotInSet(keys, _))
+      }
+      ConfigFactory.parseMap(trimmed.asJava, "environment variable")
+    } catch {
+      case exp: ConfigException => throw new IllegalStateException(s"couldn't parse: ${confMap.mkString("\n")}", exp)
+    }
+  }
+
+  private[args4c] def prefixNotInSet(keys: Set[String], value: String) = {
+    val otherKeys = keys - value
+    !otherKeys.exists(_.startsWith(value))
+  }
+
+  private[args4c] def envToPath(str: String) = {
+    val TrimDotsR = """\.*(.*)\.*""".r
+
+    str.split('_').map(_.toLowerCase).mkString(".").dropWhile(_ == '.') match {
+      case TrimDotsR(trimmed) => trimmed.replaceAll("\\.+", ".")
+      case other => other
+    }
+  }
 
   def obscurePassword(configPath: String, value: String, blacklist: Set[String] = passwordBlacklist): String = {
     val lc = configPath.toLowerCase

@@ -1,8 +1,5 @@
 package args4c
 
 case class StringEntry(comments: List[String], origin: String, key: String, value: String) {
-  override def toString = {
-    s"""#$origin
-       |$key : ${value}""".stripMargin
-  }
+  override def toString: String = s"""$key : ${value} # $origin""".stripMargin
 }

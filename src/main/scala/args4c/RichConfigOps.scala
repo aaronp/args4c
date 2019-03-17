@@ -1,5 +1,6 @@
 package args4c
 
+import java.net.URL
 import java.util.Map
 import java.util.concurrent.TimeUnit
 
@@ -14,7 +15,7 @@ import scala.util.Try
 /**
   * Provider operations on a 'config'
   */
-trait RichConfigOps extends RichConfig.LowPriorityImplicits {
+trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
   def config: Config
 
@@ -163,6 +164,10 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
     (entry.getKey, entry.getValue)
   }
 
+  /** @return the config as a map
+    */
+  def toMap = entryPairs.toMap
+
   /** @return a sorted list of the origins from when the config values come
     */
   def origins: List[String] = {
@@ -183,10 +188,20 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
       case (key, originalValue) =>
         val stringValue = obscure(key, originalValue)
         val value = config.getValue(key)
-        val origin = s"${value.origin.url()}@${value.origin().lineNumber()}"
+        val o = value.origin
+        val originString = {
+          val source = Option(o.url()).map(_.toString).
+            orElse(Option(o.filename)).
+            orElse(Option(o.resource)).
+            orElse(Option(o.description)).getOrElse("unknown origin")
+
+          val line = Option(o.lineNumber()).filterNot(_ < 0).map("@" + _).getOrElse("")
+
+          s"${source}$line"
+        }
         import scala.collection.JavaConverters._
         val comments = value.origin().comments().asScala.toList
-        StringEntry(comments, origin, key, stringValue)
+        StringEntry(comments, originString, key, stringValue)
     }
   }
 
