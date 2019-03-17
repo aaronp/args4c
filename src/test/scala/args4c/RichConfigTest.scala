@@ -1,14 +1,33 @@
 package args4c
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{Matchers, WordSpec}
 
-class RichConfigTest extends WordSpec with Matchers {
+import scala.concurrent.duration._
 
-  import implicits._
+class RichConfigTest extends BaseSpec {
 
   import scala.collection.JavaConverters._
 
+  "RichConfig.summary" should {
+    "show a flatten summary of a configuration" in {
+      val conf                       = configForArgs(Array("test.foo=bar", "test.password=secret"))
+      val entries: List[StringEntry] = conf.summary()
+      entries should contain(StringEntry(Nil, "command-line", "test.foo", "bar"))
+      entries should contain(StringEntry(Nil, "command-line", "test.password", "**** obscured ****"))
+
+      conf.filter(_.startsWith("test")).summary().mkString("\n") shouldBe
+        """test.foo : bar # command-line
+          |test.password : **** obscured **** # command-line""".stripMargin
+    }
+  }
+  "RichConfig.asDuration" should {
+    "convert an infinite time to a duration" in {
+      ConfigFactory.parseString("time = inf").asDuration("time") shouldBe Duration.Inf
+    }
+    "convert 10s to a finite duration" in {
+      ConfigFactory.parseString("time = 10s").asDuration("time") shouldBe 10.seconds
+    }
+  }
   "RichConfig.withUserArgs" should {
     "treat comma-separated values as lists when overriding string lists" in {
       val actual = listConfig.withUserArgs(Array("stringList=x,y,z"))
@@ -38,6 +57,31 @@ class RichConfigTest extends WordSpec with Matchers {
       )
     }
 
+  }
+  "RichConfig.without" should {
+    "return a configuration which excludes the paths from another config" in {
+      val remaining = defaultConfig.without(defaultConfig).paths
+      remaining shouldBe (empty)
+    }
+  }
+  "RichConfig.pathRoots" should {
+    "return only the top-level config roots" in {
+      val conf = configForArgs(Array("foo.x.y=1", "foo.flag=true", "bar.name=hi", "bar.bar.bar=1"), ConfigFactory.empty())
+      conf.pathRoots should contain only ("bar", "foo")
+    }
+  }
+  "RichConfig.origins" should {
+    "return the unique origins from which the configurations were sources" in {
+      val conf = configForArgs(Array("foo.x.y=1", "test.conf"))
+      conf.origins should contain allOf ("command-line", "environment variable")
+      conf.origins.exists(_.contains("test.conf")) shouldBe true
+    }
+  }
+  "RichConfig.asList" should {
+    "be able to read both array and string values as a list" in {
+      configForArgs(Array("someList=1,2,3")).asList("someList") shouldBe List("1", "2", "3")
+      ConfigFactory.parseString("aList : [1,2,3]").asList("aList") shouldBe List("1", "2", "3")
+    }
   }
   "RichConfig.collectAsMap" should {
     "collect the string values for a configuration" in {

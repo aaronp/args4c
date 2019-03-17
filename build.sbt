@@ -3,12 +3,23 @@ name := "args4c"
 organization := "com.github.aaronp"
 
 enablePlugins(TutPlugin)
+enablePlugins(ParadoxPlugin)
+//enablePlugins(ScalaUnidocPlugin)
+enablePlugins(SiteScaladocPlugin)
 
 val username            = "aaronp"
 val scalaEleven         = "2.11.8"
 val scalaTwelve         = "2.12.7"
 val defaultScalaVersion = scalaTwelve
 crossScalaVersions := Seq(scalaEleven, scalaTwelve)
+
+paradoxProperties += ("project.url" -> "https://aaronp.github.io/args4c/docs/current/")
+
+paradoxTheme := Some(builtinParadoxTheme("generic"))
+
+siteSourceDirectory := target.value / "paradox" / "site" / "main"
+
+siteSubdirName in SiteScaladoc := "api/latest"
 
 libraryDependencies += "com.typesafe" % "config" % "1.3.0" % "provided"
 libraryDependencies ++= List(
@@ -22,6 +33,20 @@ libraryDependencies ++= List(
 publishMavenStyle := true
 
 releaseCrossBuild := true
+
+coverageMinimum := 80
+
+coverageFailOnMinimum := true
+
+ghpagesNoJekyll := true
+
+//addMappingsToSiteDir(tut, "tut")
+
+//SiteScaladocPlugin.scaladocSettings(
+//  ThisBuild,
+//  mappings in (Compile, packageDoc) in project,
+//  s"api/${project.id}"
+//)
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"

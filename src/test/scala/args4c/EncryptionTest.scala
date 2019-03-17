@@ -1,8 +1,6 @@
 package args4c
 
-import org.scalatest.{Matchers, WordSpec}
-
-class EncryptionTest extends WordSpec with Matchers {
+class EncryptionTest extends BaseSpec {
 
   "Encryption" should {
     "encrypt/decrypt" in {

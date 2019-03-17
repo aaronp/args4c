@@ -1,4 +1,5 @@
 build
+.config
 tmp
 target
 *.iml

@@ -22,11 +22,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     * @param password
     * @return the encrypted configuration
     */
-  def encrypt(password: Array[Byte]): String = {
-    val input: String = config.root.render(ConfigRenderOptions.concise())
-    val (_, bytes)    = Encryption.encryptAES(password, input)
-    new String(bytes, "UTF-8")
-  }
+  def encrypt(password: Array[Byte]) = Encryption.encryptAES(password, asJson)._2
 
   import ConfigFactory._
   import RichConfig._
@@ -46,24 +42,25 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   }
 
   /**
-    * If 'show=X' specified, configuration values which contain X in their path.
+    * If 'show=X' is specified, configuration values which contain X in their path will be displayed with the values matching 'obscure' obscured.
     *
     * If 'X' is 'all' or 'root', then the entire configuration is rendered.
     *
     * This can be useful to debug other command-line args (to ensure they take the desired effect)
     * or to validate the environment variable replacement
     *
+    * @param obscure a function which takes a dotted configuration path and string value and returns the value to display
     * @return the optional value of what's pointed to if 'show=<path>' is specified
     */
-  def show(obscure: (String, String) => String = obscurePassword(_, _), options: ConfigRenderOptions = ConfigRenderOptions.concise().setFormatted(true)): Option[String] = {
+  def showIfSpecified(obscure: (String, String) => String = obscurePassword(_, _)): Option[String] = {
     if (config.hasPath("show")) {
       val filteredConf = config.getString("show") match {
-        case "all" | "" | "root" => config.root.render()
+        case "all" | "" | "root" => config
         case path =>
           val lcPath = path.toLowerCase
-          config.filter(_.toLowerCase.contains(lcPath)).summary().mkString("\n")
+          config.filter(_.toLowerCase.contains(lcPath))
       }
-      Option(filteredConf)
+      Option(filteredConf.summary(obscure).mkString("\n"))
     } else {
       None
     }
@@ -129,13 +126,18 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def uniquePaths: List[String] = withoutSystem.paths.sorted
 
   /** this config w/o the system properties or environment variables */
-  def withoutSystem: Config = without(systemEnvironment.withFallback(systemProperties).paths)
+  def withoutSystem: Config = {
+    val sysConf = systemEnvironment.withFallback(systemProperties).withFallback(sysEnvAsConfig())
+    without(sysConf)
+  }
 
   def without(other: Config): Config = without(asRichConfig(other).paths)
 
   def without(firstPath: String, theRest: String*): Config = without(firstPath +: theRest)
 
-  def without(paths: TraversableOnce[String]): Config = paths.foldLeft(config)(_ withoutPath _)
+  def without(configPaths: TraversableOnce[String]): Config = {
+    configPaths.foldLeft(config)(_ withoutPath _)
+  }
 
   def filter(path: String => Boolean): Config = filterNot(path.andThen(_.unary_!))
 
@@ -143,7 +145,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
   /** @return the configuration as a json string
     */
-  def json: String = config.root.render(ConfigRenderOptions.concise().setJson(true))
+  def asJson: String = config.root.render(ConfigRenderOptions.concise().setJson(true))
 
   /** @return all the unique paths for this configuration
     */
@@ -171,7 +173,11 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def origins: List[String] = {
     val urls = entries.flatMap { e =>
       val origin = e.getValue.origin()
-      Option(origin.url).orElse(Option(origin.filename)).orElse(Option(origin.resource)).map(_.toString)
+      Option(origin.url). //
+      orElse(Option(origin.filename)). //
+      orElse(Option(origin.resource)). //
+      orElse(Option(origin.description)). //
+      map(_.toString)
     }
     urls.toList.distinct.sorted
   }
@@ -186,14 +192,12 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
       case (key, originalValue) =>
         val stringValue = obscure(key, originalValue)
         val value       = config.getValue(key)
-        val o           = value.origin
         val originString = {
-          val source =
-            Option(o.url()).map(_.toString).orElse(Option(o.filename)).orElse(Option(o.resource)).orElse(Option(o.description)).getOrElse("unknown origin")
-
-          val line = Option(o.lineNumber()).filterNot(_ < 0).map("@" + _).getOrElse("")
-
-          s"${source}$line"
+          val o       = value.origin
+          def resOpt  = Option(o.resource)
+          def descOpt = Option(o.description)
+          def line    = Option(o.lineNumber()).filterNot(_ < 0).map(": " + _).getOrElse("")
+          Option(o.url()).map(_.toString).orElse(Option(o.filename)).orElse(resOpt).map(_ + line).orElse(descOpt).getOrElse("unknown origin")
         }
         import scala.collection.JavaConverters._
         val comments = value.origin().comments().asScala.toList
