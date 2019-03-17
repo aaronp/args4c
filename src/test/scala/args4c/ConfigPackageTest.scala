@@ -5,6 +5,12 @@ import org.scalatest.{Matchers, WordSpec}
 
 class ConfigPackageTest extends WordSpec with Matchers {
 
+  "configFromEnv" should {
+    "convert ENV_IR_ONMENT variables into a configuration" in {
+
+    }
+
+  }
   "configForArgs" should {
     "evaluate values from the command line which are referenced from the config file" in {
 

@@ -62,7 +62,7 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
         case "all" | "" | "root" => config.root.render()
         case path =>
           val lcPath = path.toLowerCase
-          config.summary(_.toLowerCase.contains(lcPath)).mkString("\n\n")
+          config.filter(_.toLowerCase.contains(lcPath)).summary().mkString("\n\n")
       }
       Option(filteredConf)
     } else {
@@ -138,6 +138,8 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
 
   def without(paths: TraversableOnce[String]): Config = paths.foldLeft(config)(_ withoutPath _)
 
+  def filter(path: String => Boolean): Config = filterNot(path.andThen(_.unary_!))
+
   def filterNot(path: String => Boolean): Config = without(paths.filter(path))
 
   /** @return the configuration as a json string
@@ -156,7 +158,7 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
   }
 
   /** @return the configuration entries as a set of entry tuples
-   */
+    */
   def entryPairs: mutable.Set[(String, ConfigValue)] = entries.map { entry =>
     (entry.getKey, entry.getValue)
   }
@@ -176,9 +178,10 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
     *
     * @param pathFilter
     */
-  def summary(pathFilter: String => Boolean = _ => true): List[StringEntry] = {
+  def summary(obscure: (String, String) => String = obscurePassword(_, _)): List[StringEntry] = {
     collectAsStrings.collect {
-      case (key, stringValue) if pathFilter(key) =>
+      case (key, originalValue) =>
+        val stringValue = obscure(key, originalValue)
         val value = config.getValue(key)
         val origin = s"${value.origin.url()}@${value.origin().lineNumber()}"
         import scala.collection.JavaConverters._
@@ -208,7 +211,7 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
     withPaths(other.paths)
   }
 
-  /** @param first the first path to include (keep)
+  /** @param first   the first path to include (keep)
     * @param theRest any other paths to keep
     * @return this configuration which only contains the specified paths
     */
@@ -221,3 +224,5 @@ trait RichConfigOps extends RichConfig.LowPriorityImplicits {
     paths.map(config.withOnlyPath).reduce(_ withFallback _)
   }
 }
+
+
