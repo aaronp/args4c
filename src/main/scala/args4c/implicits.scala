@@ -1,6 +1,5 @@
 package args4c
 
-
 /**
   * Exposes the entry point for using a RichConfig,
   *

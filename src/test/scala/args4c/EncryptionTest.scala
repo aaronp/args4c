@@ -6,11 +6,11 @@ class EncryptionTest extends WordSpec with Matchers {
 
   "Encryption" should {
     "encrypt/decrypt" in {
-      val key = "password".getBytes()
-      val original = "some sensitive data"
+      val key              = "password".getBytes()
+      val original         = "some sensitive data"
       val (len, encrypted) = Encryption.encryptAES(key, original)
 
-      val (_, encrypedWithSamePW) = Encryption.encryptAES("password".getBytes(), original)
+      val (_, encrypedWithSamePW)      = Encryption.encryptAES("password".getBytes(), original)
       val (_, encrypedWithDifferentPW) = Encryption.encryptAES("PassWord".getBytes(), original)
 
       encrypted.toList should not be original.getBytes("UTF-8").toList

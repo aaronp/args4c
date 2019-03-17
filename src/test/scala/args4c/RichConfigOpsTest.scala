@@ -6,7 +6,7 @@ class RichConfigOpsTest extends WordSpec with Matchers with LowPriorityArgs4cImp
 
   "RichConfigOps.summary" should {
     "show a flatten summary of a configuration" in {
-      val conf = configForArgs(Array("test.foo=bar", "test.password=secret"))
+      val conf                       = configForArgs(Array("test.foo=bar", "test.password=secret"))
       val entries: List[StringEntry] = conf.summary()
       entries should contain(StringEntry(Nil, "command-line", "test.foo", "bar"))
       entries should contain(StringEntry(Nil, "command-line", "test.password", "**** obscured ****"))

@@ -3,6 +3,7 @@ import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 import scala.sys.SystemProperties
 
 package object args4c {
+
   /** Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:
     *
     * $ a configuration file on the classpath or file system
@@ -52,9 +53,11 @@ package object args4c {
     *
     */
   def sysEnvAsConfig(env: Map[String, String] = sys.env): Config = {
-    val confMap = env.map {
-      case (key, value) => envToPath(key) -> value
-    }.filterKeys(_.nonEmpty)
+    val confMap = env
+      .map {
+        case (key, value) => envToPath(key) -> value
+      }
+      .filterKeys(_.nonEmpty)
     configForMap(confMap)
   }
 
@@ -84,7 +87,7 @@ package object args4c {
 
     str.split('_').map(_.toLowerCase).mkString(".").dropWhile(_ == '.') match {
       case TrimDotsR(trimmed) => trimmed.replaceAll("\\.+", ".")
-      case other => other
+      case other              => other
     }
   }
 

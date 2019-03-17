@@ -3,7 +3,6 @@ package args4c
 import args4c.RichConfig.ParseArg
 import com.typesafe.config.{Config, ConfigFactory, ConfigUtil}
 
-
 trait LowPriorityArgs4cImplicits {
 
   implicit class RichString(val str: String) {

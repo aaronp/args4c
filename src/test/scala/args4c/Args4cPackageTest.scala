@@ -22,7 +22,7 @@ class Args4cPackageTest extends WordSpec with Matchers with LowPriorityArgs4cImp
   }
   "configForMap" should {
     "discard values in favour of longer paths" in {
-      val map = Map("someroot" -> "short", "someroot.value" -> "long")
+      val map  = Map("someroot" -> "short", "someroot.value" -> "long")
       val conf = configForMap(map)
       conf.toMap.mapValues(_.unwrapped) shouldBe Map("someroot.value" -> "long")
     }
@@ -45,12 +45,11 @@ class Args4cPackageTest extends WordSpec with Matchers with LowPriorityArgs4cImp
   "configForArgs" should {
     "evaluate values from the command line which are referenced from the config file" in {
 
-      val fallback = ConfigFactory.parseString(
-        """
+      val fallback = ConfigFactory.parseString("""
           |foo=defaultValue
           |some.other.value=${foo}
         """.stripMargin)
-      val conf = configForArgs(Array("foo=bar"), fallback).resolve
+      val conf     = configForArgs(Array("foo=bar"), fallback).resolve
 
       conf.getString("some.other.value") shouldBe "bar"
     }

@@ -26,7 +26,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     */
   def encrypt(password: Array[Byte]): String = {
     val input: String = config.root.render(ConfigRenderOptions.concise())
-    val (_, bytes) = Encryption.encryptAES(password, input)
+    val (_, bytes)    = Encryption.encryptAES(password, input)
     new String(bytes, "UTF-8")
   }
 
@@ -39,7 +39,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def asDuration(key: String): Duration = {
     config.getString(key).toLowerCase() match {
       case "inf" | "infinite" => Duration.Inf
-      case _ => asFiniteDuration(key)
+      case _                  => asFiniteDuration(key)
     }
   }
 
@@ -98,10 +98,10 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
         asConfig(k, java.util.Arrays.asList(v.split(",", -1): _*))
       case KeyValue(k, v) if isObjectList(k) =>
         sys.error(s"Path '$k' tried to override an object list with '$v'")
-      case KeyValue(k, v) => asConfig(k, v)
+      case KeyValue(k, v)    => asConfig(k, v)
       case FilePathConfig(c) => c
-      case UrlPathConfig(c) => c
-      case other => unrecognizedArg(other)
+      case UrlPathConfig(c)  => c
+      case other             => unrecognizedArg(other)
     }
 
     (configs :+ config).reduce(_ withFallback _)
@@ -187,13 +187,11 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     collectAsStrings.collect {
       case (key, originalValue) =>
         val stringValue = obscure(key, originalValue)
-        val value = config.getValue(key)
-        val o = value.origin
+        val value       = config.getValue(key)
+        val o           = value.origin
         val originString = {
-          val source = Option(o.url()).map(_.toString).
-            orElse(Option(o.filename)).
-            orElse(Option(o.resource)).
-            orElse(Option(o.description)).getOrElse("unknown origin")
+          val source =
+            Option(o.url()).map(_.toString).orElse(Option(o.filename)).orElse(Option(o.resource)).orElse(Option(o.description)).getOrElse("unknown origin")
 
           val line = Option(o.lineNumber()).filterNot(_ < 0).map("@" + _).getOrElse("")
 
@@ -239,5 +237,3 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     paths.map(config.withOnlyPath).reduce(_ withFallback _)
   }
 }
-
-

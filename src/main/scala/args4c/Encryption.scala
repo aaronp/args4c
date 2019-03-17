@@ -23,24 +23,24 @@ object Encryption {
 
     val keyBytes: Array[Byte] = asKey(password)
 
-    val sks = new SecretKeySpec(keyBytes, "AES")
+    val sks    = new SecretKeySpec(keyBytes, "AES")
     val cipher = Cipher.getInstance("AES")
     cipher.init(Cipher.ENCRYPT_MODE, sks) //, ivSpec)
     val encrypted = Array.ofDim[Byte](cipher.getOutputSize(input.length))
-    val encLen = cipher.update(input, 0, input.length, encrypted, 0)
-    val total = encLen + cipher.doFinal(encrypted, encLen)
+    val encLen    = cipher.update(input, 0, input.length, encrypted, 0)
+    val total     = encLen + cipher.doFinal(encrypted, encLen)
     total -> encrypted
   }
 
   def decryptAES(password: Array[Byte], encrypted: Array[Byte], len: Int) = {
 
     val keyBytes: Array[Byte] = asKey(password)
-    val sks = new SecretKeySpec(keyBytes, "AES")
-    val cipher = Cipher.getInstance("AES")
+    val sks                   = new SecretKeySpec(keyBytes, "AES")
+    val cipher                = Cipher.getInstance("AES")
     cipher.init(Cipher.DECRYPT_MODE, sks)
     val decrypted = Array.ofDim[Byte](len)
-    val decLen = cipher.update(encrypted, 0, len, decrypted, 0)
-    val total = decLen + cipher.doFinal(decrypted, decLen)
+    val decLen    = cipher.update(encrypted, 0, len, decrypted, 0)
+    val total     = decLen + cipher.doFinal(decrypted, decLen)
     new String(decrypted, "UTF-8").take(total)
   }
 

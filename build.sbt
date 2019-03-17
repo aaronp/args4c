@@ -10,12 +10,12 @@ crossScalaVersions := Seq(scalaEleven, scalaTwelve)
 
 libraryDependencies += "com.typesafe" % "config" % "1.3.0" % "provided"
 libraryDependencies ++= List(
-    "com.github.aaronp" %% "eie" % "0.0.3" % "test",
-    "org.scalactic" %% "scalactic" % "3.0.4" % "test",
-    "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-    "org.pegdown" % "pegdown" % "1.6.0" % "test",
-    "junit" % "junit" % "4.12" % "test"
-  )
+  "com.github.aaronp" %% "eie"       % "0.0.3" % "test",
+  "org.scalactic"     %% "scalactic" % "3.0.4" % "test",
+  "org.scalatest"     %% "scalatest" % "3.0.4" % "test",
+  "org.pegdown"       % "pegdown"    % "1.6.0" % "test",
+  "junit"             % "junit"      % "4.12"  % "test"
+)
 
 publishMavenStyle := true
 
@@ -24,13 +24,17 @@ publishTo := {
   if (version.value.endsWith("SNAPSHOT"))
     Some("snapshots" at nexus + "content/repositories/snapshots")
   else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
 credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 
 buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
 buildInfoPackage := "args4c.build"
+
+// see http://scalameta.org/scalafmt/
+scalafmtOnCompile in ThisBuild := true
+scalafmtVersion in ThisBuild := "1.4.0"
 
 // see http://www.scalatest.org/user_guide/using_scalatest_with_sbt
 testOptions in Test += (Tests.Argument(TestFrameworks.ScalaTest, "-h", s"target/scalatest-reports", "-oN"))
