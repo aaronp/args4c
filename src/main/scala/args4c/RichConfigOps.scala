@@ -129,7 +129,10 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def uniquePaths: List[String] = withoutSystem.paths.sorted
 
   /** this config w/o the system properties or environment variables */
-  def withoutSystem: Config = without(systemEnvironment.withFallback(systemProperties).paths)
+  def withoutSystem: Config = {
+    val sysConf = systemEnvironment.withFallback(systemProperties).withFallback(sysEnvAsConfig())
+    without(sysConf.paths)
+  }
 
   def without(other: Config): Config = without(asRichConfig(other).paths)
 
@@ -143,7 +146,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
   /** @return the configuration as a json string
     */
-  def json: String = config.root.render(ConfigRenderOptions.concise().setJson(true))
+  def asJson: String = config.root.render(ConfigRenderOptions.concise().setJson(true))
 
   /** @return all the unique paths for this configuration
     */

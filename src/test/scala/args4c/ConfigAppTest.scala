@@ -19,8 +19,8 @@ class ConfigAppTest extends WordSpec with Matchers {
   "ConfigApp" should {
     "be able to source sensitive config files" in {
 
-      val app = new App
-      app.
+//      val app = new App
+//      app.
 
     }
     "show values when a show is given" in {

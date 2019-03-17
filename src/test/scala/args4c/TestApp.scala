@@ -8,7 +8,7 @@ object TestApp extends ConfigApp {
     println(s"""
          |Running with:
          |
-         |${config.root.render()}
+         |${config.withoutSystem.root.render()}
        """.stripMargin)
   }
 }
