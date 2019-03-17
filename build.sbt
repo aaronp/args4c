@@ -2,6 +2,8 @@ name := "args4c"
 
 organization := "com.github.aaronp"
 
+enablePlugins(TutPlugin)
+
 val username            = "aaronp"
 val scalaEleven         = "2.11.8"
 val scalaTwelve         = "2.12.7"
@@ -13,8 +15,8 @@ libraryDependencies ++= List(
   "com.github.aaronp" %% "eie"       % "0.0.3" % "test",
   "org.scalactic"     %% "scalactic" % "3.0.4" % "test",
   "org.scalatest"     %% "scalatest" % "3.0.4" % "test",
-  "org.pegdown"       %  "pegdown"   % "1.6.0" % "test",
-  "junit"             %  "junit"     % "4.12"  % "test"
+  "org.pegdown"       % "pegdown"    % "1.6.0" % "test",
+  "junit"             % "junit"      % "4.12"  % "test"
 )
 
 publishMavenStyle := true

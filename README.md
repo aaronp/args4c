@@ -9,20 +9,10 @@ already on your classpath (or, if there isn't one, you can bring one in)
 
 ## Release
 
-Current version is 0.0.3 available on maven central, built for 2.11 and 2.12
+The latest version is 0.1.1, built for 2.11 and 2.12
 
-Maven:
-```xml
-<dependency>
-    <groupId>args4c</groupId>
-    <artifactId>args4c_2.12</artifactId>
-    <version>0.0.4</version>
-</dependency>
-```
-
-If using SBT then you want:
 ```scala
-libraryDependencies += "args4c" %% "args4c" % "0.0.4"
+libraryDependencies += "com.github.aaronp" %% "args4c" % "0.1.1"
 ```
 
 ## Usage

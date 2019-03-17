@@ -20,7 +20,7 @@ object RichConfig {
     */
   object ParseArg {
     val Throw  = (a: String) => sys.error(s"Unrecognized user arg '$a'")
-    val Ignore = (a: String) => ConfigFactory.empty()
+    val Ignore = (_: String) => ConfigFactory.empty()
 
     /**
       * Treats orphaned args as on/off boolean flags

@@ -91,10 +91,18 @@ package object args4c {
     }
   }
 
-  def obscurePassword(configPath: String, value: String, blacklist: Set[String] = passwordBlacklist): String = {
+  val defaultObscuredText = "**** obscured ****"
+
+  /**
+    * @param configPath the config key (e.g. foo.bar.bazz)
+    * @param value the config value, as a string
+    * @param blacklist a 'blacklist' which, if any of the entries are found anywhere in the configPath, then the value will be obscured
+    * @return the
+    */
+  def obscurePassword(configPath: String, value: String, blacklist: Set[String] = passwordBlacklist, obscuredValue: String = defaultObscuredText): String = {
     val lc = configPath.toLowerCase
     if (blacklist.exists(lc.contains)) {
-      "**** obscured ****"
+      obscuredValue
     } else {
       value
     }

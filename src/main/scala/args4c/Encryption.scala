@@ -3,14 +3,18 @@ package args4c
 import java.security.MessageDigest
 
 import javax.crypto.Cipher
-import javax.crypto.spec.{IvParameterSpec, SecretKeySpec}
+import javax.crypto.spec.SecretKeySpec
 
 object Encryption {
-  private lazy val sha = MessageDigest.getInstance("SHA-1")
+  private lazy val sha = MessageDigest.getInstance("SHA-256")
 
   //use first 128 bits
   private def asKey(password: Array[Byte]) = {
     java.util.Arrays.copyOf(sha.digest(password), 16)
+  }
+
+  def clear(pwd: Array[Byte]): Unit = {
+    pwd.indices.foreach(i => pwd.update(i, 'x'.toByte))
   }
 
   /** @param password    the password used for encrypting the text
@@ -25,14 +29,14 @@ object Encryption {
 
     val sks    = new SecretKeySpec(keyBytes, "AES")
     val cipher = Cipher.getInstance("AES")
-    cipher.init(Cipher.ENCRYPT_MODE, sks) //, ivSpec)
+    cipher.init(Cipher.ENCRYPT_MODE, sks)
     val encrypted = Array.ofDim[Byte](cipher.getOutputSize(input.length))
     val encLen    = cipher.update(input, 0, input.length, encrypted, 0)
     val total     = encLen + cipher.doFinal(encrypted, encLen)
     total -> encrypted
   }
 
-  def decryptAES(password: Array[Byte], encrypted: Array[Byte], len: Int) = {
+  def decryptAES(password: Array[Byte], encrypted: Array[Byte], len: Int): String = {
 
     val keyBytes: Array[Byte] = asKey(password)
     val sks                   = new SecretKeySpec(keyBytes, "AES")

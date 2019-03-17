@@ -1,10 +1,8 @@
 package args4c
 
-import java.net.URL
 import java.util.Map
 import java.util.concurrent.TimeUnit
 
-import com.typesafe.config.ConfigRenderOptions._
 import com.typesafe.config._
 
 import scala.collection.mutable
@@ -57,13 +55,13 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     *
     * @return the optional value of what's pointed to if 'show=<path>' is specified
     */
-  def show(options: ConfigRenderOptions = ConfigRenderOptions.concise().setFormatted(true)): Option[String] = {
+  def show(obscure: (String, String) => String = obscurePassword(_, _), options: ConfigRenderOptions = ConfigRenderOptions.concise().setFormatted(true)): Option[String] = {
     if (config.hasPath("show")) {
       val filteredConf = config.getString("show") match {
         case "all" | "" | "root" => config.root.render()
         case path =>
           val lcPath = path.toLowerCase
-          config.filter(_.toLowerCase.contains(lcPath)).summary().mkString("\n\n")
+          config.filter(_.toLowerCase.contains(lcPath)).summary().mkString("\n")
       }
       Option(filteredConf)
     } else {
@@ -181,7 +179,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   /**
     * Return a property-like summary of the config using the pathFilter to trim property entries
     *
-    * @param pathFilter
+    * @param obscure a function which will 'safely' replace any config values with an obscured value
     */
   def summary(obscure: (String, String) => String = obscurePassword(_, _)): List[StringEntry] = {
     collectAsStrings.collect {
@@ -203,7 +201,21 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     }
   }
 
-  def pathRoots = paths.map { p =>
+  /** The available config roots.
+    *
+    * e.g. of a config has
+    * {{{
+    *   foo.bar.x = 1
+    *   java.home = /etc/java
+    *   bar.enabled = true
+    *   bar.user = root
+    * }}}
+    *
+    * The 'pathRoots' would return a [bar, foo, java]
+    *
+    * @return a sorted list of the root entries to the config.
+    */
+  def pathRoots: List[String] = paths.map { p =>
     ConfigUtil.splitPath(p).get(0)
   }
 
@@ -215,7 +227,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
   /** @return the configuration as a map
     */
-  def collectAsMap = collectAsStrings.toMap
+  def collectAsMap: Predef.Map[String, String] = collectAsStrings.toMap
 
   /** @param other
     * @return the configuration representing the intersection of the two configuration entries
