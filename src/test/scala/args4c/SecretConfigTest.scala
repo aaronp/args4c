@@ -20,10 +20,10 @@ class SecretConfigTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
       def testInput(prompt: String): String = {
         val Permissions = s"Config Permissions (defaults to $defaultPermissions):"
-        val PathPrompt = SecretConfig.saveSecretPrompt()
+        val PathPrompt  = SecretConfig.saveSecretPrompt()
         prompt match {
-          case PathPrompt => testConfigFile
-          case Permissions => SecretConfig.defaultPermissions
+          case PathPrompt                       => testConfigFile
+          case Permissions                      => SecretConfig.defaultPermissions
           case _ if prompt.contains("Password") => "sEcre3t"
           case "Add config path in the form <key>=<value> (leave blank when finished):" =>
             if (testConfigEntries.hasNext) {

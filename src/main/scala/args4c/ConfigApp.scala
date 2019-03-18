@@ -1,6 +1,9 @@
 package args4c
 
+import java.nio.file.{Files, Path, Paths}
+
 import args4c.RichConfig.ParseArg
+import args4c.SecretConfig.{defaultSecretConfigPath, readSecretConfig}
 import com.typesafe.config.Config
 
 import scala.io.StdIn
@@ -34,10 +37,10 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param readLine
     */
   protected def runMain(args: Array[String], readLine: String => String): Unit = {
-    if (args.size == 1 && args(0) == "admin") {
+    if (isPasswordSetup(args)) {
       SecretConfig.writeSecretsUsingPrompt(readLine)
     } else {
-      val secretConfOpt: Option[Config] = SecretConfig.getSecretConfig(args, readLine)
+      val secretConfOpt: Option[Config] = secretConfigForArgs(args, readLine)
       val config = secretConfOpt.fold(defaultConfig())(_.withFallback(defaultConfig)).withUserArgs(args, onUnrecognizedUserArg)
 
       config.show(obscure(secretConfOpt.map(_.paths))) match {
@@ -46,6 +49,10 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
         case Some(specifiedArg) => showValue(specifiedArg, config)
       }
     }
+  }
+
+  protected def isPasswordSetup(userArgs: Array[String]): Boolean = {
+    userArgs == Array("admin")
   }
 
   // if we have a 'secret' config, then we should obscure those values
@@ -83,5 +90,39 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected def onUnrecognizedUserArg(arg: String): Config = {
     ParseArg.Throw(arg)
   }
+
+
+  protected def secretConfigForArgs(userArgs: Array[String], readLine: String => String): Option[Config] = {
+
+    def defaultSecretConfig(userArgs: Array[String]): Option[String] = {
+      Option(defaultSecretConfigPath()).filter(path => Files.exists(Paths.get(path)) && !userArgs.contains(ConfigApp.IgnoreDefaultSecretConfigArg))
+    }
+
+    def pathToSecretConfigFromArgs(userArgs: Array[String]): Option[Path] = {
+
+      val filePathOpt = userArgs.collectFirst {
+        case KeyValue(ConfigApp.PathToSecretConfigArg, file) => file
+      }
+      filePathOpt.orElse(defaultSecretConfig(userArgs)).map(Paths.get(_))
+    }
+
+    pathToSecretConfigFromArgs(userArgs).map(readSecretConfig(_, readLine))
+  }
+
+}
+
+object ConfigApp {
+
+  /**
+    * The command-line argument to specify the path to an encrypted secret config file
+    * (e.g. MyApp -secret=.passwords.conf)
+    */
+  val PathToSecretConfigArg = "-secret"
+
+  /**
+    * The command-line argument flag which tells the application NOT to load the default secret config file if it exists.
+    * e.g., try running the app without the secret config.
+    */
+  val IgnoreDefaultSecretConfigArg = sys.env.getOrElse("IgnoreDefaultSecretConfigArg", "--ignoreSecretConfig")
 
 }

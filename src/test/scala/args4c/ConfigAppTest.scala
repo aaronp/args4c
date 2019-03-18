@@ -14,6 +14,9 @@ class ConfigAppTest extends WordSpec with Matchers {
     override protected def showValue(value: String, config: Config): Unit = {
       shown = value
     }
+    override protected def secretConfigForArgs(userArgs: Array[String], readLine: String => String) = {
+      None
+    }
   }
 
   "ConfigApp" should {

@@ -10,7 +10,7 @@ import scala.compat.Platform
 import scala.util.Properties
 
 /**
-  * Makes available a means to initialize a sensitive, encrypted config file via [[SecretConfig.writeSecretsUsingPrompt]] and [[SecretConfig.getSecretConfig]]
+  * Makes available a means to initialize a sensitive, encrypted config file via [[SecretConfig.writeSecretsUsingPrompt]] and [[ConfigApp.getSecretConfig]]
   *
   * The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
   * standard input, and an application an use those configuration entries thereafter by taking the password from standard input.
@@ -19,18 +19,6 @@ object SecretConfig {
 
   // format: off
   type Prompt = String
-
-  /**
-    * The command-line argument to specify the path to an encrypted secret config file
-    * (e.g. MyApp -secret=.passwords.conf)
-    */
-  val PathToSecretConfigArg = "-secret"
-
-  /**
-    * The command-line argument flag which tells the application NOT to load the default secret config file if it exists.
-    * e.g., try running the app without the secret config.
-    */
-  val IgnoreDefaultSecretConfigArg = sys.env.getOrElse("IgnoreDefaultSecretConfigArg", "--ignoreSecretConfig")
 
   /**
     * prompt for and set some secret values
@@ -92,19 +80,6 @@ object SecretConfig {
 
     // now create the actual file
     Files.write(configPath, encrypted, APPEND, SYNC)
-  }
-
-  def pathToSecretConfigFromArgs(args: Array[String]): Option[Path] = {
-      val filePathOpt = args.collectFirst {
-        case KeyValue(PathToSecretConfigArg, file) => file
-      }
-      filePathOpt.orElse {
-        Option(defaultSecretConfigPath()).filter(path => Files.exists(Paths.get(path)) && !args.contains(IgnoreDefaultSecretConfigArg))
-      }.map(Paths.get(_))
-  }
-
-  def getSecretConfig(args: Array[String], readLine: String => String): Option[Config] = {
-    pathToSecretConfigFromArgs(args).map(readSecretConfig(_, readLine))
   }
 
   def readSecretConfig(path: Path, readLine: String => String) = {
