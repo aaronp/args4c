@@ -1,8 +1,7 @@
 package args4c
-import java.nio.file.{Files, Path}
 
 import args4c.RichConfig.ParseArg
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.Config
 
 import scala.io.StdIn
 
@@ -23,57 +22,63 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     runMain(args, StdIn.readLine(_))
   }
 
+  /** launch the application, which will create a typesafe config instance from the user arguments by :
+    *
+    * $ try to parse the user arguments into a config entry, interpreting them as key=value pairs or locations of config files
+    * $ try to load an encrypted 'secret' config if one has been setup to overlay over the other config
+    * $ try to map system environment variables as lowercase dot-separated paths so e.g. (FOO_BAR=x) can be used to override foo.bar
+    *
+    * $ check the args for the special 'show'
+    *
+    * @param args
+    * @param readLine
+    */
   protected def runMain(args: Array[String], readLine: String => String): Unit = {
-
     if (args.size == 1 && args(0) == "admin") {
       SecretConfig.writeSecretsUsingPrompt(readLine)
     } else {
+      val secretConfOpt: Option[Config] = SecretConfig.getSecretConfig(args, readLine)
+      val config = secretConfOpt.fold(defaultConfig())(_.withFallback(defaultConfig)).withUserArgs(args, onUnrecognizedUserArg)
 
-      val secretConfOpt = SecretConfig.getSecretConfig(args, readLine)
-      val config        = secretConfOpt.fold(defaultConfig())(_.withFallback(defaultConfig)).withUserArgs(args, onUnrecognizedUserArg)
-
-      // if we have a 'secret' config, then we should obscure those values
-      val obscureFnc: (String, String) => String = {
-        secretConfOpt match {
-          case Some(secretConf) =>
-            val secretPaths: List[String] = secretConf.paths
-            def sensitiveValueForPath(configPath: String, value: String): String = {
-              if (secretPaths.contains(configPath)) {
-                defaultObscuredText
-              } else {
-                value
-              }
-            }
-            sensitiveValueForPath(_, _)
-          case None => obscurePassword(_, _)
-        }
-      }
-
-      config.show(obscureFnc) match {
-        case None => // show not specified, let's run our app
-          apply(config)
-        case Some(specifiedArg) => show(specifiedArg, config)
+      config.show(obscure(secretConfOpt.map(_.paths))) match {
+        // 'show' was not specified, let's run our app
+        case None => run(config)
+        case Some(specifiedArg) => showValue(specifiedArg, config)
       }
     }
   }
 
-  protected def defaultConfig(): Config = args4c.defaultConfig()
-
-  def configFrom(file: Path, pwd: Array[Byte]): Config = {
-    val configBytes = Files.readAllBytes(file)
-    val configText  = Encryption.decryptAES(pwd, configBytes, configBytes.length)
-    Encryption.clear(pwd)
-    ConfigFactory.parseString(configText)
+  // if we have a 'secret' config, then we should obscure those values
+  protected def obscure(secretPathsOpt: Option[List[String]])(configPath: String, value: String): String = {
+    secretPathsOpt match {
+      case Some(secretPaths) =>
+        if (secretPaths.contains(configPath)) {
+          defaultObscuredText
+        } else {
+          value
+        }
+      case None => obscurePassword(configPath, value)
+    }
   }
 
-  protected def show(value: String, config: Config): Unit = println(value)
+  /** @return the default config to overlay the user args over.
+    */
+  protected def defaultConfig(): Config = args4c.defaultConfig()
+
+  /**
+    * displays the value for the given config for when the 'show' command-line arg was specified
+    *
+    * @param value  the value to show
+    * @param config the config value at a particular path
+    */
+  protected def showValue(value: String, config: Config): Unit = println(value)
 
   /**
     * Instead of 'main', this 'apply' should run w/ a config
     *
     * @param config the configuration to run with
     */
-  def apply(config: Config): Unit
+  def run(config: Config): Unit
 
   protected def onUnrecognizedUserArg(arg: String): Config = {
     ParseArg.Throw(arg)

@@ -8,10 +8,10 @@ class ConfigAppTest extends WordSpec with Matchers {
   class App extends ConfigApp {
     var shown              = ""
     var lastConfig: Config = ConfigFactory.empty
-    override def apply(config: Config): Unit = {
+    override def run(config: Config): Unit = {
       lastConfig = config
     }
-    override protected def show(value: String, config: Config): Unit = {
+    override protected def showValue(value: String, config: Config): Unit = {
       shown = value
     }
   }
