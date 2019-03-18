@@ -52,6 +52,4 @@ object RichConfig {
     }
   }
 
-  private[args4c] val KeyValue = "(.*)=(.*)".r
-
 }

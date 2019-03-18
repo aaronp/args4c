@@ -9,7 +9,7 @@ import scala.io.StdIn
 /**
   * A convenience mix-in utility for a main entry point.
   *
-  * It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlayed)
+  * It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlaid)
   *
   * And, if the config has a 'show=<path>' in it, then that path will be printed out and the program with return.
   *
@@ -26,10 +26,10 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected def runMain(args: Array[String], readLine: String => String): Unit = {
 
     if (args.size == 1 && args(0) == "admin") {
-      Initialize.setSecrets(readLine)
+      SecretConfig.writeSecretsUsingPrompt(readLine)
     } else {
 
-      val secretConfOpt = Initialize.getSecretConfig(args, readLine)
+      val secretConfOpt = SecretConfig.getSecretConfig(args, readLine)
       val config        = secretConfOpt.fold(defaultConfig())(_.withFallback(defaultConfig)).withUserArgs(args, onUnrecognizedUserArg)
 
       // if we have a 'secret' config, then we should obscure those values
@@ -48,6 +48,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
           case None => obscurePassword(_, _)
         }
       }
+
       config.show(obscureFnc) match {
         case None => // show not specified, let's run our app
           apply(config)

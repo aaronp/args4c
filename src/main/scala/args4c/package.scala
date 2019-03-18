@@ -107,4 +107,6 @@ package object args4c {
       value
     }
   }
+
+  private[args4c] val KeyValue = "-{0,2}(.*?)=(.*)".r
 }
