@@ -23,6 +23,10 @@ publishMavenStyle := true
 
 releaseCrossBuild := true
 
+coverageMinimum := 80
+
+coverageFailOnMinimum := true
+
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
   if (version.value.endsWith("SNAPSHOT"))

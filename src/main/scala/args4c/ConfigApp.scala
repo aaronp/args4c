@@ -41,11 +41,11 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       SecretConfig.writeSecretsUsingPrompt(readLine)
     } else {
       val secretConfOpt: Option[Config] = secretConfigForArgs(args, readLine)
-      val config = secretConfOpt.fold(defaultConfig())(_.withFallback(defaultConfig)).withUserArgs(args, onUnrecognizedUserArg)
+      val config                        = secretConfOpt.fold(defaultConfig())(_.withFallback(defaultConfig)).withUserArgs(args, onUnrecognizedUserArg)
 
       config.show(obscure(secretConfOpt.map(_.paths))) match {
         // 'show' was not specified, let's run our app
-        case None => run(config)
+        case None               => run(config)
         case Some(specifiedArg) => showValue(specifiedArg, config)
       }
     }
@@ -90,7 +90,6 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected def onUnrecognizedUserArg(arg: String): Config = {
     ParseArg.Throw(arg)
   }
-
 
   protected def secretConfigForArgs(userArgs: Array[String], readLine: String => String): Option[Config] = {
 
