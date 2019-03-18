@@ -132,14 +132,16 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   /** this config w/o the system properties or environment variables */
   def withoutSystem: Config = {
     val sysConf = systemEnvironment.withFallback(systemProperties).withFallback(sysEnvAsConfig())
-    without(sysConf.paths)
+    without(sysConf)
   }
 
   def without(other: Config): Config = without(asRichConfig(other).paths)
 
   def without(firstPath: String, theRest: String*): Config = without(firstPath +: theRest)
 
-  def without(paths: TraversableOnce[String]): Config = paths.foldLeft(config)(_ withoutPath _)
+  def without(configPaths: TraversableOnce[String]): Config = {
+    configPaths.foldLeft(config)(_ withoutPath _)
+  }
 
   def filter(path: String => Boolean): Config = filterNot(path.andThen(_.unary_!))
 
@@ -175,7 +177,11 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def origins: List[String] = {
     val urls = entries.flatMap { e =>
       val origin = e.getValue.origin()
-      Option(origin.url).orElse(Option(origin.filename)).orElse(Option(origin.resource)).map(_.toString)
+      Option(origin.url). //
+      orElse(Option(origin.filename)). //
+      orElse(Option(origin.resource)). //
+      orElse(Option(origin.description)). //
+      map(_.toString)
     }
     urls.toList.distinct.sorted
   }

@@ -20,6 +20,8 @@ object SecretConfig {
   // format: off
   type Prompt = String
 
+  val SecretEnvVariableName = "CONFIG_SECRET"
+
   /**
     * prompt for and set some secret values
     *
@@ -82,8 +84,9 @@ object SecretConfig {
     Files.write(configPath, encrypted, APPEND, SYNC)
   }
 
-  def readSecretConfig(path: Path, readLine: String => String) = {
-    val pwd = readLine("Config Password:").getBytes("UTF-8")
+  def readSecretConfig(path: Path, readLine: String => String): Config = {
+    
+    val pwd = envOrProp(SecretEnvVariableName).getOrElse(readLine("Config Password:")).getBytes("UTF-8")
     val conf = readConfigAtPath(path, pwd, readLine)
     Encryption.clear(pwd)
     conf
@@ -96,8 +99,9 @@ object SecretConfig {
   }
 
   private def readSecretConfig(readLine: Prompt => String): String = {
+    import implicits._
     readNext(Map.empty, readLine).map {
-      case (key, value) => s"$key = ${ConfigUtil.quoteString(value)}"
+      case (key, value) => s"$key = ${value.quoted}"
     }.mkString(Platform.EOL)
   }
 

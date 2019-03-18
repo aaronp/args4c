@@ -21,13 +21,6 @@ object RichConfig {
   object ParseArg {
     val Throw  = (a: String) => sys.error(s"Unrecognized user arg '$a'")
     val Ignore = (_: String) => ConfigFactory.empty()
-
-    /**
-      * Treats orphaned args as on/off boolean flags
-      * e.g. Main foo bar=bazz x.y.z
-      * will have an entry for foo=true, bar set to 'bazz', and 'x.y.z' set to true
-      */
-    val AsBooleanFlag = (a: String) => asConfig(ConfigUtil.quoteString(a), true.toString)
   }
 
   private[args4c] def asConfig(key: String, value: Any, originDesc: String = "command-line"): Config = {

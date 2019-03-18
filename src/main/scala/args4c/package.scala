@@ -1,3 +1,4 @@
+import args4c.RichConfig.ParseArg
 import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 
 import scala.sys.SystemProperties
@@ -11,13 +12,14 @@ package object args4c {
     *
     * Left-most values take precedence over right
     *
-    * @param args
-    * @param fallback
+    * @param args the user command-line arguments
+    * @param fallback the default configuration to fall back to
+    * @param onUnrecognizedArg the handler for unrecognized user arguments
     * @return a parsed configuration
     */
-  def configForArgs(args: Array[String], fallback: Config = defaultConfig()): Config = {
+  def configForArgs(args: Array[String], fallback: Config = defaultConfig(), onUnrecognizedArg: String => Config = ParseArg.Throw): Config = {
     import args4c.implicits._
-    fallback.withUserArgs(args)
+    fallback.withUserArgs(args, onUnrecognizedArg)
   }
 
   /**

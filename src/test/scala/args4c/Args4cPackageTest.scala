@@ -1,5 +1,8 @@
 package args4c
 
+import java.util.UUID
+
+import args4c.RichConfig.ParseArg
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{Matchers, WordSpec}
 
@@ -43,8 +46,28 @@ class Args4cPackageTest extends WordSpec with Matchers with LowPriorityArgs4cImp
     }
   }
   "configForArgs" should {
+    "ignore malformed arguments when when ParseArg.Ignore is specified" in {
+      val conf = configForArgs(Array("invalid", "file.doesn't.exist", "ok=true"), onUnrecognizedArg = ParseArg.Ignore).resolve
+      conf.getBoolean("ok") shouldBe true
+    }
+    "error when ParseArg.Throw is specified" in {
+      val err = intercept[Exception] {
+        configForArgs(Array("invalid", "file.doesn't.exist", "ok=true"), onUnrecognizedArg = ParseArg.Throw).resolve
+      }
+      err.getMessage should include("Unrecognized user arg 'invalid'")
+    }
+    "load configurations from the filesystem and classpath" in {
+      import eie.io._
+      val fooConf = s"./target/foo-${UUID.randomUUID}.conf".asPath.text = """fromFile = true""".stripMargin
+      try {
+        val config = configForArgs(Array(fooConf.toAbsolutePath.toString, "test.conf"), ConfigFactory.empty)
+        config.getBoolean("fromFile") shouldBe true
+        config.getString("source") shouldBe "classpath file"
+      } finally {
+        fooConf.delete()
+      }
+    }
     "evaluate values from the command line which are referenced from the config file" in {
-
       val fallback = ConfigFactory.parseString("""
           |foo=defaultValue
           |some.other.value=${foo}

@@ -1,6 +1,7 @@
 package args4c
 import java.nio.file.Files
 
+import args4c.SecretConfigTest.testInput
 import com.typesafe.config.{Config, ConfigFactory}
 import org.scalatest.{Matchers, WordSpec}
 
@@ -21,9 +22,8 @@ class ConfigAppTest extends WordSpec with Matchers {
 
   "ConfigApp" should {
     "be able to source sensitive config files" in {
-
-//      val app = new App
-//      app.
+      val app = new App
+      app.writeSecretsUsingPrompt(testInput)
 
     }
     "show values when a show is given" in {

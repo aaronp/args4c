@@ -31,17 +31,47 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * $ try to load an encrypted 'secret' config if one has been setup to overlay over the other config
     * $ try to map system environment variables as lowercase dot-separated paths so e.g. (FOO_BAR=x) can be used to override foo.bar
     *
-    * $ check the args for the special 'show'
+    * In addition to providing a configuration from the user arguments and environment variables, the user arguments are also checked
+    * for one of three special arguments:
     *
-    * @param args
-    * @param readLine
+    * $ The argument 'show=<key substring>' flag, in which case the configuration matching <key substring> is shown.
+    * This can be especially convenient to verify the right config values are picked up if there are multiple arguments,
+    * such as alternative property files, key=value pairs, etc.
+    *
+    * $ The argument '--setup' in order to populate a password-encrypted secret config file from standard input.
+    * For example, running "MyMainEntryPoint --setup" will proceed to prompt the user for config entries which will be saved
+    * in a password-encrypted file with restricted permissions. Subsequent runs of the application will check for this file,
+    * either in the default location or from -secret=<path/to/encrypted/config>
+    *
+    * If either the default or specified encrypted files are found, then the password is taken either from the CONFIG_SECRET if set, or else it prompted for from standard input
+    *
+    *
+    * @param userArgs the user arguments
+    * @param readLine a function to read in the user input
+    * @param setupUserArgFlag the argument to check for in order to run the secret config setup
+    * @param ignoreDefaultSecretConfigArg the argument which, if 'userArgs' contains this string, then we will NOT try
+    * @param pathToSecretConfigArg the value for the key in the form <key>=<path to secret password config> (e.g. defaults to "-secret" for -secret=/etc/passwords.conf)
     */
-  protected def runMain(args: Array[String], readLine: String => String): Unit = {
-    if (isPasswordSetup(args)) {
+  protected def runMain(userArgs: Array[String],
+                        readLine: String => String,
+                        setupUserArgFlag: String = defaultSetupUserArgFlag,
+                        ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
+                        pathToSecretConfigArg: String = defaultSecretConfigArg): Unit = {
+
+    /**
+      * should we configure the local passwords?
+      */
+    if (isPasswordSetup(userArgs, setupUserArgFlag)) {
       SecretConfig.writeSecretsUsingPrompt(readLine)
     } else {
-      val secretConfOpt: Option[Config] = secretConfigForArgs(args, readLine)
-      val config                        = secretConfOpt.fold(defaultConfig())(_.withFallback(defaultConfig)).withUserArgs(args, onUnrecognizedUserArg)
+
+      /**
+        * is there a secret password file
+        */
+      val secretConfOpt: Option[Config] = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
+      val config = secretConfOpt //
+        .fold(defaultConfig())(_.withFallback(defaultConfig())) //
+        .withUserArgs(userArgs, onUnrecognizedUserArg)
 
       config.show(obscure(secretConfOpt.map(_.paths))) match {
         // 'show' was not specified, let's run our app
@@ -51,8 +81,8 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     }
   }
 
-  protected def isPasswordSetup(userArgs: Array[String]): Boolean = {
-    userArgs == Array("admin")
+  protected def isPasswordSetup(userArgs: Array[String], setupArg: String): Boolean = {
+    userArgs == Array(setupArg)
   }
 
   // if we have a 'secret' config, then we should obscure those values
@@ -91,16 +121,18 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     ParseArg.Throw(arg)
   }
 
-  protected def secretConfigForArgs(userArgs: Array[String], readLine: String => String): Option[Config] = {
+  protected def secretConfigForArgs(userArgs: Array[String],
+                                    readLine: String => String,
+                                    ignoreDefaultSecretConfigArg: String,
+                                    pathToSecretConfigArg: String): Option[Config] = {
 
     def defaultSecretConfig(userArgs: Array[String]): Option[String] = {
-      Option(defaultSecretConfigPath()).filter(path => Files.exists(Paths.get(path)) && !userArgs.contains(ConfigApp.IgnoreDefaultSecretConfigArg))
+      Option(defaultSecretConfigPath()).filter(path => Files.exists(Paths.get(path)) && !userArgs.contains(ignoreDefaultSecretConfigArg))
     }
 
     def pathToSecretConfigFromArgs(userArgs: Array[String]): Option[Path] = {
-
       val filePathOpt = userArgs.collectFirst {
-        case KeyValue(ConfigApp.PathToSecretConfigArg, file) => file
+        case KeyValue(`pathToSecretConfigArg`, file) => file
       }
       filePathOpt.orElse(defaultSecretConfig(userArgs)).map(Paths.get(_))
     }
@@ -108,20 +140,17 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     pathToSecretConfigFromArgs(userArgs).map(readSecretConfig(_, readLine))
   }
 
-}
-
-object ConfigApp {
+  /**
+    * The command-line argument flag which tells the application NOT to load the default secret config file if it exists.
+    * e.g., try running the app without the secret config.
+    */
+  protected def defaultIgnoreDefaultSecretConfigArg = sys.env.getOrElse("IgnoreDefaultSecretConfigArg", "--ignoreSecretConfig")
+  protected def defaultSetupUserArgFlag             = sys.env.getOrElse("DefaultSetupUserArgFlag", "--setup")
 
   /**
     * The command-line argument to specify the path to an encrypted secret config file
     * (e.g. MyApp -secret=.passwords.conf)
     */
-  val PathToSecretConfigArg = "-secret"
-
-  /**
-    * The command-line argument flag which tells the application NOT to load the default secret config file if it exists.
-    * e.g., try running the app without the secret config.
-    */
-  val IgnoreDefaultSecretConfigArg = sys.env.getOrElse("IgnoreDefaultSecretConfigArg", "--ignoreSecretConfig")
+  protected def defaultSecretConfigArg = sys.env.getOrElse("DefaultSecretArgFlag", "-secret")
 
 }
