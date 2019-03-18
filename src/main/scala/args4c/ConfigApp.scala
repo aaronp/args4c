@@ -37,14 +37,14 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
         secretConfOpt match {
           case Some(secretConf) =>
             val secretPaths: List[String] = secretConf.paths
-            def isSecret(configPath: String, value: String) = {
+            def sensitiveValueForPath(configPath: String, value: String): String = {
               if (secretPaths.contains(configPath)) {
                 defaultObscuredText
               } else {
                 value
               }
             }
-            isSecret(_, _)
+            sensitiveValueForPath(_, _)
           case None => obscurePassword(_, _)
         }
       }

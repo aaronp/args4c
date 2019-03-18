@@ -24,7 +24,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     */
   def encrypt(password: Array[Byte]): String = {
     val input: String = config.root.render(ConfigRenderOptions.concise())
-    val (_, bytes)    = Encryption.encryptAES(password, input)
+    val (_, bytes) = Encryption.encryptAES(password, input)
     new String(bytes, "UTF-8")
   }
 
@@ -37,7 +37,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def asDuration(key: String): Duration = {
     config.getString(key).toLowerCase() match {
       case "inf" | "infinite" => Duration.Inf
-      case _                  => asFiniteDuration(key)
+      case _ => asFiniteDuration(key)
     }
   }
 
@@ -58,12 +58,12 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def show(obscure: (String, String) => String = obscurePassword(_, _), options: ConfigRenderOptions = ConfigRenderOptions.concise().setFormatted(true)): Option[String] = {
     if (config.hasPath("show")) {
       val filteredConf = config.getString("show") match {
-        case "all" | "" | "root" => config.root.render()
+        case "all" | "" | "root" => config
         case path =>
           val lcPath = path.toLowerCase
-          config.filter(_.toLowerCase.contains(lcPath)).summary().mkString("\n")
+          config.filter(_.toLowerCase.contains(lcPath))
       }
-      Option(filteredConf)
+      Option(filteredConf.summary(obscure).mkString("\n"))
     } else {
       None
     }
@@ -96,10 +96,10 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
         asConfig(k, java.util.Arrays.asList(v.split(",", -1): _*))
       case KeyValue(k, v) if isObjectList(k) =>
         sys.error(s"Path '$k' tried to override an object list with '$v'")
-      case KeyValue(k, v)    => asConfig(k, v)
+      case KeyValue(k, v) => asConfig(k, v)
       case FilePathConfig(c) => c
-      case UrlPathConfig(c)  => c
-      case other             => unrecognizedArg(other)
+      case UrlPathConfig(c) => c
+      case other => unrecognizedArg(other)
     }
 
     (configs :+ config).reduce(_ withFallback _)
@@ -188,8 +188,8 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     collectAsStrings.collect {
       case (key, originalValue) =>
         val stringValue = obscure(key, originalValue)
-        val value       = config.getValue(key)
-        val o           = value.origin
+        val value = config.getValue(key)
+        val o = value.origin
         val originString = {
           val source =
             Option(o.url()).map(_.toString).orElse(Option(o.filename)).orElse(Option(o.resource)).orElse(Option(o.description)).getOrElse("unknown origin")
