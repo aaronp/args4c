@@ -15,13 +15,15 @@
 <meta name="lang:search.result.none" content="No matching documents">
 <meta name="lang:search.result.one" content="1 matching document">
 <meta name="lang:search.result.other" content="# matching documents">
-<meta name="lang:search.tokenizer" content="[\s\-]+">
+<meta name="lang:search.tokenizer" content="">
 
 
 <meta name="description" content="args4c">
 <link rel="shortcut icon" href="assets/images/favicon.png">
 <title>License · Args4c</title>
 <link rel="stylesheet" href="assets/stylesheets/application.451f80e5.css">
+<link rel="stylesheet" href="assets/stylesheets/application-palette.22915126.css">
+<meta name="theme-color" content="#ef5350" />
 <link rel="stylesheet" href="lib/material__tabs/dist/mdc.tabs.min.css">
 <link rel="stylesheet" href="lib/prettify/prettify.css">
 <script src="assets/javascripts/modernizr.1aa3b519.js"></script>
@@ -35,6 +37,8 @@ code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}
 <link rel="stylesheet" href="assets/stylesheets/paradox-material-theme.css">
 </head>
 <body
+data-md-color-primary="red"
+data-md-color-accent="orange"
 >
 <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
 <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -44,7 +48,7 @@ code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}
 <div class="md-flex">
 <div class="md-flex__cell md-flex__cell--shrink">
 <a href="index.html" title="Args4c" class="md-header-nav__button md-logo">
-<i class="md-icon">local_library</i>
+<i class="md-icon">cloud</i>
 </a>
 </div>
 <div class="md-flex__cell md-flex__cell--shrink">
@@ -60,29 +64,24 @@ License
 </span>
 </div>
 </div>
-<div class="md-flex__cell md-flex__cell--shrink">
-<label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-<div class="md-search" data-md-component="search" role="dialog">
-<label class="md-search__overlay" for="__search"></label>
-<div class="md-search__inner" role="search">
-<form class="md-search__form" name="search">
-<input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
-<label class="md-icon md-search__icon" for="__search"></label>
-<button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">&#xE5CD;</button>
+<form name="search" style="display: none">
+<input type="text" name="query">
 </form>
-<div class="md-search__output">
-<div class="md-search__scrollwrap" data-md-scrollfix>
-<div class="md-search-result" data-md-component="result">
-<div class="md-search-result__meta">
-Type to start searching
+<div class="md-flex__cell md-flex__cell--shrink">
+<div class="md-header-nav__source">
+<a href="https://github.com/aaronp/args4c"
+title="Go to repository"
+class="md-source"
+data-md-source="github">
+<div class="md-source__icon">
+<i class="fa fa-github"></i>
 </div>
-<ol class="md-search-result__list"></ol>
+<div class="md-source__repository">
+aaronp/args4c
 </div>
-</div>
-</div>
-</div>
-</div>
+</a>
 
+</div>
 </div>
 </div>
 </nav>
@@ -98,12 +97,26 @@ Type to start searching
 <label class="md-nav__title md-nav__title--site" for="drawer">
 <a href="index.html" title="Args4c" class="md-nav__button md-logo">
 <span class="md-nav__button md-logo">
-<i class="md-icon">local_library</i>
+<i class="md-icon">cloud</i>
 </a>
 <a href="index.html" title="Args4c">
 Args4c
 </a>
 </label>
+<div class="md-nav__source">
+<a href="https://github.com/aaronp/args4c"
+title="Go to repository"
+class="md-source"
+data-md-source="github">
+<div class="md-source__icon">
+<i class="fa fa-github"></i>
+</div>
+<div class="md-source__repository">
+aaronp/args4c
+</div>
+</a>
+
+</div>
 <ul>
   <li><a href="about.html" class="page">About</a></li>
   <li><a href="usage.html" class="page">Usage</a></li>
@@ -188,6 +201,10 @@ and
 <a href="https://jonas.github.io/paradox-material-theme/">Paradox Material Theme</a>
 
 </div>
+<div class="md-footer-social">
+<a href="https://github.com/aaronp" class="md-footer-social__link fa fa-github"></a>
+</div>
+
 </div>
 </div>
 </footer>
