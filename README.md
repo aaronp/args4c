@@ -3,11 +3,17 @@ Args4c
 
 [![Build Status](https://travis-ci.org/aaronp/args4c.svg?branch=master)](https://travis-ci.org/aaronp/args4c)
 
-Args4c is a utility for producing a typesafe config from command-line arguments, as well as some convenience methods for working with configurations such as:
+a zero-dependency* utility for producing a [lightbend (typesafe) config](https://github.com/lightbend/config) from command-line arguments, as well as some convenience methods for working with configurations.
 
- * providing flat config summaries
- * getting unique paths, json strings, filter/modify operations
- * encrypting/decrypting sensitive config entries
- * convenient overrides by default from environment variables
+It is intended to be "arguments for config" library which provides a means to interpret command-line arguments as configuration key/value pairs or configuration files.
+
+It also adds some conveniences to:
+
+ * get the unique paths, expost a config as a json string, filter/modify configs
+ * provide 'pretty' config summaries
+ * encrypting/decrypt sensitive config entries
+ * expose convenient overrides by default from environment variables
 
 Check out the documentation [here](https://aaronp.github.io/args4c/index.html)
+
+\* It is zero-dependency as it declares a 'provided' dependency on the lightbend (typesafe) config so not to conflict with the explicit version used by your project   

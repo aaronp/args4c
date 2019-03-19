@@ -23,7 +23,7 @@ siteSourceDirectory := target.value / "paradox" / "site" / "main"
 
 siteSubdirName in SiteScaladoc := "api/latest"
 
-libraryDependencies += "com.typesafe" % "config" % "1.3.0" % "provided"
+libraryDependencies += "com.typesafe" % "config" % "1.3.3" % "provided"
 
 libraryDependencies ++= List(
   "org.scalactic" %% "scalactic" % "3.0.4" % "test",
