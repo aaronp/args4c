@@ -1,2 +1,1 @@
-sbt paradox makeSite 
-#sbt paradox makeSite ghpagesPushSite
+sbt paradox makeSite ghpagesPushSite

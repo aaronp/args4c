@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit
 import com.typesafe.config._
 
 import scala.collection.mutable
+import scala.compat.Platform
 import scala.concurrent.duration._
 import scala.language.{implicitConversions, postfixOps}
 import scala.util.Try
@@ -60,7 +61,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
           val lcPath = path.toLowerCase
           config.filter(_.toLowerCase.contains(lcPath))
       }
-      Option(filteredConf.summary(obscure).mkString("\n"))
+      Option(filteredConf.summary(obscure))
     } else {
       None
     }
@@ -186,8 +187,18 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     * Return a property-like summary of the config using the pathFilter to trim property entries
     *
     * @param obscure a function which will 'safely' replace any config values with an obscured value
+    * @return a summary of the configuration
     */
-  def summary(obscure: (String, String) => String = obscurePassword(_, _)): List[StringEntry] = {
+  def summary(obscure: (String, String) => String = obscurePassword(_, _)): String = {
+    summaryEntries(obscure).mkString(Platform.EOL)
+  }
+
+  /**
+    * Return a property-like summary of the config using the 'obscure' function to mask sensitive entries
+    *
+    * @param obscure a function which will 'safely' replace any config values with an obscured value
+    */
+  def summaryEntries(obscure: (String, String) => String = obscurePassword(_, _)): List[StringEntry] = {
     collectAsStrings.collect {
       case (key, originalValue) =>
         val stringValue = obscure(key, originalValue)

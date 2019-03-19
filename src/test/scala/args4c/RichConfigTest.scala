@@ -8,14 +8,14 @@ class RichConfigTest extends BaseSpec {
 
   import scala.collection.JavaConverters._
 
-  "RichConfig.summary" should {
+  "RichConfig.summaryEntries" should {
     "show a flatten summary of a configuration" in {
       val conf                       = configForArgs(Array("test.foo=bar", "test.password=secret"))
-      val entries: List[StringEntry] = conf.summary()
+      val entries: List[StringEntry] = conf.summaryEntries()
       entries should contain(StringEntry(Nil, "command-line", "test.foo", "bar"))
       entries should contain(StringEntry(Nil, "command-line", "test.password", "**** obscured ****"))
 
-      conf.filter(_.startsWith("test")).summary().mkString("\n") shouldBe
+      conf.filter(_.startsWith("test")).summary() shouldBe
         """test.foo : bar # command-line
           |test.password : **** obscured **** # command-line""".stripMargin
     }
