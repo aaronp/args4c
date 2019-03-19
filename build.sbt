@@ -2,6 +2,7 @@ name := "args4c"
 
 organization := "com.github.aaronp"
 
+enablePlugins(GhpagesPlugin)
 enablePlugins(ParadoxPlugin)
 enablePlugins(SiteScaladocPlugin)
 enablePlugins(ParadoxMaterialThemePlugin)
@@ -37,7 +38,8 @@ coverageMinimum := 80
 coverageFailOnMinimum := true
 git.remoteRepo := s"git@github.com:$username/args4c.git"
 ghpagesNoJekyll := true
-
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+test in assembly := {}
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
   if (version.value.endsWith("SNAPSHOT"))
