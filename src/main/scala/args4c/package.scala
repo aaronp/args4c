@@ -20,7 +20,7 @@ import scala.sys.SystemProperties
   * }}}
   *
   * In addition to this core concept, this library also provides some additional configuration utilities via [[args4c.RichConfigOps]]
-  * which can be made available by extending [[LowPriorityImplicits]] or importing [[args4c.implicits]]:
+  * which can be made available by extending [[args4c.LowPriorityArgs4cImplicits]] or importing [[args4c.implicits]]:
   *
   * {{{
   *   import args4c.implicits._
