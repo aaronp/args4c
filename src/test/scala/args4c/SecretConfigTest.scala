@@ -1,7 +1,6 @@
 package args4c
 
 import args4c.SecretConfig.defaultPermissions
-import com.typesafe.scalalogging.StrictLogging
 
 class SecretConfigTest extends BaseSpec {
 
@@ -40,7 +39,7 @@ class SecretConfigTest extends BaseSpec {
   }
 }
 
-object SecretConfigTest extends StrictLogging {
+object SecretConfigTest {
 
   def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String])(prompt: String): String = {
     val Permissions = s"Config Permissions: [$defaultPermissions]"
@@ -57,8 +56,6 @@ object SecretConfigTest extends StrictLogging {
         }
       case _ => sys.error(s"test setup encountered unrecognized prompt for '$prompt'")
     }
-
-    logger.debug(s"Replying to '$prompt' w/ '$userInput'")
 
     userInput
   }
