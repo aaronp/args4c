@@ -8,10 +8,10 @@ already on your classpath (or, if there isn't one, you can bring one in)
 
 ## Releases
 
-The latest version is 0.1.1, built for 2.11 and 2.12
+The latest version is 0.3.0, built for 2.11 and 2.12
 
 ```scala
-libraryDependencies += "com.github.aaronp" %% "args4c" % "0.1.1"
+libraryDependencies += "com.github.aaronp" %% "args4c" % "0.3.0"
 ```
 
 ## Content
