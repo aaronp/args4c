@@ -32,13 +32,10 @@ libraryDependencies ++= List(
 )
 
 publishMavenStyle := true
-
 releaseCrossBuild := true
-
 coverageMinimum := 80
-
 coverageFailOnMinimum := true
-
+git.remoteRepo := s"git@github.com:$username/args4c.git"
 ghpagesNoJekyll := true
 
 publishTo := {
