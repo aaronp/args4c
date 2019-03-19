@@ -10,4 +10,4 @@ Args4c is a utility for producing a typesafe config from command-line arguments,
  * encrypting/decrypting sensitive config entries
  * convenient overrides by default from environment variables
 
-Check out the documentation [here](https://aaronp.github.io/args4c/index.html),
+Check out the documentation [here](https://aaronp.github.io/args4c/index.html)
