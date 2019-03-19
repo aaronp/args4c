@@ -39,6 +39,9 @@ coverageFailOnMinimum := true
 git.remoteRepo := s"git@github.com:$username/args4c.git"
 ghpagesNoJekyll := true
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
+publishConfiguration := publishConfiguration.value.withOverwrite(true)
+publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
+
 test in assembly := {}
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
