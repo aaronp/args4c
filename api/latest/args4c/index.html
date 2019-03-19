@@ -1,0 +1,685 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <title></title>
+          <meta name="description" content="" />
+          <meta name="keywords" content="" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../lib/jquery.js"></script>
+      <script type="text/javascript" src="../lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="../lib/jquery.mousewheel.min.js"></script>
+      <script type="text/javascript" src="../lib/index.js"></script>
+      <script type="text/javascript" src="../index.js"></script>
+      <script type="text/javascript" src="../lib/scheduler.js"></script>
+      <script type="text/javascript" src="../lib/template.js"></script>
+      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '../';
+      </script>
+    
+        </head>
+        <body>
+      <div id="search">
+        <span id="doc-title"><span id="doc-version"></span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
+    </div>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
+      </div>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="index.html#_root_" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../index.html"><span class="name">root</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="_root_.args4c" visbl="pub" class="indented1 current" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="args4c"></a><a id="args4c:args4c"></a>
+      <span class="permalink">
+      <a href="index.html#args4c" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">args4c</span>
+      </span>
+      
+      <p class="shortcomment cmt">Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+configuration from user arguments.</p><div class="fullcomment"><div class="comment cmt"><p>Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+configuration from user arguments.</p><p>The core is simply to convert an Array[String] to a Config where the arguments are either paths to configuration resources
+or simple key=value pairs via <a href="#configForArgs(args:Array[String],fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):com.typesafe.config.Config" class="extmbr" name="args4c#configForArgs">args4c.configForArgs</a></p><p>Left-most arguments take precedence. In this example, we assume 'prod.conf' is a resource on the classpath:</p><pre>MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf</pre><p>In addition to this core concept, this library also provides some additional configuration utilities via <a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">args4c.RichConfigOps</a>
+which can be made available by extending <span class="extype" name="LowPriorityImplicits">LowPriorityImplicits</span> or importing <a href="implicits$.html" class="extype" name="args4c.implicits">args4c.implicits</a>:</p><pre><span class="kw">import</span> args4c.implicits._
+<span class="kw">object</span> MyApp {
+   <span class="kw">override</span> <span class="kw">def</span> main(args : <span class="std">Array</span>[<span class="std">String</span>]) : <span class="std">Unit</span> = {
+     <span class="kw">val</span> config = args.asConfig()
+     println(<span class="lit">"Starting MyApp with config:"</span>)
+
+     <span class="cmt">// let's "log" our app's config on startup:</span>
+     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+   }
+}</pre><p>Where the 'summary' will produce sorted <a href="StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
+obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
+myapp.password : **** obscured **** # command-line
+myapp.saveTo : afile # file:/opt/etc/myapp/test.conf@<span class="num">3</span></pre><p>Also, when extracting user arguments into a configuration, an additional 'fallback' config is specified.
+Typically this would just be the ConfigFactory.load() configuration, but args4c uses the <a href="#defaultConfig():com.typesafe.config.Config" class="extmbr" name="args4c#defaultConfig">args4c.defaultConfig</a>,
+which is essentially just the system environment variables converted from snake-caes to dotted lowercase values
+first, then falling back on ConfigFactory.load().</p><p>Applications can elect to not have this behaviour and provide their own fallback configs when parsing args, but
+the default provides a convenience for system environment variables to override e.g. 'foo.bar.x=default' by specifying</p><pre>FOO_BAR_X=<span class="kw">override</span></pre><p>as a system environment variable. Otherwise you may end up having to repeat this sort of thing all over you config:</p><pre>foo.bar=default
+foo.bar=$${?FOO_BAR}
+
+foo.bazz=default2
+foo.bazz=$${?FOO_BAZZ}
+
+...</pre><p>Finally, args4c also provides a <a href="ConfigApp.html" class="extype" name="args4c.ConfigApp">args4c.ConfigApp</a> which provides some additional functionality to configuration-based
+applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="ConfigApp.html" title="A convenience mix-in utility for a main entry point."></a>
+                        <a href="ConfigApp.html" title="A convenience mix-in utility for a main entry point.">ConfigApp</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="Encryption$.html" title=""></a>
+                        <a href="Encryption$.html" title="">Encryption</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
+                        <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
+                      </li><li class="current-entities indented1">
+                        <a class="object" href="RichConfig$.html" title=""></a>
+                        <a class="class" href="RichConfig.html" title="Adds some scala utility around a typesafe config"></a>
+                        <a href="RichConfig.html" title="Adds some scala utility around a typesafe config">RichConfig</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="RichConfigOps.html" title="Provider operations on a 'config'"></a>
+                        <a href="RichConfigOps.html" title="Provider operations on a 'config'">RichConfigOps</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs"></a>
+                        <a href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs">SecretConfig</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="class" href="StringEntry.html" title=""></a>
+                        <a href="StringEntry.html" title="">StringEntry</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="implicits$.html" title="Exposes the entry point for using a RichConfig,"></a>
+                        <a href="implicits$.html" title="Exposes the entry point for using a RichConfig,">implicits</a>
+                      </li>
+              </ul>
+            </div>
+          </div>
+          <div id="content">
+            <body class="package value">
+      <div id="definition">
+        <div class="big-circle package">p</div>
+        
+        <h1>args4c<span class="permalink">
+      <a href="../args4c/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">args4c</span>
+      </span>
+      </h4>
+
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+configuration from user arguments.</p><p>The core is simply to convert an Array[String] to a Config where the arguments are either paths to configuration resources
+or simple key=value pairs via <a href="#configForArgs(args:Array[String],fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):com.typesafe.config.Config" class="extmbr" name="args4c#configForArgs">args4c.configForArgs</a></p><p>Left-most arguments take precedence. In this example, we assume 'prod.conf' is a resource on the classpath:</p><pre>MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf</pre><p>In addition to this core concept, this library also provides some additional configuration utilities via <a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">args4c.RichConfigOps</a>
+which can be made available by extending <span class="extype" name="LowPriorityImplicits">LowPriorityImplicits</span> or importing <a href="implicits$.html" class="extype" name="args4c.implicits">args4c.implicits</a>:</p><pre><span class="kw">import</span> args4c.implicits._
+<span class="kw">object</span> MyApp {
+   <span class="kw">override</span> <span class="kw">def</span> main(args : <span class="std">Array</span>[<span class="std">String</span>]) : <span class="std">Unit</span> = {
+     <span class="kw">val</span> config = args.asConfig()
+     println(<span class="lit">"Starting MyApp with config:"</span>)
+
+     <span class="cmt">// let's "log" our app's config on startup:</span>
+     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+   }
+}</pre><p>Where the 'summary' will produce sorted <a href="StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
+obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
+myapp.password : **** obscured **** # command-line
+myapp.saveTo : afile # file:/opt/etc/myapp/test.conf@<span class="num">3</span></pre><p>Also, when extracting user arguments into a configuration, an additional 'fallback' config is specified.
+Typically this would just be the ConfigFactory.load() configuration, but args4c uses the <a href="#defaultConfig():com.typesafe.config.Config" class="extmbr" name="args4c#defaultConfig">args4c.defaultConfig</a>,
+which is essentially just the system environment variables converted from snake-caes to dotted lowercase values
+first, then falling back on ConfigFactory.load().</p><p>Applications can elect to not have this behaviour and provide their own fallback configs when parsing args, but
+the default provides a convenience for system environment variables to override e.g. 'foo.bar.x=default' by specifying</p><pre>FOO_BAR_X=<span class="kw">override</span></pre><p>as a system environment variable. Otherwise you may end up having to repeat this sort of thing all over you config:</p><pre>foo.bar=default
+foo.bar=$${?FOO_BAR}
+
+foo.bazz=default2
+foo.bazz=$${?FOO_BAZZ}
+
+...</pre><p>Finally, args4c also provides a <a href="ConfigApp.html" class="extype" name="args4c.ConfigApp">args4c.ConfigApp</a> which provides some additional functionality to configuration-based
+applications.</p></div><div class="toggleContainer block">
+          <span class="toggle">
+            Linear Supertypes
+          </span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div class="toggle"></div>
+        <div id="memberfilter">
+          <i class="material-icons arrow"></i>
+          <span class="input">
+            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
+          </span>
+          <i class="clear material-icons"></i>
+        </div>
+        <div id="filterby">
+          <div id="order">
+            <span class="filtertype">Ordering</span>
+            <ol>
+              
+              <li class="alpha in"><span>Alphabetic</span></li>
+              <li class="inherit out"><span>By Inheritance</span></li>
+            </ol>
+          </div>
+          <div class="ancestors">
+                  <span class="filtertype">Inherited<br />
+                  </span>
+                  <ol id="linearization">
+                    <li class="in" name="args4c"><span>args4c</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  </ol>
+                </div><div class="ancestors">
+              <span class="filtertype"></span>
+              <ol>
+                <li class="hideall out"><span>Hide All</span></li>
+                <li class="showall in"><span>Show All</span></li>
+              </ol>
+            </div>
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="args4c.ConfigApp" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="ConfigAppextendsLowPriorityArgs4cImplicits"></a><a id="ConfigApp:ConfigApp"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#ConfigAppextendsLowPriorityArgs4cImplicits" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="A convenience mix-in utility for a main entry point." href="ConfigApp.html"><span class="name">ConfigApp</span></a><span class="result"> extends <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">A convenience mix-in utility for a main entry point.</p><div class="fullcomment"><div class="comment cmt"><p>A convenience mix-in utility for a main entry point.</p><p>It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlaid)</p><p>If the config has a 'show=&lt;path&gt;' in it, then that path will be printed out and the program with return.</p><p>e.g. MyAppWhichExtendsConfigApp show=myapp.database.url</p><p>will display the value of myapp.database.url</p><p>It also interprets a single '--setup' to enable the configuration of sensitive configuration entries into a locally encrypted file.</p><p>Subsequent runs of your application would then use '--secret=path/to/encrypted.conf' to load that encrypted configuration and either
+take the password from an environment variable or standard input.</p><p>For example, running 'MyApp --setup' would then prompt like this:</p><pre>Save secret config to (/opt/etc/myapp/.config/secret.conf):config/secret.conf
+Config Permissions (defaults to rwx------): rwxrw----
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.secret.password=hi
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.another.config.entry=<span class="num">123</span>
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):
+Config Password:password</pre><p>Then, running 'MyApp --secret=config/secret.conf -myapp.whocares=visible -show=myapp'</p><p>would prompt for the password from standard input, then produce the following, hiding the values which were present in the secret config:</p><pre>myapp.another.config.entry : **** obscured **** # secret.conf: <span class="num">1</span>
+myapp.secret.password : **** obscured **** # secret.conf: <span class="num">1</span>
+myapp.whocares : visible # command-line</pre><p>NOTE: even though the summary obscures the values, they ARE present as PLAIN TEXT STRINGS in the configuration, so take
+care in limiting the scope of where the configuration is used, either by filtering back out those values, otherwise
+separating the secret config from the remaining config, or just ensuring to limit the scope of the config itself.
+</p></div></div>
+    </li><li name="args4c.LowPriorityArgs4cImplicits" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityArgs4cImplicitsextendsAnyRef"></a><a id="LowPriorityArgs4cImplicits:LowPriorityArgs4cImplicits"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#LowPriorityArgs4cImplicitsextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="LowPriorityArgs4cImplicits.html"><span class="name">LowPriorityArgs4cImplicits</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.RichConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RichConfigextendsRichConfigOps"></a><a id="RichConfig:RichConfig"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#RichConfigextendsRichConfigOps" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="Adds some scala utility around a typesafe config" href="RichConfig.html"><span class="name">RichConfig</span></a><span class="result"> extends <a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Adds some scala utility around a typesafe config
+</p>
+    </li><li name="args4c.RichConfigOps" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RichConfigOpsextendsLowPriorityArgs4cImplicits"></a><a id="RichConfigOps:RichConfigOps"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#RichConfigOpsextendsLowPriorityArgs4cImplicits" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Provider operations on a 'config'" href="RichConfigOps.html"><span class="name">RichConfigOps</span></a><span class="result"> extends <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Provider operations on a 'config'
+</p>
+    </li><li name="args4c.StringEntry" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="StringEntryextendsProductwithSerializable"></a><a id="StringEntry:StringEntry"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#StringEntryextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="StringEntry.html"><span class="name">StringEntry</span></a><span class="params">(<span name="comments">comments: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="origin">origin: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div class="values members">
+              <h3>Value Members</h3>
+              <ol>
+                <li name="args4c#configForArgs" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configForArgs(args:Array[String],fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):com.typesafe.config.Config"></a><a id="configForArgs(Array[String],Config,(String)⇒Config):Config"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#configForArgs(args:Array[String],fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):com.typesafe.config.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configForArgs</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="fallback">fallback: <span class="extype" name="com.typesafe.config.Config">Config</span> = <span class="symbol"><span class="name"><a href="#defaultConfig():com.typesafe.config.Config">defaultConfig()</a></span></span></span>, <span name="onUnrecognizedArg">onUnrecognizedArg: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="com.typesafe.config.Config">Config</span> = <span class="symbol"><span class="name"><a href="">ParseArg.Throw</a></span></span></span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:</p><div class="fullcomment"><div class="comment cmt"><p>Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:</p><p>$ a configuration file on the classpath or file system
+$ a key=value pair</p><p>Left-most values take precedence over right
+</p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>the user command-line arguments</p></dd><dt class="param">fallback</dt><dd class="cmt"><p>the default configuration to fall back to</p></dd><dt class="param">onUnrecognizedArg</dt><dd class="cmt"><p>the handler for unrecognized user arguments</p></dd><dt>returns</dt><dd class="cmt"><p>a parsed configuration</p></dd></dl></div>
+    </li><li name="args4c#configForMap" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configForMap(confMap:Map[String,String]):com.typesafe.config.Config"></a><a id="configForMap(Map[String,String]):Config"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#configForMap(confMap:Map[String,String]):com.typesafe.config.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configForMap</span><span class="params">(<span name="confMap">confMap: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a config for this map</p></dd></dl></div>
+    </li><li name="args4c#defaultConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultConfig():com.typesafe.config.Config"></a><a id="defaultConfig():Config"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#defaultConfig():com.typesafe.config.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultConfig</span><span class="params">()</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>essentially ConfigFactory.load() but with <a href="#sysEnvAsConfig(env:Map[String,String]):com.typesafe.config.Config" class="extmbr" name="args4c#sysEnvAsConfig">sysEnvAsConfig</a> layered over the default application</p></dd></dl></div>
+    </li><li name="args4c#defaultObscuredText" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="defaultObscuredText:String"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#defaultObscuredText:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultObscuredText</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="args4c#env" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="env(key:String):Option[String]"></a><a id="env(String):Option[String]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#env(key:String):Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">env</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
+    </li><li name="args4c#envOrProp" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="envOrProp(key:String):Option[String]"></a><a id="envOrProp(String):Option[String]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#envOrProp(key:String):Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">envOrProp</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
+    </li><li name="args4c#obscurePassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="obscurePassword(configPath:String,value:String,blacklist:Set[String],obscuredValue:String):String"></a><a id="obscurePassword(String,String,Set[String],String):String"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#obscurePassword(configPath:String,value:String,blacklist:Set[String],obscuredValue:String):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">obscurePassword</span><span class="params">(<span name="configPath">configPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="blacklist">blacklist: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol"><span class="name"><a href="#passwordBlacklist:scala.collection.immutable.Set[String]">passwordBlacklist</a></span></span></span>, <span name="obscuredValue">obscuredValue: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultObscuredText:String">defaultObscuredText</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">configPath</dt><dd class="cmt"><p>the config key (e.g. foo.bar.bazz)</p></dd><dt class="param">value</dt><dd class="cmt"><p>the config value, as a string</p></dd><dt class="param">blacklist</dt><dd class="cmt"><p>a 'blacklist' which, if any of the entries are found anywhere in the configPath, then the value will be obscured</p></dd><dt>returns</dt><dd class="cmt"><p>the</p></dd></dl></div>
+    </li><li name="args4c#passwordBlacklist" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="passwordBlacklist:scala.collection.immutable.Set[String]"></a><a id="passwordBlacklist:Set[String]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#passwordBlacklist:scala.collection.immutable.Set[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">passwordBlacklist</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<span class="extype" name="java.lang.String">String</span>]</span>
+      </span>
+      
+      
+    </li><li name="args4c#pathAsFile" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pathAsFile(path:String):Option[java.nio.file.Path]"></a><a id="pathAsFile(String):Option[Path]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#pathAsFile(path:String):Option[java.nio.file.Path]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pathAsFile</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.nio.file.Path">Path</span>]</span>
+      </span>
+      
+      
+    </li><li name="args4c#pathAsUrl" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pathAsUrl(path:String):Option[java.net.URL]"></a><a id="pathAsUrl(String):Option[URL]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#pathAsUrl(path:String):Option[java.net.URL]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pathAsUrl</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.net.URL">URL</span>]</span>
+      </span>
+      
+      
+    </li><li name="args4c#pathToBytes" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pathToBytes(path:String):Option[Array[Byte]]"></a><a id="pathToBytes(String):Option[Array[Byte]]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#pathToBytes(path:String):Option[Array[Byte]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pathToBytes</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>
+      </span>
+      
+      
+    </li><li name="args4c#prop" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="prop(key:String):Option[String]"></a><a id="prop(String):Option[String]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#prop(key:String):Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">prop</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
+    </li><li name="args4c#propOrEnv" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="propOrEnv(key:String):Option[String]"></a><a id="propOrEnv(String):Option[String]"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#propOrEnv(key:String):Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">propOrEnv</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
+    </li><li name="args4c#sysEnvAsConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sysEnvAsConfig(env:Map[String,String]):com.typesafe.config.Config"></a><a id="sysEnvAsConfig(Map[String,String]):Config"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#sysEnvAsConfig(env:Map[String,String]):com.typesafe.config.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sysEnvAsConfig</span><span class="params">(<span name="env">env: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">sys.env</span></span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Converts environment variables into a configuration in order to more easily override any config setting
+based on an environment variable.</p><div class="fullcomment"><div class="comment cmt"><p>Converts environment variables into a configuration in order to more easily override any config setting
+based on an environment variable.</p><p>e.g. instead of having the config:</p><pre>foo.bar.x = <span class="num">123</span>
+foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert all environment variables split on '_' into lower-case configuration values.</p><p>e.g. 'FOO_BAR_X' would get converted into 'foo.bar.x'.</p></div></div>
+    </li><li name="args4c.Encryption" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Encryption"></a><a id="Encryption:Encryption"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#Encryption" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Encryption$.html"><span class="name">Encryption</span></a>
+      </span>
+      
+      
+    </li><li name="args4c.RichConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RichConfig"></a><a id="RichConfig:RichConfig"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#RichConfig" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="RichConfig$.html"><span class="name">RichConfig</span></a>
+      </span>
+      
+      
+    </li><li name="args4c.SecretConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SecretConfig"></a><a id="SecretConfig:SecretConfig"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#SecretConfig" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs" href="SecretConfig$.html"><span class="name">SecretConfig</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Makes available a means to initialize a sensitive, encrypted config file via <a href="SecretConfig$.html#writeSecretsUsingPrompt(secretConfigFilePath:String,readLine:args4c.SecretConfig.Prompt=&gt;String):java.nio.file.Path" class="extmbr" name="args4c.SecretConfig#writeSecretsUsingPrompt">SecretConfig.writeSecretsUsingPrompt</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],readLine:String=&gt;String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><div class="fullcomment"><div class="comment cmt"><p>Makes available a means to initialize a sensitive, encrypted config file via <a href="SecretConfig$.html#writeSecretsUsingPrompt(secretConfigFilePath:String,readLine:args4c.SecretConfig.Prompt=&gt;String):java.nio.file.Path" class="extmbr" name="args4c.SecretConfig#writeSecretsUsingPrompt">SecretConfig.writeSecretsUsingPrompt</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],readLine:String=&gt;String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><p>The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
+standard input, and an application an use those configuration entries thereafter by taking the password from standard input.
+</p></div></div>
+    </li><li name="args4c.implicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="implicits"></a><a id="implicits:implicits"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#implicits" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Exposes the entry point for using a RichConfig," href="implicits$.html"><span class="name">implicits</span></a><span class="result"> extends <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Exposes the entry point for using a RichConfig,</p><div class="fullcomment"><div class="comment cmt"><p>Exposes the entry point for using a RichConfig,</p><p>mostly for converting user-args into a config
+</p></div></div>
+    </li>
+              </ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+    </body>
+          </div>
+        </div>
+      </div>
+    </body>
+      </html>

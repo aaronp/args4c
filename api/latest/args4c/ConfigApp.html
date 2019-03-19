@@ -1,0 +1,992 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <title></title>
+          <meta name="description" content="" />
+          <meta name="keywords" content="" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../lib/jquery.js"></script>
+      <script type="text/javascript" src="../lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="../lib/jquery.mousewheel.min.js"></script>
+      <script type="text/javascript" src="../lib/index.js"></script>
+      <script type="text/javascript" src="../index.js"></script>
+      <script type="text/javascript" src="../lib/scheduler.js"></script>
+      <script type="text/javascript" src="../lib/template.js"></script>
+      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '../';
+      </script>
+    
+        </head>
+        <body>
+      <div id="search">
+        <span id="doc-title"><span id="doc-version"></span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
+    </div>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
+      </div>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="index.html#_root_" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../index.html"><span class="name">root</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="_root_.args4c" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="args4c"></a><a id="args4c:args4c"></a>
+      <span class="permalink">
+      <a href="index.html#args4c" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe configuration from user arguments." href="index.html"><span class="name">args4c</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+configuration from user arguments.</p><div class="fullcomment"><div class="comment cmt"><p>Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+configuration from user arguments.</p><p>The core is simply to convert an Array[String] to a Config where the arguments are either paths to configuration resources
+or simple key=value pairs via <a href="index.html#configForArgs(args:Array[String],fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):com.typesafe.config.Config" class="extmbr" name="args4c#configForArgs">args4c.configForArgs</a></p><p>Left-most arguments take precedence. In this example, we assume 'prod.conf' is a resource on the classpath:</p><pre>MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf</pre><p>In addition to this core concept, this library also provides some additional configuration utilities via <a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">args4c.RichConfigOps</a>
+which can be made available by extending <span class="extype" name="LowPriorityImplicits">LowPriorityImplicits</span> or importing <a href="implicits$.html" class="extype" name="args4c.implicits">args4c.implicits</a>:</p><pre><span class="kw">import</span> args4c.implicits._
+<span class="kw">object</span> MyApp {
+   <span class="kw">override</span> <span class="kw">def</span> main(args : <span class="std">Array</span>[<span class="std">String</span>]) : <span class="std">Unit</span> = {
+     <span class="kw">val</span> config = args.asConfig()
+     println(<span class="lit">"Starting MyApp with config:"</span>)
+
+     <span class="cmt">// let's "log" our app's config on startup:</span>
+     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+   }
+}</pre><p>Where the 'summary' will produce sorted <a href="StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
+obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
+myapp.password : **** obscured **** # command-line
+myapp.saveTo : afile # file:/opt/etc/myapp/test.conf@<span class="num">3</span></pre><p>Also, when extracting user arguments into a configuration, an additional 'fallback' config is specified.
+Typically this would just be the ConfigFactory.load() configuration, but args4c uses the <a href="index.html#defaultConfig():com.typesafe.config.Config" class="extmbr" name="args4c#defaultConfig">args4c.defaultConfig</a>,
+which is essentially just the system environment variables converted from snake-caes to dotted lowercase values
+first, then falling back on ConfigFactory.load().</p><p>Applications can elect to not have this behaviour and provide their own fallback configs when parsing args, but
+the default provides a convenience for system environment variables to override e.g. 'foo.bar.x=default' by specifying</p><pre>FOO_BAR_X=<span class="kw">override</span></pre><p>as a system environment variable. Otherwise you may end up having to repeat this sort of thing all over you config:</p><pre>foo.bar=default
+foo.bar=$${?FOO_BAR}
+
+foo.bazz=default2
+foo.bazz=$${?FOO_BAZZ}
+
+...</pre><p>Finally, args4c also provides a <a href="" class="extype" name="args4c.ConfigApp">args4c.ConfigApp</a> which provides some additional functionality to configuration-based
+applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="" title="A convenience mix-in utility for a main entry point."></a>
+                        <a href="" title="A convenience mix-in utility for a main entry point.">ConfigApp</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="Encryption$.html" title=""></a>
+                        <a href="Encryption$.html" title="">Encryption</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
+                        <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
+                      </li><li class="current-entities indented1">
+                        <a class="object" href="RichConfig$.html" title=""></a>
+                        <a class="class" href="RichConfig.html" title="Adds some scala utility around a typesafe config"></a>
+                        <a href="RichConfig.html" title="Adds some scala utility around a typesafe config">RichConfig</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="RichConfigOps.html" title="Provider operations on a 'config'"></a>
+                        <a href="RichConfigOps.html" title="Provider operations on a 'config'">RichConfigOps</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs"></a>
+                        <a href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs">SecretConfig</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="class" href="StringEntry.html" title=""></a>
+                        <a href="StringEntry.html" title="">StringEntry</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="implicits$.html" title="Exposes the entry point for using a RichConfig,"></a>
+                        <a href="implicits$.html" title="Exposes the entry point for using a RichConfig,">implicits</a>
+                      </li>
+              </ul>
+            </div>
+          </div>
+          <div id="content">
+            <body class="trait type">
+      <div id="definition">
+        <div class="big-circle trait">t</div>
+        <p id="owner"><a href="index.html" class="extype" name="args4c">args4c</a></p>
+        <h1>ConfigApp<span class="permalink">
+      <a href="../args4c/ConfigApp.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        <h3><span class="morelinks"></span></h3>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ConfigApp</span><span class="result"> extends <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
+      </span>
+      </h4>
+
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A convenience mix-in utility for a main entry point.</p><p>It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlaid)</p><p>If the config has a 'show=&lt;path&gt;' in it, then that path will be printed out and the program with return.</p><p>e.g. MyAppWhichExtendsConfigApp show=myapp.database.url</p><p>will display the value of myapp.database.url</p><p>It also interprets a single '--setup' to enable the configuration of sensitive configuration entries into a locally encrypted file.</p><p>Subsequent runs of your application would then use '--secret=path/to/encrypted.conf' to load that encrypted configuration and either
+take the password from an environment variable or standard input.</p><p>For example, running 'MyApp --setup' would then prompt like this:</p><pre>Save secret config to (/opt/etc/myapp/.config/secret.conf):config/secret.conf
+Config Permissions (defaults to rwx------): rwxrw----
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.secret.password=hi
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.another.config.entry=<span class="num">123</span>
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):
+Config Password:password</pre><p>Then, running 'MyApp --secret=config/secret.conf -myapp.whocares=visible -show=myapp'</p><p>would prompt for the password from standard input, then produce the following, hiding the values which were present in the secret config:</p><pre>myapp.another.config.entry : **** obscured **** # secret.conf: <span class="num">1</span>
+myapp.secret.password : **** obscured **** # secret.conf: <span class="num">1</span>
+myapp.whocares : visible # command-line</pre><p>NOTE: even though the summary obscures the values, they ARE present as PLAIN TEXT STRINGS in the configuration, so take
+care in limiting the scope of where the configuration is used, either by filtering back out those values, otherwise
+separating the secret config from the remaining config, or just ensuring to limit the scope of the config itself.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">
+            Linear Supertypes
+          </span>
+          <div class="superTypes hiddenContent"><a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div class="toggle"></div>
+        <div id="memberfilter">
+          <i class="material-icons arrow"></i>
+          <span class="input">
+            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
+          </span>
+          <i class="clear material-icons"></i>
+        </div>
+        <div id="filterby">
+          <div id="order">
+            <span class="filtertype">Ordering</span>
+            <ol>
+              
+              <li class="alpha in"><span>Alphabetic</span></li>
+              <li class="inherit out"><span>By Inheritance</span></li>
+            </ol>
+          </div>
+          <div class="ancestors">
+                  <span class="filtertype">Inherited<br />
+                  </span>
+                  <ol id="linearization">
+                    <li class="in" name="args4c.ConfigApp"><span>ConfigApp</span></li><li class="in" name="args4c.LowPriorityArgs4cImplicits"><span>LowPriorityArgs4cImplicits</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  </ol>
+                </div><div class="ancestors">
+              <span class="filtertype"></span>
+              <ol>
+                <li class="hideall out"><span>Hide All</span></li>
+                <li class="showall in"><span>Show All</span></li>
+              </ol>
+            </div>
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="args4c.ConfigApp.SecretConfigDoesntExist" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SecretConfigDoesntExistextendsConfigApp.this.SecretConfigResultwithProductwithSerializable"></a><a id="SecretConfigDoesntExist:SecretConfigDoesntExist"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#SecretConfigDoesntExistextendsConfigApp.this.SecretConfigResultwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="ConfigApp$SecretConfigDoesntExist.html"><span class="name">SecretConfigDoesntExist</span></a><span class="params">(<span name="path">path: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result"> extends <a href="ConfigApp$SecretConfigResult.html" class="extype" name="args4c.ConfigApp.SecretConfigResult">SecretConfigResult</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp.SecretConfigParsed" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SecretConfigParsedextendsConfigApp.this.SecretConfigResultwithProductwithSerializable"></a><a id="SecretConfigParsed:SecretConfigParsed"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#SecretConfigParsedextendsConfigApp.this.SecretConfigResultwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="ConfigApp$SecretConfigParsed.html"><span class="name">SecretConfigParsed</span></a><span class="params">(<span name="path">path: <span class="extype" name="java.nio.file.Path">Path</span></span>, <span name="config">config: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result"> extends <a href="ConfigApp$SecretConfigResult.html" class="extype" name="args4c.ConfigApp.SecretConfigResult">SecretConfigResult</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp.SecretConfigResult" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="SecretConfigResultextendsAnyRef"></a><a id="SecretConfigResult:SecretConfigResult"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#SecretConfigResultextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="ConfigApp$SecretConfigResult.html"><span class="name">SecretConfigResult</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.LowPriorityArgs4cImplicits.RichArgs" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RichArgsextendsAnyRef"></a><a id="RichArgs:RichArgs"></a>
+      <span class="permalink">
+      <a href="../args4c/LowPriorityArgs4cImplicits.html#RichArgsextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="LowPriorityArgs4cImplicits$RichArgs.html"><span class="name">RichArgs</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></dd></dl></div>
+    </li><li name="args4c.LowPriorityArgs4cImplicits.RichString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RichStringextendsAnyRef"></a><a id="RichString:RichString"></a>
+      <span class="permalink">
+      <a href="../args4c/LowPriorityArgs4cImplicits.html#RichStringextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="LowPriorityArgs4cImplicits$RichString.html"><span class="name">RichString</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        <div class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="args4c.ConfigApp#run" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="run(config:com.typesafe.config.Config):Unit"></a><a id="run(Config):Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#run(config:com.typesafe.config.Config):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">(<span name="config">config: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Instead of 'main', this 'apply' should run w/ a config
+</p><div class="fullcomment"><div class="comment cmt"><p>Instead of 'main', this 'apply' should run w/ a config
+</p></div><dl class="paramcmts block"><dt class="param">config</dt><dd class="cmt"><p>the configuration to run with</p></dd></dl></div>
+    </li></ol>
+            </div>
+
+        <div class="values members">
+              <h3>Concrete Value Members</h3>
+              <ol>
+                <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#!=(x$1:Any):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html###():Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#==(x$1:Any):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#asInstanceOf[T0]:T0" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="args4c.LowPriorityArgs4cImplicits#asRichConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asRichConfig(c:com.typesafe.config.Config):args4c.RichConfig"></a><a id="asRichConfig(Config):RichConfig"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#asRichConfig(c:com.typesafe.config.Config):args4c.RichConfig" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRichConfig</span><span class="params">(<span name="c">c: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <a href="RichConfig.html" class="extype" name="args4c.RichConfig">RichConfig</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a><a id="clone():AnyRef"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#clone():Object" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java/lang/index.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="args4c.ConfigApp#defaultConfig" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultConfig():com.typesafe.config.Config"></a><a id="defaultConfig():Config"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#defaultConfig():com.typesafe.config.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultConfig</span><span class="params">()</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the default config to overlay the user args over.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#defaultIgnoreDefaultSecretConfigArg" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultIgnoreDefaultSecretConfigArg:String"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#defaultIgnoreDefaultSecretConfigArg:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultIgnoreDefaultSecretConfigArg</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>he command-line argument flag which tells the application NOT to load the default secret config file if it exists.
+e.g., try running the app without the secret config.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#defaultSecretConfigArg" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultSecretConfigArg:String"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#defaultSecretConfigArg:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultSecretConfigArg</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the command-line argument to specify the path to an encrypted secret config file (e.g. MyApp -secret=.passwords.conf)</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#defaultSetupUserArgFlag" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultSetupUserArgFlag:String"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#defaultSetupUserArgFlag:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultSetupUserArgFlag</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the flag which should indicate that we should prompt to setup secret configurations</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#equals(x$1:Any):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#finalize():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java/lang/index.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#getClass():Class[_]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#hashCode():Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#isInstanceOf[T0]:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="args4c.ConfigApp#isPasswordSetup" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isPasswordSetup(userArgs:Array[String],setupArg:String):Boolean"></a><a id="isPasswordSetup(Array[String],String):Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#isPasswordSetup(userArgs:Array[String],setupArg:String):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isPasswordSetup</span><span class="params">(<span name="userArgs">userArgs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="setupArg">setupArg: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#main" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="main(args:Array[String]):Unit"></a><a id="main(Array[String]):Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#main(args:Array[String]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">main</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">exposes a main entry point which will then:</p><div class="fullcomment"><div class="comment cmt"><p>exposes a main entry point which will then:</p><p>1) parse the user args as a configuration
+2) check the user args if we should just 'show' a particular configuration setting (obscuring sensitive entries)
+3) check the user args if we should run 'setup' to configure an encrypted configuration
+</p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>the user arguments</p></dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#notify():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#notifyAll():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="args4c.ConfigApp#obscure" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="obscure(secretPathsOpt:Option[List[String]])(configPath:String,value:String):String"></a><a id="obscure(Option[List[String]])(String,String):String"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#obscure(secretPathsOpt:Option[List[String]])(configPath:String,value:String):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">obscure</span><span class="params">(<span name="secretPathsOpt">secretPathsOpt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="params">(<span name="configPath">configPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#onUnrecognizedUserArg" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onUnrecognizedUserArg(allowedArgs:Set[String])(arg:String):com.typesafe.config.Config"></a><a id="onUnrecognizedUserArg(Set[String])(String):Config"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#onUnrecognizedUserArg(allowedArgs:Set[String])(arg:String):com.typesafe.config.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onUnrecognizedUserArg</span><span class="params">(<span name="allowedArgs">allowedArgs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="arg">arg: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#pathToSecretConfigFromArgs" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pathToSecretConfigFromArgs(userArgs:Array[String],pathToSecretConfigArg:String):Option[String]"></a><a id="pathToSecretConfigFromArgs(Array[String],String):Option[String]"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#pathToSecretConfigFromArgs(userArgs:Array[String],pathToSecretConfigArg:String):Option[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pathToSecretConfigFromArgs</span><span class="params">(<span name="userArgs">userArgs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="pathToSecretConfigArg">pathToSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#runMain" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="runMain(userArgs:Array[String],readLine:String=&gt;String,setupUserArgFlag:String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):Unit"></a><a id="runMain(Array[String],(String)⇒String,String,String,String):Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#runMain(userArgs:Array[String],readLine:String=&gt;String,setupUserArgFlag:String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">runMain</span><span class="params">(<span name="userArgs">userArgs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="readLine">readLine: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="setupUserArgFlag">setupUserArgFlag: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultSetupUserArgFlag:String">defaultSetupUserArgFlag</a></span></span></span>, <span name="ignoreDefaultSecretConfigArg">ignoreDefaultSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultIgnoreDefaultSecretConfigArg:String">defaultIgnoreDefaultSecretConfigArg</a></span></span></span>, <span name="pathToSecretConfigArg">pathToSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultSecretConfigArg:String">defaultSecretConfigArg</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">launch the application, which will create a typesafe config instance from the user arguments by :</p><div class="fullcomment"><div class="comment cmt"><p>launch the application, which will create a typesafe config instance from the user arguments by :</p><p>$ try to parse the user arguments into a config entry, interpreting them as key=value pairs or locations of config files
+$ try to load an encrypted 'secret' config if one has been setup to overlay over the other config
+$ try to map system environment variables as lowercase dot-separated paths so e.g. (FOO_BAR=x) can be used to override foo.bar</p><p>In addition to providing a configuration from the user arguments and environment variables, the user arguments are also checked
+for one of three special arguments:</p><p>$ The argument 'show=&lt;key substring&gt;' flag, in which case the configuration matching &lt;key substring&gt; is shown.
+This can be especially convenient to verify the right config values are picked up if there are multiple arguments,
+such as alternative property files, key=value pairs, etc.</p><p>$ The argument '--setup' in order to populate a password-encrypted secret config file from standard input.
+For example, running &quot;MyMainEntryPoint --setup&quot; will proceed to prompt the user for config entries which will be saved
+in a password-encrypted file with restricted permissions. Subsequent runs of the application will check for this file,
+either in the default location or from -secret=&lt;path/to/encrypted/config&gt;</p><p>If either the default or specified encrypted files are found, then the password is taken either from the CONFIG_SECRET if set, or else it prompted for from standard input
+</p></div><dl class="paramcmts block"><dt class="param">userArgs</dt><dd class="cmt"><p>the user arguments</p></dd><dt class="param">readLine</dt><dd class="cmt"><p>a function to read in the user input</p></dd><dt class="param">setupUserArgFlag</dt><dd class="cmt"><p>the argument to check for in order to run the secret config setup</p></dd><dt class="param">ignoreDefaultSecretConfigArg</dt><dd class="cmt"><p>the argument which, if 'userArgs' contains this string, then we will NOT try</p></dd><dt class="param">pathToSecretConfigArg</dt><dd class="cmt"><p>the value for the key in the form &lt;key&gt;=&lt;path to secret password config&gt; (e.g. defaults to &quot;--secret&quot;, as in --secret=/etc/passwords.conf)</p></dd></dl></div>
+    </li><li name="args4c.ConfigApp#runWithConfig" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="runWithConfig(secretConfig:ConfigApp.this.SecretConfigResult,parsedConfig:com.typesafe.config.Config):Unit"></a><a id="runWithConfig(SecretConfigResult,Config):Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#runWithConfig(secretConfig:ConfigApp.this.SecretConfigResult,parsedConfig:com.typesafe.config.Config):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">runWithConfig</span><span class="params">(<span name="secretConfig">secretConfig: <a href="ConfigApp$SecretConfigResult.html" class="extype" name="args4c.ConfigApp.SecretConfigResult">SecretConfigResult</a></span>, <span name="parsedConfig">parsedConfig: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Exposes a run function which checks the parsedConfig for a 'show' user setting to display the config,
+otherwise invokes 'run' with the parsed config.</p><div class="fullcomment"><div class="comment cmt"><p>Exposes a run function which checks the parsedConfig for a 'show' user setting to display the config,
+otherwise invokes 'run' with the parsed config.</p><p>This method exposes access to the secret config parse result should the application need to do something with it
+</p></div><dl class="paramcmts block"><dt class="param">secretConfig</dt><dd class="cmt"><p>the result of the secret config user arguments</p></dd><dt class="param">parsedConfig</dt><dd class="cmt"><p>the total configuration, potentially including the secret config</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#secretConfigForArgs" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="secretConfigForArgs(userArgs:Array[String],readLine:String=&gt;String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult"></a><a id="secretConfigForArgs(Array[String],(String)⇒String,String,String):SecretConfigResult"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#secretConfigForArgs(userArgs:Array[String],readLine:String=&gt;String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">secretConfigForArgs</span><span class="params">(<span name="userArgs">userArgs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="readLine">readLine: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="ignoreDefaultSecretConfigArg">ignoreDefaultSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pathToSecretConfigArg">pathToSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ConfigApp$SecretConfigResult.html" class="extype" name="args4c.ConfigApp.SecretConfigResult">SecretConfigResult</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="args4c.ConfigApp#showValue" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="showValue(value:String,config:com.typesafe.config.Config):Unit"></a><a id="showValue(String,Config):Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#showValue(value:String,config:com.typesafe.config.Config):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">showValue</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="config">config: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">displays the value for the given config for when the 'show' command-line arg was specified
+</p><div class="fullcomment"><div class="comment cmt"><p>displays the value for the given config for when the 'show' command-line arg was specified
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>the value to show</p></dd><dt class="param">config</dt><dd class="cmt"><p>the config value at a particular path</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#toString():String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#wait():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#wait(x$1:Long):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="args4c.ConfigApp.SecretConfigNotSpecified" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SecretConfigNotSpecified"></a><a id="SecretConfigNotSpecified:SecretConfigNotSpecified"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#SecretConfigNotSpecified" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="ConfigApp$SecretConfigNotSpecified$.html"><span class="name">SecretConfigNotSpecified</span></a><span class="result"> extends <a href="ConfigApp$SecretConfigResult.html" class="extype" name="args4c.ConfigApp.SecretConfigResult">SecretConfigResult</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li>
+              </ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="args4c.LowPriorityArgs4cImplicits">
+              <h3>Inherited from <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+    </body>
+          </div>
+        </div>
+      </div>
+    </body>
+      </html>

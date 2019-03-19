@@ -1,0 +1,185 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <title></title>
+          <meta name="description" content="" />
+          <meta name="keywords" content="" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="lib/index.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="lib/jquery.js"></script>
+      <script type="text/javascript" src="lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="lib/jquery.mousewheel.min.js"></script>
+      <script type="text/javascript" src="lib/index.js"></script>
+      <script type="text/javascript" src="index.js"></script>
+      <script type="text/javascript" src="lib/scheduler.js"></script>
+      <script type="text/javascript" src="lib/template.js"></script>
+      <script type="text/javascript" src="lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '';
+      </script>
+    
+        </head>
+        <body>
+      <div id="search">
+        <span id="doc-title"><span id="doc-version"></span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
+    </div>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
+      </div>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 current" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="index.html#_root_" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">root</span>
+      </span>
+      
+      
+    </li><li name="_root_.args4c" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="args4c"></a><a id="args4c:args4c"></a>
+      <span class="permalink">
+      <a href="index.html#args4c" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe configuration from user arguments." href="args4c/index.html"><span class="name">args4c</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+configuration from user arguments.</p><div class="fullcomment"><div class="comment cmt"><p>Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+configuration from user arguments.</p><p>The core is simply to convert an Array[String] to a Config where the arguments are either paths to configuration resources
+or simple key=value pairs via <a href="args4c/index.html#configForArgs(args:Array[String],fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):com.typesafe.config.Config" class="extmbr" name="args4c#configForArgs">args4c.configForArgs</a></p><p>Left-most arguments take precedence. In this example, we assume 'prod.conf' is a resource on the classpath:</p><pre>MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf</pre><p>In addition to this core concept, this library also provides some additional configuration utilities via <a href="args4c/RichConfigOps.html" class="extype" name="args4c.RichConfigOps">args4c.RichConfigOps</a>
+which can be made available by extending <span class="extype" name="LowPriorityImplicits">LowPriorityImplicits</span> or importing <a href="args4c/implicits$.html" class="extype" name="args4c.implicits">args4c.implicits</a>:</p><pre><span class="kw">import</span> args4c.implicits._
+<span class="kw">object</span> MyApp {
+   <span class="kw">override</span> <span class="kw">def</span> main(args : <span class="std">Array</span>[<span class="std">String</span>]) : <span class="std">Unit</span> = {
+     <span class="kw">val</span> config = args.asConfig()
+     println(<span class="lit">"Starting MyApp with config:"</span>)
+
+     <span class="cmt">// let's "log" our app's config on startup:</span>
+     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+   }
+}</pre><p>Where the 'summary' will produce sorted <a href="args4c/StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
+obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
+myapp.password : **** obscured **** # command-line
+myapp.saveTo : afile # file:/opt/etc/myapp/test.conf@<span class="num">3</span></pre><p>Also, when extracting user arguments into a configuration, an additional 'fallback' config is specified.
+Typically this would just be the ConfigFactory.load() configuration, but args4c uses the <a href="args4c/index.html#defaultConfig():com.typesafe.config.Config" class="extmbr" name="args4c#defaultConfig">args4c.defaultConfig</a>,
+which is essentially just the system environment variables converted from snake-caes to dotted lowercase values
+first, then falling back on ConfigFactory.load().</p><p>Applications can elect to not have this behaviour and provide their own fallback configs when parsing args, but
+the default provides a convenience for system environment variables to override e.g. 'foo.bar.x=default' by specifying</p><pre>FOO_BAR_X=<span class="kw">override</span></pre><p>as a system environment variable. Otherwise you may end up having to repeat this sort of thing all over you config:</p><pre>foo.bar=default
+foo.bar=$${?FOO_BAR}
+
+foo.bazz=default2
+foo.bazz=$${?FOO_BAZZ}
+
+...</pre><p>Finally, args4c also provides a <a href="args4c/ConfigApp.html" class="extype" name="args4c.ConfigApp">args4c.ConfigApp</a> which provides some additional functionality to configuration-based
+applications.</p></div></div>
+    </li>
+              </ul>
+            </div>
+          </div>
+          <div id="content">
+            <body class="package value">
+      <div id="definition">
+        <div class="big-circle package">p</div>
+        
+        <h1>root package<span class="permalink">
+      <a href="index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">root</span>
+      </span>
+      </h4>
+
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+    </body>
+          </div>
+        </div>
+      </div>
+    </body>
+      </html>
