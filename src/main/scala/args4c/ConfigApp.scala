@@ -13,14 +13,41 @@ import scala.io.StdIn
   *
   * It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlaid)
   *
-  * And, if the config has a 'show=<path>' in it, then that path will be printed out and the program with return.
+  * If the config has a 'show=<path>' in it, then that path will be printed out and the program with return.
   *
   * e.g. MyAppWhichExtendsConfigApp show=myapp.database.url
   *
   * will display the value of myapp.database.url
+  *
+  * It also interprets a single '--setup' to enable the configuration of sensitive configuration entries into a locally encrypted file.
+  *
+  * Subsequent runs of your application would then use '--secret=path/to/encrypted.conf' to load that encrypted configuration and either
+  * take the password from an environment variable or standard input.
+  *
+  *
+  * For example, running 'MyApp --setup' would then prompt like this:
+  * {{{
+  * Save secret config to (defaults to /opt/etc/myapp/.config/secret.conf):config/secret.conf
+  * Config Permissions (defaults to rwx------): rwxrw----
+  * Add config path in the form <key>=<value> (leave blank when finished):myapp.secret.password=hi
+  * Add config path in the form <key>=<value> (leave blank when finished):myapp.another.config.entry=123
+  * Add config path in the form <key>=<value> (leave blank when finished):
+  * Config Password:password
+  * }}}
+  *
+  * Then, running 'MyApp --secret=config/secret.conf -myapp.whocares=visible -show=myapp'
   */
 trait ConfigApp extends LowPriorityArgs4cImplicits {
 
+  /**
+    * exposes a main entry point which will then:
+    *
+    * 1) parse the user args as a configuration
+    * 2) check the user args if we should just 'show' a particular configuration setting (obscuring sensitive entries)
+    * 3) check the user args if we should run 'setup' to configure an encrypted configuration
+    *
+    * @param args the user arguments
+    */
   def main(args: Array[String]): Unit = {
     runMain(args, StdIn.readLine(_))
   }
@@ -67,16 +94,18 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       /**
         * is there a secret password file
         */
-      val handledArgs                   = Set(setupUserArgFlag, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
-      val secretConfOpt: Option[Config] = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
-      val config = secretConfOpt //
-        .fold(defaultConfig())(_.withFallback(defaultConfig())) //
-        .withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
+      val handledArgs = Set(setupUserArgFlag, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
 
-      config.show(obscure(secretConfOpt.map(_.paths))) match {
+      val secretConfig = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
+      val parsedConfig = {
+        val baseConfig = secretConfig.configOpt.fold(defaultConfig())(_.withFallback(defaultConfig()))
+        baseConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
+      }
+
+      parsedConfig.showIfSpecified(obscure(secretConfig.configOpt.map(_.paths))) match {
         // 'show' was not specified, let's run our app
-        case None               => run(config)
-        case Some(specifiedArg) => showValue(specifiedArg, config)
+        case None               => run(parsedConfig)
+        case Some(specifiedArg) => showValue(specifiedArg, parsedConfig)
       }
     }
   }
@@ -125,10 +154,15 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     }
   }
 
+  protected sealed abstract class SecretConfigResult(val configOpt: Option[Config])
+  protected case class SecretConfigDoesntExist(path: Path)            extends SecretConfigResult(None)
+  protected case class SecretConfigParsed(path: Path, config: Config) extends SecretConfigResult(Some(config))
+  protected case object SecretConfigNotSpecified                      extends SecretConfigResult(None)
+
   protected def secretConfigForArgs(userArgs: Array[String],
                                     readLine: String => String,
                                     ignoreDefaultSecretConfigArg: String,
-                                    pathToSecretConfigArg: String): Option[Config] = {
+                                    pathToSecretConfigArg: String): SecretConfigResult = {
 
     def defaultSecretConfig(userArgs: Array[String]): Option[String] = {
       Option(defaultSecretConfigPath()).filter(path => Files.exists(Paths.get(path)) && !userArgs.contains(ignoreDefaultSecretConfigArg))
@@ -145,7 +179,14 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       filePathOpt.orElse(defaultSecretConfig(userArgs)).map(Paths.get(_))
     }
 
-    pathToSecretConfigFromArgs(userArgs).map(readSecretConfig(_, readLine))
+    pathToSecretConfigFromArgs(userArgs)
+      .map { path =>
+        readSecretConfig(path, readLine) match {
+          case Some(config) => SecretConfigParsed(path, config)
+          case None         => SecretConfigDoesntExist(path)
+        }
+      }
+      .getOrElse(SecretConfigNotSpecified)
   }
 
   /** @return he command-line argument flag which tells the application NOT to load the default secret config file if it exists.

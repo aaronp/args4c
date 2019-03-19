@@ -67,15 +67,12 @@ object SecretConfig {
         case password => password.getBytes("UTF-8")
       }
     }
-    val configString = {
-      import args4c.implicits._
-      config.asJson
-    }
-    val (_, encrypted) = Encryption.encryptAES(pwd, configString)
+
+    import args4c.implicits._
+    val encrypted = config.encrypt(pwd)
     Encryption.clear(pwd)
 
     import StandardOpenOption._
-
     // touch the file to set the permissions
     Files.write(configPath, Array[Byte](), TRUNCATE_EXISTING, CREATE, CREATE_NEW, SYNC)
     Files.setPosixFilePermissions(configPath, permissions)
@@ -88,19 +85,23 @@ object SecretConfig {
     * read the configuration from the given path, prompting for the password via 'readLine' should the  [[SecretEnvVariableName]]
     * environment variable not be set
     *
-    * @param path the path pointing at the encryipted config
+    * @param path the path pointing at the encrypted config
     * @param readLine the readline function to get user input
-    * @return a configuration
+    * @return a configuration if the file exists
     */
-  def readSecretConfig(path: Path, readLine: String => String): Config = {
-    
-    val pwd = envOrProp(SecretEnvVariableName).getOrElse(readLine("Config Password:")).getBytes("UTF-8")
-    val conf = readConfigAtPath(path, pwd, readLine)
-    Encryption.clear(pwd)
-    conf
+  def readSecretConfig(pathToEncryptedConfig: Path, readLine: String => String): Option[Config] = {
+    if (Files.exists(pathToEncryptedConfig)) {
+      val pwd = envOrProp(SecretEnvVariableName).getOrElse(readLine("Config Password:")).getBytes("UTF-8")
+      val conf = readConfigAtPath(pathToEncryptedConfig, pwd, readLine)
+      Encryption.clear(pwd)
+      Option(conf)
+    } else {
+      None
+    }
   }
 
   private def readConfigAtPath(path: Path, pwd: Array[Byte], readLine: String => String): Config = {
+    require(Files.exists(path), s"$path does not exist")
     val bytes = Files.readAllBytes(path)
     val configText = Encryption.decryptAES(pwd, bytes, bytes.length)
     ConfigFactory.parseString(configText)

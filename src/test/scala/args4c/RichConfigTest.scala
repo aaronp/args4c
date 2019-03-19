@@ -2,6 +2,8 @@ package args4c
 
 import com.typesafe.config.ConfigFactory
 
+import scala.concurrent.duration._
+
 class RichConfigTest extends BaseSpec {
 
   import scala.collection.JavaConverters._
@@ -16,6 +18,14 @@ class RichConfigTest extends BaseSpec {
       conf.filter(_.startsWith("test")).summary().mkString("\n") shouldBe
         """test.foo : bar # command-line
           |test.password : **** obscured **** # command-line""".stripMargin
+    }
+  }
+  "RichConfig.asDuration" should {
+    "convert an infinite time to a duration" in {
+      ConfigFactory.parseString("time = inf").asDuration("time") shouldBe Duration.Inf
+    }
+    "convert 10s to a finite duration" in {
+      ConfigFactory.parseString("time = 10s").asDuration("time") shouldBe 10.seconds
     }
   }
   "RichConfig.withUserArgs" should {

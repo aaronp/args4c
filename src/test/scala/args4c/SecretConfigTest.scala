@@ -23,7 +23,7 @@ class SecretConfigTest extends BaseSpec {
       val pathToConfig = SecretConfig.writeSecretsUsingPrompt(testInput(testConfigFile, testConfigEntries))
 
       // prove we can read back the config
-      val readBack = SecretConfig.readSecretConfig(pathToConfig, testInput(testConfigFile, testConfigEntries))
+      val Some(readBack) = SecretConfig.readSecretConfig(pathToConfig, testInput(testConfigFile, testConfigEntries))
       readBack.getString("mongo.password") shouldBe "secret"
       readBack.getString("anEntry.which.contains.an.equals.sign") shouldBe "abc=123"
       readBack.getString("credentials") shouldBe "don't tell"

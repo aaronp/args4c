@@ -22,11 +22,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     * @param password
     * @return the encrypted configuration
     */
-  def encrypt(password: Array[Byte]): String = {
-    val input: String = config.root.render(ConfigRenderOptions.concise())
-    val (_, bytes)    = Encryption.encryptAES(password, input)
-    new String(bytes, "UTF-8")
-  }
+  def encrypt(password: Array[Byte]) = Encryption.encryptAES(password, asJson)._2
 
   import ConfigFactory._
   import RichConfig._
@@ -46,17 +42,17 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   }
 
   /**
-    * If 'show=X' specified, configuration values which contain X in their path.
+    * If 'show=X' is specified, configuration values which contain X in their path will be displayed with the values matching 'obscure' obscured.
     *
     * If 'X' is 'all' or 'root', then the entire configuration is rendered.
     *
     * This can be useful to debug other command-line args (to ensure they take the desired effect)
     * or to validate the environment variable replacement
     *
+    * @param obscure a function which takes a dotted configuration path and string value and returns the value to display
     * @return the optional value of what's pointed to if 'show=<path>' is specified
     */
-  def show(obscure: (String, String) => String = obscurePassword(_, _),
-           options: ConfigRenderOptions = ConfigRenderOptions.concise().setFormatted(true)): Option[String] = {
+  def showIfSpecified(obscure: (String, String) => String = obscurePassword(_, _)): Option[String] = {
     if (config.hasPath("show")) {
       val filteredConf = config.getString("show") match {
         case "all" | "" | "root" => config

@@ -3,6 +3,72 @@ import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 
 import scala.sys.SystemProperties
 
+/**
+  * Args4c (arguments for configuration) is intended to add some helpers and utilities in obtaining a typesafe
+  * configuration from user arguments.
+  *
+  * The core is simply to convert an Array[String] to a Config where the arguments are either paths to configuration resources
+  * or simple key=value pairs via [[args4c.configForArgs]]
+  *
+  * Left-most arguments take precedence. In this example, we assume 'prod.conf' is a resource on the classpath:
+  *
+  * {{{
+  *   MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf
+  * }}}
+  *
+  * In addition to this core concept, this library also provides some additional configuration utilities via [[args4c.RichConfigOps]]
+  * which can be made available by extending [[LowPriorityImplicits]] or importing [[args4c.implicits]]:
+  *
+  * {{{
+  *   import args4c.implicits._
+  *   object MyApp {
+  *      override def main(args : Array[String]) : Unit = {
+  *        val config = args.asConfig()
+  *        println("Starting MyApp with config:")
+  *
+  *        // let's "log" our app's config on startup:
+  *        config.filter(_.startsWith("myapp")).summary().foreach(println)
+  *      }
+  *   }
+  * }}}
+  *
+  * Where the 'summary' will produce sorted [[args4c.StringEntry]] values with potentially sensitive entries (e.g. passwords)
+  * obscured and a source comment for some sanity as to where each entry comes from:
+  *
+  * {{{
+  * myapp.foo : bar # command-line
+  * myapp.password : **** obscured **** # command-line
+  * myapp.saveTo : afile # file:/opt/etc/myapp/test.conf@3
+  * }}}
+  *
+  * Also, when extracting user arguments into a configuration, an additional 'fallback' config is specified.
+  * Typically this would just be the ConfigFactory.load() configuration, but args4c uses the [[args4c.defaultConfig]],
+  * which is essentially just the system environment variables converted from snake-caes to dotted lowercase values
+  * first, then falling back on ConfigFactory.load().
+  *
+  * Applications can elect to not have this behaviour and provide their own fallback configs when parsing args, but
+  * the default provides a convenience for system environment variables to override e.g. 'foo.bar.x=default' by specifying
+  *
+  * {{{
+  *   FOO_BAR_X=override
+  * }}}
+  *
+  * as a system environment variable. Otherwise you may end up having to repeat this sort of thing all over you config:
+  * {{{
+  *   foo.bar=default
+  *   foo.bar=$${?FOO_BAR}
+  *
+  *   foo.bazz=default2
+  *   foo.bazz=$${?FOO_BAZZ}
+  *
+  *   ...
+  * }}}
+  *
+  *
+  * Finally, args4c also provides a [[args4c.ConfigApp]] which provides some additional functionality to configuration-based
+  * applications.
+  *
+  */
 package object args4c {
 
   /** Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:
