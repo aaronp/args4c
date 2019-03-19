@@ -6,7 +6,7 @@ Args4c (arguments for configuration) is intended to add some helpers and utiliti
 The dependency on the typesafe config is 'provided', so should work with the typesafe config
 already on your classpath (or, if there isn't one, you can bring one in)
 
-## Release
+## Releases
 
 The latest version is 0.1.1, built for 2.11 and 2.12
 
@@ -14,6 +14,7 @@ The latest version is 0.1.1, built for 2.11 and 2.12
 libraryDependencies += "com.github.aaronp" %% "args4c" % "0.1.1"
 ```
 
+## Content
 
 @@toc { depth=1 }
 

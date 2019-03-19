@@ -2,15 +2,18 @@
 
 The goal for this library is to enable command-line arguments to affect the parsed typesafe config.
 
+## Running
+
 e.g., you just write your application against a 'Config' instead of 'Array\[String\]', and then run it like this: 
 
 ```bash
   java -cp app.jar MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf
 ```
 
-The 'MyApp' would then just use the args4c.implicits (or extend a ConfigApp) to be able to get the configration: 
+## In Code
 
-The library can be used like this:
+The 'MyApp' would then just use the args4c.implicits (or extend a ConfigApp) to be able to get the configuration: 
+
 ```scala
   import args4c.implicits._
   

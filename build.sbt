@@ -14,8 +14,10 @@ crossScalaVersions := Seq(scalaEleven, scalaTwelve)
 
 paradoxProperties += ("project.url" -> "https://aaronp.github.io/args4c/docs/current/")
 
-//paradoxTheme := Some(builtinParadoxTheme("generic"))
-ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)
+//paradoxTheme := Some(builtinParadoxTheme("material"))
+
+//ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)
+
 Compile / paradoxMaterialTheme ~= {
   _.withLanguage(java.util.Locale.ENGLISH)
 }
