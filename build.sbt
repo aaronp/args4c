@@ -5,7 +5,9 @@ organization := "com.github.aaronp"
 enablePlugins(GhpagesPlugin)
 enablePlugins(ParadoxPlugin)
 enablePlugins(SiteScaladocPlugin)
-enablePlugins(ParadoxMaterialThemePlugin)
+enablePlugins(ParadoxMaterialThemePlugin) // see https://jonas.github.io/paradox-material-theme/getting-started.html
+
+//ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)
 
 val username            = "aaronp"
 val scalaEleven         = "2.11.8"
@@ -17,6 +19,11 @@ paradoxProperties += ("project.url" -> "https://aaronp.github.io/args4c/docs/cur
 
 Compile / paradoxMaterialTheme ~= {
   _.withLanguage(java.util.Locale.ENGLISH)
+    .withColor("red", "orange")
+    .withLogoIcon("cloud")
+    .withRepository(uri("https://github.com/aaronp/args4c"))
+    .withSocial(uri("https://github.com/aaronp"))
+    .withoutSearch()
 }
 
 siteSourceDirectory := target.value / "paradox" / "site" / "main"
@@ -72,10 +79,6 @@ pomExtra := {
         <distribution>repo</distribution>
       </license>
     </licenses>
-    <scm>
-      <url>git@github.com:aaronp/args4c.git</url>
-      <connection>scm:git@github.com:aaronp/args4c.git</connection>
-    </scm>
     <developers>
       <developer>
         <id>Aaron</id>
