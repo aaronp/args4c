@@ -1,9 +1,14 @@
-
 ## Usage
+
+The goal for this library is to enable command-line arguments to affect the parsed typesafe config.
+
+e.g., you just write your application against a 'Config' instead of 'Array\[String\]', and then run it like this: 
 
 ```bash
   java -cp app.jar MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf
 ```
+
+The 'MyApp' would then just use the args4c.implicits (or extend a ConfigApp) to be able to get the configration: 
 
 The library can be used like this:
 ```scala
@@ -17,12 +22,16 @@ The library can be used like this:
        // let's "log" our app's config on startup:
        val summary : String = config.withPaths("myapp").summary()
        println(summary)
+       
+       startMyApplication(config)
      }
+     
+     def startMyApplication(conf : Config) = ...
   }
 ```
 
-Where the 'summary' will produce sorted [[args4c.StringEntry]] values with potentially sensitive entries (e.g. passwords)
-obscured and a source comment for some sanity as to where each entry comes from:
+This shows how 'args.asConfig()' can get a configuration from the user arguments, and then use a 'summary' to produce a sensible, flat config summary
+with sensitive entries obscured, as well as a source comment for some sanity as to where each entry comes from:
 
 ```bash
 myapp.foo : bar # command-line

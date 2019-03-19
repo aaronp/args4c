@@ -1,5 +1,5 @@
 
-## Auto-overriding entries using environment variables
+## Overrides from env variables
 
 When extracting user arguments into a configuration, an additional 'fallback' config is specified.
 Typically this would just be the ConfigFactory.load() configuration, but args4c uses the 'args4c.defaultConfig',

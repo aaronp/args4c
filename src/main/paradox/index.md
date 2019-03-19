@@ -22,14 +22,11 @@ libraryDependencies += "com.github.aaronp" %% "args4c" % "0.1.1"
 
 * [About](about.md)
 * [Usage](usage.md)
-* [Building](building.md)
+* [Building/Releasing](building.md)
 * [Environment Overrides](environment.md)
 * [Encrypting/Decrypting Configs](secretConfig.md)
+* [License](license.md)
+* [ScalaDocs][https://aaronp.github.io/args4c/api/index.html]
 
 @@@
-
-
-## ScalaDocs
-
-Consult the [ScalaDocs](https://aaronp.github.io/args4c/api/index.html) for more.
 

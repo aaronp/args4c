@@ -8,7 +8,7 @@ applications:
 object MyApp extends args4c.ConfigApp with StrictLogging {
 
   override def run(config : Config) : Unit = {
-     logger.info(s"Running with ${config.withPaths("myapp").summary().mkString("\n")}")
+     logger.info(s"Running with ${config.withPaths("myapp").summary()}")
       ...
   }
 }
