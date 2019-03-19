@@ -26,8 +26,7 @@ class ConfigAppTest extends BaseSpec {
         app.lastConfig.getString("my.password") shouldBe "test"
 
       } finally {
-        import eie.io._
-        configFile.asPath.delete()
+        deleteFile(configFile)
       }
     }
     "show values when a show is given" in {

@@ -2,7 +2,6 @@ package args4c
 
 import args4c.SecretConfig.defaultPermissions
 import com.typesafe.scalalogging.StrictLogging
-import eie.io._
 
 class SecretConfigTest extends BaseSpec {
 
@@ -32,21 +31,19 @@ class SecretConfigTest extends BaseSpec {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    if (testConfigFile.asPath.exists()) {
-      testConfigFile.asPath.delete()
-    }
+    deleteFile(testConfigFile)
   }
 
   override def afterAll(): Unit = {
     super.afterAll()
-    testConfigFile.asPath.delete()
+    deleteFile(testConfigFile)
   }
 }
 
 object SecretConfigTest extends StrictLogging {
 
   def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String])(prompt: String): String = {
-    val Permissions = s"Config Permissions ($defaultPermissions):"
+    val Permissions = s"Config Permissions: [$defaultPermissions]"
     val PathPrompt  = SecretConfig.saveSecretPrompt(pathToConfigFile)
     val userInput = prompt match {
       case PathPrompt                       => pathToConfigFile

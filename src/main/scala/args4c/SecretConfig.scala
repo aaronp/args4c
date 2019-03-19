@@ -142,7 +142,7 @@ object SecretConfig {
   }
 
   private def readPermissions(readLine: Prompt => String) = {
-    val permString = readLine(s"Config Permissions ($defaultPermissions):") match {
+    val permString = readLine(s"Config Permissions: [$defaultPermissions]") match {
       case "" => defaultPermissions
       case other => other
     }
@@ -160,7 +160,7 @@ object SecretConfig {
 
   private[args4c] def defaultPermissions = "rwx------"
 
-  private[args4c] def saveSecretPrompt(configPath: String) = s"Save secret config to (${configPath}):"
+  private[args4c] def saveSecretPrompt(configPath: String) = s"Save secret config to: [${configPath}]"
 
   private[args4c] def defaultSecretConfigPath(workDir: String = Properties.userDir): String = {
     Paths.get(workDir).relativize(Paths.get(s"${workDir}/.config/secret.conf")).toString

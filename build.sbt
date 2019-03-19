@@ -24,12 +24,14 @@ siteSourceDirectory := target.value / "paradox" / "site" / "main"
 siteSubdirName in SiteScaladoc := "api/latest"
 
 libraryDependencies += "com.typesafe" % "config" % "1.3.0" % "provided"
+
 libraryDependencies ++= List(
-  "com.github.aaronp" %% "eie"       % "0.0.3" % "test",
-  "org.scalactic"     %% "scalactic" % "3.0.4" % "test",
-  "org.scalatest"     %% "scalatest" % "3.0.4" % "test",
-  "org.pegdown"       % "pegdown"    % "1.6.0" % "test",
-  "junit"             % "junit"      % "4.12"  % "test"
+  "com.typesafe.scala-logging" %% "scala-logging"  % "3.9.2" % "test",
+  "ch.qos.logback"             % "logback-classic" % "1.2.3" % "test",
+  "org.scalactic"              %% "scalactic"      % "3.0.4" % "test",
+  "org.scalatest"              %% "scalatest"      % "3.0.4" % "test",
+  "org.pegdown"                % "pegdown"         % "1.6.0" % "test",
+  "junit"                      % "junit"           % "4.12"  % "test"
 )
 
 publishMavenStyle := true

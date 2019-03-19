@@ -1,5 +1,6 @@
 package args4c
 
+import java.nio.file.{Files, Paths}
 import java.util.UUID
 
 import args4c.RichConfig.ParseArg
@@ -56,14 +57,15 @@ class Args4cPackageTest extends BaseSpec {
       err.getMessage should include("Unrecognized user arg 'invalid'")
     }
     "load configurations from the filesystem and classpath" in {
-      import eie.io._
-      val fooConf = s"./target/foo-${UUID.randomUUID}.conf".asPath.text = """fromFile = true""".stripMargin
+
+      val fooConf = Paths.get(s"./target/foo-${UUID.randomUUID}.conf")
+      Files.write(fooConf, """fromFile = true""".stripMargin.getBytes("UTF-8"))
       try {
         val config = configForArgs(Array(fooConf.toAbsolutePath.toString, "test.conf"), ConfigFactory.empty)
         config.getBoolean("fromFile") shouldBe true
         config.getString("source") shouldBe "classpath file"
       } finally {
-        fooConf.delete()
+        Files.delete(fooConf)
       }
     }
     "evaluate values from the command line which are referenced from the config file" in {
