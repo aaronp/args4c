@@ -20,6 +20,9 @@ object SecretConfig {
   // format: off
   type Prompt = String
 
+  /**
+    * The environment variable which, if set, will be used to decrypt an encrypted config file (e.g. "--secret" for the default or "--secret=password.conf" for specifying one)
+    */
   val SecretEnvVariableName = "CONFIG_SECRET"
 
   /**
@@ -28,8 +31,8 @@ object SecretConfig {
     * @param readLine a means to accept user input for a particular prompt
     * @return the path to the encrypted configuration file
     */
-  def writeSecretsUsingPrompt(readLine: Prompt => String): Path = {
-    val configPath = readSecretConfigPath(readLine)
+  def writeSecretsUsingPrompt(secretConfigFilePath : String, readLine: Prompt => String): Path = {
+    val configPath = readSecretConfigPath(secretConfigFilePath, readLine)
     val permissions = readPermissions(readLine)
 
     if (!Files.exists(configPath.getParent)) {
@@ -57,7 +60,7 @@ object SecretConfig {
       ConfigFactory.parseString(newConfig, options).withFallback(existingConfig)
     }
 
-    val pwd = {
+    val pwd: Array[Byte] = {
       val configPasswordPrompt = if (previousConfigPassword.isEmpty) "Config Password:" else "New Config Password (or blank to reuse the existing one):"
       readLine(configPasswordPrompt) match {
         case "" if previousConfigPassword.nonEmpty =>
@@ -135,8 +138,8 @@ object SecretConfig {
     PosixFilePermissions.fromString(permString)
   }
 
-  private def readSecretConfigPath(readLine: Prompt => String): Path = {
-    val path = readLine(saveSecretPrompt()) match {
+  private def readSecretConfigPath(pathToSecretConfigFile : String, readLine: Prompt => String): Path = {
+    val path = readLine(saveSecretPrompt(pathToSecretConfigFile)) match {
       case "" => defaultSecretConfigPath()
       case path => path
     }
@@ -145,7 +148,7 @@ object SecretConfig {
 
   private[args4c] def defaultPermissions = "rwx------"
 
-  private[args4c] def saveSecretPrompt(workDir: String = Properties.userDir) = s"Save secret config to (defaults to ${defaultSecretConfigPath(workDir)}):"
+  private[args4c] def saveSecretPrompt(configPath: String) = s"Save secret config to (defaults to ${configPath}):"
 
   private[args4c] def defaultSecretConfigPath(workDir: String = Properties.userDir): String = s"${workDir}/.config/secret.conf"
 

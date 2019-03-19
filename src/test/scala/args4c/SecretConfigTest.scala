@@ -20,7 +20,7 @@ class SecretConfigTest extends BaseSpec {
   "SecretConfig.writeSecretsUsingPrompt" should {
     "allow secret passwords to be set up" in {
       // call the method under test to write 'testConfigFile'
-      val pathToConfig = SecretConfig.writeSecretsUsingPrompt(testInput(testConfigFile, testConfigEntries))
+      val pathToConfig = SecretConfig.writeSecretsUsingPrompt(testConfigFile, testInput(testConfigFile, testConfigEntries))
 
       // prove we can read back the config
       val Some(readBack) = SecretConfig.readSecretConfig(pathToConfig, testInput(testConfigFile, testConfigEntries))
@@ -47,9 +47,9 @@ object SecretConfigTest extends StrictLogging {
 
   def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String])(prompt: String): String = {
     val Permissions = s"Config Permissions (defaults to $defaultPermissions):"
-    val PathPrompt  = SecretConfig.saveSecretPrompt()
+    val PathPrompt  = SecretConfig.saveSecretPrompt(SecretConfig.defaultSecretConfigPath())
     val userInput = prompt match {
-      case PathPrompt => pathToConfigFile
+      case PathPrompt                       => pathToConfigFile
       case Permissions                      => SecretConfig.defaultPermissions
       case _ if prompt.contains("Password") => "sEcre3t"
       case "Add config path in the form <key>=<value> (leave blank when finished):" =>

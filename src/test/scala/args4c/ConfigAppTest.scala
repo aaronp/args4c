@@ -20,9 +20,6 @@ class ConfigAppTest extends BaseSpec {
         // set up a secret config
         app.runMain(Array("--setup"), SecretConfigTest.testInput(configFile, Iterator("my.password=test")))
 
-        println("Saved secret config")
-        println()
-
         // run our app w/ that config
         app.runMain(Array("--secret=" + configFile), SecretConfigTest.testInput(configFile, Iterator("my.password=test")))
 
@@ -32,7 +29,6 @@ class ConfigAppTest extends BaseSpec {
         import eie.io._
         configFile.asPath.delete()
       }
-
     }
     "show values when a show is given" in {
       val app = new TestApp
@@ -84,9 +80,7 @@ class ConfigAppTest extends BaseSpec {
     override protected def secretConfigForArgs(userArgs: Array[String],
                                                readLine: String => String,
                                                ignoreDefaultSecretConfigArg: String,
-                                               pathToSecretConfigArg: String): Option[Config] = {
-      None
-    }
+                                               pathToSecretConfigArg: String) = SecretConfigNotSpecified
   }
 
 }

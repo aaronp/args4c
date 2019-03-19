@@ -88,7 +88,8 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       * should we configure the local passwords?
       */
     if (isPasswordSetup(userArgs, setupUserArgFlag)) {
-      SecretConfig.writeSecretsUsingPrompt(readLine)
+      val pathToConfig = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArg).getOrElse(SecretConfig.defaultSecretConfigPath())
+      SecretConfig.writeSecretsUsingPrompt(pathToConfig, readLine)
     } else {
 
       /**
@@ -159,6 +160,15 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected case class SecretConfigParsed(path: Path, config: Config) extends SecretConfigResult(Some(config))
   protected case object SecretConfigNotSpecified                      extends SecretConfigResult(None)
 
+  protected def pathToSecretConfigFromArgs(userArgs: Array[String], pathToSecretConfigArg: String): Option[String] = {
+    // our KeyValue regex trims leading '-' characters, so if our 'pathToSecretConfigArg' flag is e.g. '--secret' (i.e., the default),
+    // then we need to drop those leading dashes
+    val trimmedArg = pathToSecretConfigArg.dropWhile(_ == '-')
+    userArgs.collectFirst {
+      case KeyValue(`trimmedArg`, file) => file
+    }
+  }
+
   protected def secretConfigForArgs(userArgs: Array[String],
                                     readLine: String => String,
                                     ignoreDefaultSecretConfigArg: String,
@@ -168,18 +178,9 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       Option(defaultSecretConfigPath()).filter(path => Files.exists(Paths.get(path)) && !userArgs.contains(ignoreDefaultSecretConfigArg))
     }
 
-    def pathToSecretConfigFromArgs(userArgs: Array[String]): Option[Path] = {
-      // our KeyValue regex trims leading '-' characters, so if our 'pathToSecretConfigArg' flag is e.g. '--secret' (i.e., the default),
-      // then we need to drop those leading dashes
-      val trimmedArg = pathToSecretConfigArg.dropWhile(_ == '-')
-
-      val filePathOpt = userArgs.collectFirst {
-        case KeyValue(`trimmedArg`, file) => file
-      }
-      filePathOpt.orElse(defaultSecretConfig(userArgs)).map(Paths.get(_))
-    }
-
-    pathToSecretConfigFromArgs(userArgs)
+    pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArg)
+      .orElse(defaultSecretConfig(userArgs))
+      .map(Paths.get(_))
       .map { path =>
         readSecretConfig(path, readLine) match {
           case Some(config) => SecretConfigParsed(path, config)
