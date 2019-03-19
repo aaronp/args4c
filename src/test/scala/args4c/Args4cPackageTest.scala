@@ -4,9 +4,8 @@ import java.util.UUID
 
 import args4c.RichConfig.ParseArg
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{Matchers, WordSpec}
 
-class Args4cPackageTest extends WordSpec with Matchers with LowPriorityArgs4cImplicits {
+class Args4cPackageTest extends BaseSpec {
 
   sys.env.get("JAVA_HOME").foreach { _ =>
     "sysEnvAsConfig" should {

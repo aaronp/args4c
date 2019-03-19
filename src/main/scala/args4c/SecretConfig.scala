@@ -10,7 +10,7 @@ import scala.compat.Platform
 import scala.util.Properties
 
 /**
-  * Makes available a means to initialize a sensitive, encrypted config file via [[SecretConfig.writeSecretsUsingPrompt]] and [[ConfigApp.getSecretConfig]]
+  * Makes available a means to initialize a sensitive, encrypted config file via [[SecretConfig.writeSecretsUsingPrompt]] and [[ConfigApp.secretConfigForArgs]]
   *
   * The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
   * standard input, and an application an use those configuration entries thereafter by taking the password from standard input.
@@ -84,6 +84,14 @@ object SecretConfig {
     Files.write(configPath, encrypted, APPEND, SYNC)
   }
 
+  /**
+    * read the configuration from the given path, prompting for the password via 'readLine' should the  [[SecretEnvVariableName]]
+    * environment variable not be set
+    *
+    * @param path the path pointing at the encryipted config
+    * @param readLine the readline function to get user input
+    * @return a configuration
+    */
   def readSecretConfig(path: Path, readLine: String => String): Config = {
     
     val pwd = envOrProp(SecretEnvVariableName).getOrElse(readLine("Config Password:")).getBytes("UTF-8")

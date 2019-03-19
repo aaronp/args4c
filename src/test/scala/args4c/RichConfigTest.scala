@@ -1,11 +1,8 @@
 package args4c
 
-import com.typesafe.config.{Config, ConfigFactory}
-import org.scalatest.{Matchers, WordSpec}
+import com.typesafe.config.ConfigFactory
 
-class RichConfigTest extends WordSpec with Matchers {
-
-  import implicits._
+class RichConfigTest extends BaseSpec {
 
   import scala.collection.JavaConverters._
 
