@@ -111,9 +111,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     }
   }
 
-  protected def isPasswordSetup(userArgs: Array[String], setupArg: String): Boolean = {
-    userArgs.length == 1 && userArgs.head == setupArg
-  }
+  protected def isPasswordSetup(userArgs: Array[String], setupArg: String): Boolean = userArgs.contains(setupArg)
 
   // if we have a 'secret' config, then we should obscure those values
   protected def obscure(secretPathsOpt: Option[List[String]])(configPath: String, value: String): String = {

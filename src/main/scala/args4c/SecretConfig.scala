@@ -1,5 +1,6 @@
 package args4c
 
+import java.net.URL
 import java.nio.file.attribute.PosixFilePermissions
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 
@@ -35,29 +36,28 @@ object SecretConfig {
     val configPath = readSecretConfigPath(secretConfigFilePath, readLine)
     val permissions = readPermissions(readLine)
 
-    if (!Files.exists(configPath.getParent)) {
-      Files.createDirectories(configPath.getParent, PosixFilePermissions.asFileAttribute(permissions))
-      Files.createDirectories(configPath.getParent)
+    pathAsFile(configPath).map(_.getParent).foreach { dir =>
+      if (!Files.exists(dir)) {
+        Files.createDirectories(dir, PosixFilePermissions.asFileAttribute(permissions))
+      }
     }
 
-    var previousConfigPassword: Option[Array[Byte]] = None
-
-    val config = {
+    val (config, previousConfigPassword) = {
       val newConfig = readSecretConfig(readLine)
-      val existingConfig = if (Files.exists(configPath)) {
-        val pwd = readLine(s"A config already exists at $configPath, enter password:").getBytes("UTF-8")
-        previousConfigPassword = Option(pwd)
+      val (existingConfig, previousPwd) = pathToBytes(configPath) match {
+        case Some(bytes) =>
+          val pwd: Array[Byte] = readLine(s"A config already exists at $configPath, enter password:").getBytes("UTF-8")
 
-        readConfigAtPath(configPath, pwd, readLine)
-      } else {
-        ConfigFactory.empty
+          (bytesAsConfig(bytes, pwd, readLine), Option(pwd))
+        case None => ConfigFactory.empty -> None
       }
+
       val options = ConfigParseOptions.defaults()
         .setSyntax(ConfigSyntax.CONF)
         .setOriginDescription("sensitive")
         .setAllowMissing(false)
 
-      ConfigFactory.parseString(newConfig, options).withFallback(existingConfig)
+      ConfigFactory.parseString(newConfig, options).withFallback(existingConfig) -> previousPwd
     }
 
     val pwd: Array[Byte] = {
@@ -88,24 +88,21 @@ object SecretConfig {
     * read the configuration from the given path, prompting for the password via 'readLine' should the  [[SecretEnvVariableName]]
     * environment variable not be set
     *
-    * @param path the path pointing at the encrypted config
+    * @param pathToEncryptedConfig the path pointing at the encrypted config
     * @param readLine the readline function to get user input
     * @return a configuration if the file exists
     */
-  def readSecretConfig(pathToEncryptedConfig: Path, readLine: String => String): Option[Config] = {
-    if (Files.exists(pathToEncryptedConfig)) {
+  def readSecretConfig(pathToEncryptedConfig: String, readLine: String => String): Option[Config] = {
+    val configBytesOpt = pathToBytes(pathToEncryptedConfig)
+    configBytesOpt.map { bytes =>
       val pwd = envOrProp(SecretEnvVariableName).getOrElse(readLine("Config Password:")).getBytes("UTF-8")
-      val conf = readConfigAtPath(pathToEncryptedConfig, pwd, readLine)
+      val conf = bytesAsConfig(bytes, pwd, readLine)
       Encryption.clear(pwd)
-      Option(conf)
-    } else {
-      None
+      conf
     }
   }
 
-  private def readConfigAtPath(path: Path, pwd: Array[Byte], readLine: String => String): Config = {
-    require(Files.exists(path), s"$path does not exist")
-    val bytes = Files.readAllBytes(path)
+  private def bytesAsConfig(bytes : Array[Byte], pwd: Array[Byte], readLine: String => String): Config = {
     val configText = Encryption.decryptAES(pwd, bytes, bytes.length)
     ConfigFactory.parseString(configText)
   }
@@ -130,7 +127,7 @@ object SecretConfig {
   }
 
   private def readPermissions(readLine: Prompt => String) = {
-    val permString = readLine(s"Config Permissions (defaults to $defaultPermissions):") match {
+    val permString = readLine(s"Config Permissions ($defaultPermissions):") match {
       case "" => defaultPermissions
       case other => other
     }
@@ -138,17 +135,16 @@ object SecretConfig {
     PosixFilePermissions.fromString(permString)
   }
 
-  private def readSecretConfigPath(pathToSecretConfigFile : String, readLine: Prompt => String): Path = {
-    val path = readLine(saveSecretPrompt(pathToSecretConfigFile)) match {
+  private def readSecretConfigPath(pathToSecretConfigFile : String, readLine: Prompt => String): String = {
+    readLine(saveSecretPrompt(pathToSecretConfigFile)) match {
       case "" => defaultSecretConfigPath()
       case path => path
     }
-    Paths.get(path)
   }
 
   private[args4c] def defaultPermissions = "rwx------"
 
-  private[args4c] def saveSecretPrompt(configPath: String) = s"Save secret config to (defaults to ${configPath}):"
+  private[args4c] def saveSecretPrompt(configPath: String) = s"Save secret config to (${configPath}):"
 
   private[args4c] def defaultSecretConfigPath(workDir: String = Properties.userDir): String = s"${workDir}/.config/secret.conf"
 

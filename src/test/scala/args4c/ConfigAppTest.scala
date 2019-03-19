@@ -18,10 +18,10 @@ class ConfigAppTest extends BaseSpec {
 
       try {
         // set up a secret config
-        app.runMain(Array("--setup"), SecretConfigTest.testInput(configFile, Iterator("my.password=test")))
+        app.runMain(Array("--setup", s"--secret=$configFile"), SecretConfigTest.testInput(configFile, Iterator("my.password=test")))
 
         // run our app w/ that config
-        app.runMain(Array("--secret=" + configFile), SecretConfigTest.testInput(configFile, Iterator("my.password=test")))
+        app.runMain(Array(s"--secret=$configFile"), SecretConfigTest.testInput(configFile, Iterator()))
 
         app.lastConfig.getString("my.password") shouldBe "test"
 

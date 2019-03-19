@@ -1,4 +1,8 @@
+import java.net.URL
+import java.nio.file.{Files, Path, Paths}
+
 import args4c.RichConfig.ParseArg
+import args4c.RichConfig.UrlPathConfig.getClass
 import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 
 import scala.sys.SystemProperties
@@ -111,7 +115,7 @@ package object args4c {
     *
     * {{{
     *   foo.bar.x = 123
-    *   foo.bar.x = ${?FOO_BAR_X}
+    *   foo.bar.x = $${?FOO_BAR_X}
     * }}}
     *
     * repeated for each setting we can just convert all environment variables split on '_' into lower-case configuration values.
@@ -174,6 +178,23 @@ package object args4c {
     } else {
       value
     }
+  }
+
+  def pathAsFile(path : String): Option[Path] = Option(Paths.get(path)).filter(p => Files.exists(p))
+
+  def pathAsUrl(path : String): Option[URL] = Option(getClass.getClassLoader.getResource(path))
+
+  def pathToBytes(path : String): Option[Array[Byte]] = {
+    pathAsFile(path).map(Files.readAllBytes).orElse(
+      pathAsUrl(path).map { url: URL =>
+        val is = url.openStream
+        try {
+          Stream.continually(is.read).takeWhile(_ != -1).map(_.toByte).toArray
+        } finally {
+          is.close()
+        }
+      }
+    )
   }
 
   private[args4c] val KeyValue = "-{0,2}(.*?)=(.*)".r

@@ -46,8 +46,8 @@ class SecretConfigTest extends BaseSpec {
 object SecretConfigTest extends StrictLogging {
 
   def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String])(prompt: String): String = {
-    val Permissions = s"Config Permissions (defaults to $defaultPermissions):"
-    val PathPrompt  = SecretConfig.saveSecretPrompt(SecretConfig.defaultSecretConfigPath())
+    val Permissions = s"Config Permissions ($defaultPermissions):"
+    val PathPrompt  = SecretConfig.saveSecretPrompt(pathToConfigFile)
     val userInput = prompt match {
       case PathPrompt                       => pathToConfigFile
       case Permissions                      => SecretConfig.defaultPermissions

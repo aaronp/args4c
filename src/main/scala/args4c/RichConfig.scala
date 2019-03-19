@@ -1,9 +1,7 @@
 package args4c
 
-import java.nio.file.{Files, Paths}
-
 import com.typesafe.config.impl.ConfigImpl
-import com.typesafe.config.{Config, ConfigFactory, ConfigUtil}
+import com.typesafe.config.{Config, ConfigFactory}
 
 /**
   * Adds some scala utility around a typesafe config
@@ -30,19 +28,13 @@ object RichConfig {
 
   private[args4c] object FilePathConfig {
     def unapply(path: String): Option[Config] =
-      Option(Paths.get(path))
-        .filter(p => Files.exists(p))
-        .map(_.toFile)
-        .map { file =>
-          ConfigFactory.parseFileAnySyntax(file)
-        }
+      pathAsFile(path).map { file =>
+        ConfigFactory.parseFileAnySyntax(file.toFile)
+      }
   }
 
   private[args4c] object UrlPathConfig {
-    def unapply(path: String): Option[Config] = {
-      val url = getClass.getClassLoader.getResource(path)
-      Option(url).map(ConfigFactory.parseURL)
-    }
+    def unapply(path: String): Option[Config] = pathAsUrl(path).map(ConfigFactory.parseURL)
   }
 
 }
