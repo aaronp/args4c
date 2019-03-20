@@ -14,6 +14,8 @@ The latest version is 0.3.0, built for 2.11 and 2.12
 libraryDependencies += "com.github.aaronp" %% "args4c" % "0.3.0"
 ```
 
+Check out the scaladocs [here](https://aaronp.github.io/args4c/api/latest/args4c/index.html)
+
 ## Content
 
 @@toc { depth=1 }
@@ -27,7 +29,6 @@ libraryDependencies += "com.github.aaronp" %% "args4c" % "0.3.0"
 * [Environment Overrides](environment.md)
 * [Encrypting/Decrypting Configs](secretConfig.md)
 * [License](license.md)
-* [ScalaDocs][https://aaronp.github.io/args4c/api/latest/args4c/index.html]
 
 @@@
 
