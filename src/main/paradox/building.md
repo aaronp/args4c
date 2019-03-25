@@ -12,7 +12,7 @@ This project uses the sbt release plugin. If when running
 sbt release
 ```
 
-You get the error:
+reports the error:
 ```
 No tracking branch is set up. Either configure a remote tracking branch, or remove the pushChanges release part.
 ``` 
@@ -21,3 +21,5 @@ You may need to run
 ```bash
 git push --set-upstream origin master
 ```
+
+Then log in to [sonatype nexus][https://oss.sonatype.org/#stagingRepositories] and test, then 'close' the staging repo.
