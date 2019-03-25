@@ -3,9 +3,11 @@ scala:
    - 2.11.12
    - 2.12.8
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION -jvm-opts travis/jvmopts clean coverage test coverageReport
+  - sbt ++$TRAVIS_SCALA_VERSION -jvm-opts travis/jvmopts clean coverage test
 jdk:
     - oraclejdk8
+
+after_success: "sbt coverageReport coveralls"
 
 sudo: false
 

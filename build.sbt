@@ -1,3 +1,6 @@
+import org.scoverage.coveralls.Imports.CoverallsKeys._
+import eie.io._
+
 name := "args4c"
 
 organization := "com.github.aaronp"
@@ -25,6 +28,8 @@ Compile / paradoxMaterialTheme ~= {
     .withSocial(uri("https://github.com/aaronp"))
     .withoutSearch()
 }
+
+//scalacOptions += Seq("-encoding", "UTF-8")
 
 siteSourceDirectory := target.value / "paradox" / "site" / "main"
 
@@ -59,6 +64,10 @@ publishTo := {
 }
 
 credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
+
+// https://coveralls.io/github/aaronp/args4c
+// https://github.com/scoverage/sbt-coveralls#specifying-your-repo-token
+coverallsTokenFile := Option((Path.userHome / ".sbt" / ".coveralls.args4c").asPath.toString)
 
 buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
 buildInfoPackage := "args4c.build"

@@ -2,6 +2,7 @@ Args4c
 ======
 [![Build Status](https://travis-ci.org/aaronp/args4c.svg?branch=master)](https://travis-ci.org/aaronp/args4c)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_2.12/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_2.12/badge.png)
+[![Coverage Status](https://coveralls.io/repos/github/aaronp/args4c/badge.svg?branch=master)](https://coveralls.io/github/aaronp/args4c?branch=master)
 
 Args4c (arguments for configuration) is intended to add some helpers and utilities for obtaining a typesafe configuration from user arguments.
 
