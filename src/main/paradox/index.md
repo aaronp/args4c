@@ -11,7 +11,7 @@ The dependency on the typesafe config is 'provided', so should work with the typ
 already on your classpath (or, if there isn't one, you can bring one in)
 
 
-Check out the scaladocs [here](https://aaronp.github.io/args4c/api/latest/args4c/index.html)
+Check out the latest scaladocs [here](https://aaronp.github.io/args4c/api/latest/args4c/index.html)
 
 ## Content
 

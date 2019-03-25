@@ -12,11 +12,11 @@ It is intended to be "arguments for config" library which provides a means to in
 
 It also adds some conveniences to:
 
- * get the unique paths, expost a config as a json string, filter/modify configs
+ * get the unique paths, export a config as a json string, filter/modify configs
  * provide 'pretty' config summaries
  * encrypting/decrypt sensitive config entries
  * expose convenient overrides by default from environment variables
 
-Check out the documentation [here](https://aaronp.github.io/args4c/index.html) and the scaladocs [here](https://aaronp.github.io/args4c/api/latest/args4c/index.html)
+Check out the documentation [here](https://aaronp.github.io/args4c/index.html) or the latest scaladocs [here](https://aaronp.github.io/args4c/api/latest/args4c/index.html)
 
 \* It is zero-dependency as it declares a 'provided' dependency on the lightbend (typesafe) config so not to conflict with the explicit version used by your project   
