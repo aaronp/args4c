@@ -457,9 +457,9 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
               
         </dd></dl></div>
     </li><li name="args4c.RichConfigOps#collectAsMap" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectAsMap:Map[String,String]"></a>
+      <a id="collectAsMap(options:com.typesafe.config.ConfigRenderOptions):Map[String,String]"></a><a id="collectAsMap(ConfigRenderOptions):Map[String,String]"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#collectAsMap:Map[String,String]" title="Permalink">
+      <a href="../args4c/RichConfig.html#collectAsMap(options:com.typesafe.config.ConfigRenderOptions):Map[String,String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -468,14 +468,14 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectAsMap</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">collectAsMap</span><span class="params">(<span name="options">options: <span class="extype" name="com.typesafe.config.ConfigRenderOptions">ConfigRenderOptions</span> = <span class="symbol"><span class="name"><a href="RichConfigOps.html#defaultRenderOptions:com.typesafe.config.ConfigRenderOptions">defaultRenderOptions</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the configuration as a map</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#collectAsStrings" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectAsStrings:List[(String,String)]"></a>
+      <a id="collectAsStrings(options:com.typesafe.config.ConfigRenderOptions):Seq[(String,String)]"></a><a id="collectAsStrings(ConfigRenderOptions):Seq[(String,String)]"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#collectAsStrings:List[(String,String)]" title="Permalink">
+      <a href="../args4c/RichConfig.html#collectAsStrings(options:com.typesafe.config.ConfigRenderOptions):Seq[(String,String)]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -484,7 +484,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectAsStrings</span><span class="result">: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
+        <span class="name">collectAsStrings</span><span class="params">(<span name="options">options: <span class="extype" name="com.typesafe.config.ConfigRenderOptions">ConfigRenderOptions</span> = <span class="symbol"><span class="name"><a href="RichConfigOps.html#defaultRenderOptions:com.typesafe.config.ConfigRenderOptions">defaultRenderOptions</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the configuration as a set of key/value tuples</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
@@ -504,6 +504,22 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="args4c.RichConfig">RichConfig</a> → <a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
+    </li><li name="args4c.RichConfigOps#defaultRenderOptions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultRenderOptions:com.typesafe.config.ConfigRenderOptions"></a><a id="defaultRenderOptions:ConfigRenderOptions"></a>
+      <span class="permalink">
+      <a href="../args4c/RichConfig.html#defaultRenderOptions:com.typesafe.config.ConfigRenderOptions" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultRenderOptions</span><span class="result">: <span class="extype" name="com.typesafe.config.ConfigRenderOptions">ConfigRenderOptions</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#encrypt" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="encrypt(password:Array[Byte]):Array[Byte]"></a><a id="encrypt(Array[Byte]):Array[Byte]"></a>
       <span class="permalink">
@@ -521,9 +537,9 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the encrypted configuration</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#entries" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="entries:scala.collection.mutable.Set[java.util.Map.Entry[String,com.typesafe.config.ConfigValue]]"></a><a id="entries:Set[Entry[String,ConfigValue]]"></a>
+      <a id="entries:Set[(String,com.typesafe.config.ConfigValue)]"></a><a id="entries:Set[(String,ConfigValue)]"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#entries:scala.collection.mutable.Set[java.util.Map.Entry[String,com.typesafe.config.ConfigValue]]" title="Permalink">
+      <a href="../args4c/RichConfig.html#entries:Set[(String,com.typesafe.config.ConfigValue)]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -532,26 +548,10 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">entries</span><span class="result">: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="com.typesafe.config.ConfigValue">ConfigValue</span>]]</span>
+        <span class="name">entries</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="com.typesafe.config.ConfigValue">ConfigValue</span>)]</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the configuration entries as a set of entries</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
-    </li><li name="args4c.RichConfigOps#entryPairs" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="entryPairs:scala.collection.mutable.Set[(String,com.typesafe.config.ConfigValue)]"></a><a id="entryPairs:Set[(String,ConfigValue)]"></a>
-      <span class="permalink">
-      <a href="../args4c/RichConfig.html#entryPairs:scala.collection.mutable.Set[(String,com.typesafe.config.ConfigValue)]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">entryPairs</span><span class="result">: <span class="extype" name="scala.collection.mutable.Set">Set</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="com.typesafe.config.ConfigValue">ConfigValue</span>)]</span>
-      </span>
-      
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the configuration entries as a set of entry tuples</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -779,9 +779,9 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a sorted list of the origins from when the config values come</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#pathRoots" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pathRoots:List[String]"></a>
+      <a id="pathRoots:Seq[String]"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#pathRoots:List[String]" title="Permalink">
+      <a href="../args4c/RichConfig.html#pathRoots:Seq[String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -790,7 +790,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pathRoots</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">pathRoots</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       <p class="shortcomment cmt">The available config roots.</p><div class="fullcomment"><div class="comment cmt"><p>The available config roots.</p><p>e.g. of a config has</p><pre>foo.bar.x = <span class="num">1</span>
@@ -799,9 +799,9 @@ bar.enabled = <span class="kw">true</span>
 bar.user = root</pre><p>The 'pathRoots' would return a [bar, foo, java]
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a sorted list of the root entries to the config.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#paths" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="paths:List[String]"></a>
+      <a id="paths:Seq[String]"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#paths:List[String]" title="Permalink">
+      <a href="../args4c/RichConfig.html#paths:Seq[String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -810,7 +810,7 @@ bar.user = root</pre><p>The 'pathRoots' would return a [bar, foo, java]
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">paths</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">paths</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all the unique paths for this configuration</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
@@ -851,9 +851,9 @@ or to validate the environment variable replacement
 </p><div class="fullcomment"><div class="comment cmt"><p>Return a property-like summary of the config using the pathFilter to trim property entries
 </p></div><dl class="paramcmts block"><dt class="param">obscure</dt><dd class="cmt"><p>a function which will 'safely' replace any config values with an obscured value</p></dd><dt>returns</dt><dd class="cmt"><p>a summary of the configuration</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#summaryEntries" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="summaryEntries(obscure:(String,String)=&gt;String):List[args4c.StringEntry]"></a><a id="summaryEntries((String,String)⇒String):List[StringEntry]"></a>
+      <a id="summaryEntries(obscure:(String,String)=&gt;String):Seq[args4c.StringEntry]"></a><a id="summaryEntries((String,String)⇒String):Seq[StringEntry]"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#summaryEntries(obscure:(String,String)=&gt;String):List[args4c.StringEntry]" title="Permalink">
+      <a href="../args4c/RichConfig.html#summaryEntries(obscure:(String,String)=&gt;String):Seq[args4c.StringEntry]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -862,7 +862,7 @@ or to validate the environment variable replacement
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">summaryEntries</span><span class="params">(<span name="obscure">obscure: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="index.html#obscurePassword(configPath:String,value:String,blacklist:Set[String],obscuredValue:String):String">obscurePassword(_, _)</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="StringEntry.html" class="extype" name="args4c.StringEntry">StringEntry</a>]</span>
+        <span class="name">summaryEntries</span><span class="params">(<span name="obscure">obscure: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="index.html#obscurePassword(configPath:String,value:String,blacklist:Set[String],obscuredValue:String):String">obscurePassword(_, _)</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="StringEntry.html" class="extype" name="args4c.StringEntry">StringEntry</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Return a property-like summary of the config using the 'obscure' function to mask sensitive entries
@@ -917,9 +917,9 @@ or to validate the environment variable replacement
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="args4c.RichConfigOps#uniquePaths" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="uniquePaths:List[String]"></a>
+      <a id="uniquePaths:Seq[String]"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#uniquePaths:List[String]" title="Permalink">
+      <a href="../args4c/RichConfig.html#uniquePaths:Seq[String]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -928,7 +928,7 @@ or to validate the environment variable replacement
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uniquePaths</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">uniquePaths</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       <p class="shortcomment cmt">And example which uses most of the below stuff to showcase what this is for
@@ -1005,9 +1005,9 @@ Note : writing a 'diff' using this would be pretty straight forward
               
         </dd></dl></div>
     </li><li name="args4c.RichConfigOps#withPaths" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="withPaths(paths:List[String]):com.typesafe.config.Config"></a><a id="withPaths(List[String]):Config"></a>
+      <a id="withPaths(paths:Seq[String]):com.typesafe.config.Config"></a><a id="withPaths(Seq[String]):Config"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#withPaths(paths:List[String]):com.typesafe.config.Config" title="Permalink">
+      <a href="../args4c/RichConfig.html#withPaths(paths:Seq[String]):com.typesafe.config.Config" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1016,7 +1016,7 @@ Note : writing a 'diff' using this would be pretty straight forward
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withPaths</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+        <span class="name">withPaths</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>this configuration which only contains the specified paths</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>

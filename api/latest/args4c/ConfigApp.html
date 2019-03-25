@@ -235,7 +235,24 @@ separating the secret config from the remaining config, or just ensuring to limi
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="args4c.ConfigApp.SecretConfigDoesntExist" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="args4c.ConfigApp.Result" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Result"></a><a id="Result:Result"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp.html#Result" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Result</span>
+      </span>
+      
+      <p class="shortcomment cmt">The result of running this application
+</p>
+    </li><li name="args4c.ConfigApp.SecretConfigDoesntExist" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="SecretConfigDoesntExistextendsConfigApp.this.SecretConfigResultwithProductwithSerializable"></a><a id="SecretConfigDoesntExist:SecretConfigDoesntExist"></a>
       <span class="permalink">
       <a href="../args4c/ConfigApp.html#SecretConfigDoesntExistextendsConfigApp.this.SecretConfigResultwithProductwithSerializable" title="Permalink">
@@ -321,9 +338,9 @@ separating the secret config from the remaining config, or just ensuring to limi
         <div class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="args4c.ConfigApp#run" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="run(config:com.typesafe.config.Config):Unit"></a><a id="run(Config):Unit"></a>
+      <a id="run(config:com.typesafe.config.Config):ConfigApp.this.Result"></a><a id="run(Config):Result"></a>
       <span class="permalink">
-      <a href="../args4c/ConfigApp.html#run(config:com.typesafe.config.Config):Unit" title="Permalink">
+      <a href="../args4c/ConfigApp.html#run(config:com.typesafe.config.Config):ConfigApp.this.Result" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -332,7 +349,7 @@ separating the secret config from the remaining config, or just ensuring to limi
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="params">(<span name="config">config: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">run</span><span class="params">(<span name="config">config: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <a href="#Result" class="extmbr" name="args4c.ConfigApp.Result">Result</a></span>
       </span>
       
       <p class="shortcomment cmt">Instead of 'main', this 'apply' should run w/ a config
@@ -448,7 +465,7 @@ separating the secret config from the remaining config, or just ensuring to limi
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="args4c.ConfigApp#defaultConfig" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="args4c.ConfigApp#defaultConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="defaultConfig():com.typesafe.config.Config"></a><a id="defaultConfig():Config"></a>
       <span class="permalink">
       <a href="../args4c/ConfigApp.html#defaultConfig():com.typesafe.config.Config" title="Permalink">
@@ -463,7 +480,7 @@ separating the secret config from the remaining config, or just ensuring to limi
         <span class="name">defaultConfig</span><span class="params">()</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the default config to overlay the user args over.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the default config to overlay the user args over.</p></dd></dl></div>
     </li><li name="args4c.ConfigApp#defaultIgnoreDefaultSecretConfigArg" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="defaultIgnoreDefaultSecretConfigArg:String"></a>
       <span class="permalink">
@@ -711,9 +728,9 @@ e.g., try running the app without the secret config.</p></dd></dl><dl class="att
               
         </dd></dl></div>
     </li><li name="args4c.ConfigApp#obscure" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="obscure(secretPathsOpt:Option[List[String]])(configPath:String,value:String):String"></a><a id="obscure(Option[List[String]])(String,String):String"></a>
+      <a id="obscure(secretPathsOpt:Option[Seq[String]])(configPath:String,value:String):String"></a><a id="obscure(Option[Seq[String]])(String,String):String"></a>
       <span class="permalink">
-      <a href="../args4c/ConfigApp.html#obscure(secretPathsOpt:Option[List[String]])(configPath:String,value:String):String" title="Permalink">
+      <a href="../args4c/ConfigApp.html#obscure(secretPathsOpt:Option[Seq[String]])(configPath:String,value:String):String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -722,7 +739,7 @@ e.g., try running the app without the secret config.</p></dd></dl><dl class="att
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">obscure</span><span class="params">(<span name="secretPathsOpt">secretPathsOpt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="params">(<span name="configPath">configPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">obscure</span><span class="params">(<span name="secretPathsOpt">secretPathsOpt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="params">(<span name="configPath">configPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -759,9 +776,9 @@ e.g., try running the app without the secret config.</p></dd></dl><dl class="att
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="args4c.ConfigApp#runMain" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="runMain(userArgs:Array[String],readLine:String=&gt;String,setupUserArgFlag:String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):Unit"></a><a id="runMain(Array[String],(String)⇒String,String,String,String):Unit"></a>
+      <a id="runMain(userArgs:Array[String],readLine:String=&gt;String,setupUserArgFlag:String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):Option[ConfigApp.this.Result]"></a><a id="runMain(Array[String],(String)⇒String,String,String,String):Option[Result]"></a>
       <span class="permalink">
-      <a href="../args4c/ConfigApp.html#runMain(userArgs:Array[String],readLine:String=&gt;String,setupUserArgFlag:String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):Unit" title="Permalink">
+      <a href="../args4c/ConfigApp.html#runMain(userArgs:Array[String],readLine:String=&gt;String,setupUserArgFlag:String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):Option[ConfigApp.this.Result]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -770,7 +787,7 @@ e.g., try running the app without the secret config.</p></dd></dl><dl class="att
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">runMain</span><span class="params">(<span name="userArgs">userArgs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="readLine">readLine: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="setupUserArgFlag">setupUserArgFlag: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultSetupUserArgFlag:String">defaultSetupUserArgFlag</a></span></span></span>, <span name="ignoreDefaultSecretConfigArg">ignoreDefaultSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultIgnoreDefaultSecretConfigArg:String">defaultIgnoreDefaultSecretConfigArg</a></span></span></span>, <span name="pathToSecretConfigArg">pathToSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultSecretConfigArg:String">defaultSecretConfigArg</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">runMain</span><span class="params">(<span name="userArgs">userArgs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="readLine">readLine: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="setupUserArgFlag">setupUserArgFlag: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultSetupUserArgFlag:String">defaultSetupUserArgFlag</a></span></span></span>, <span name="ignoreDefaultSecretConfigArg">ignoreDefaultSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultIgnoreDefaultSecretConfigArg:String">defaultIgnoreDefaultSecretConfigArg</a></span></span></span>, <span name="pathToSecretConfigArg">pathToSecretConfigArg: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="#defaultSecretConfigArg:String">defaultSecretConfigArg</a></span></span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="#Result" class="extmbr" name="args4c.ConfigApp.Result">Result</a>]</span>
       </span>
       
       <p class="shortcomment cmt">launch the application, which will create a typesafe config instance from the user arguments by :</p><div class="fullcomment"><div class="comment cmt"><p>launch the application, which will create a typesafe config instance from the user arguments by :</p><p>$ try to parse the user arguments into a config entry, interpreting them as key=value pairs or locations of config files
@@ -784,9 +801,9 @@ in a password-encrypted file with restricted permissions. Subsequent runs of the
 either in the default location or from -secret=&lt;path/to/encrypted/config&gt;</p><p>If either the default or specified encrypted files are found, then the password is taken either from the CONFIG_SECRET if set, or else it prompted for from standard input
 </p></div><dl class="paramcmts block"><dt class="param">userArgs</dt><dd class="cmt"><p>the user arguments</p></dd><dt class="param">readLine</dt><dd class="cmt"><p>a function to read in the user input</p></dd><dt class="param">setupUserArgFlag</dt><dd class="cmt"><p>the argument to check for in order to run the secret config setup</p></dd><dt class="param">ignoreDefaultSecretConfigArg</dt><dd class="cmt"><p>the argument which, if 'userArgs' contains this string, then we will NOT try</p></dd><dt class="param">pathToSecretConfigArg</dt><dd class="cmt"><p>the value for the key in the form &lt;key&gt;=&lt;path to secret password config&gt; (e.g. defaults to &quot;--secret&quot;, as in --secret=/etc/passwords.conf)</p></dd></dl></div>
     </li><li name="args4c.ConfigApp#runWithConfig" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="runWithConfig(secretConfig:ConfigApp.this.SecretConfigResult,parsedConfig:com.typesafe.config.Config):Unit"></a><a id="runWithConfig(SecretConfigResult,Config):Unit"></a>
+      <a id="runWithConfig(secretConfig:ConfigApp.this.SecretConfigResult,parsedConfig:com.typesafe.config.Config):Option[ConfigApp.this.Result]"></a><a id="runWithConfig(SecretConfigResult,Config):Option[Result]"></a>
       <span class="permalink">
-      <a href="../args4c/ConfigApp.html#runWithConfig(secretConfig:ConfigApp.this.SecretConfigResult,parsedConfig:com.typesafe.config.Config):Unit" title="Permalink">
+      <a href="../args4c/ConfigApp.html#runWithConfig(secretConfig:ConfigApp.this.SecretConfigResult,parsedConfig:com.typesafe.config.Config):Option[ConfigApp.this.Result]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -795,7 +812,7 @@ either in the default location or from -secret=&lt;path/to/encrypted/config&gt;<
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">runWithConfig</span><span class="params">(<span name="secretConfig">secretConfig: <a href="ConfigApp$SecretConfigResult.html" class="extype" name="args4c.ConfigApp.SecretConfigResult">SecretConfigResult</a></span>, <span name="parsedConfig">parsedConfig: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">runWithConfig</span><span class="params">(<span name="secretConfig">secretConfig: <a href="ConfigApp$SecretConfigResult.html" class="extype" name="args4c.ConfigApp.SecretConfigResult">SecretConfigResult</a></span>, <span name="parsedConfig">parsedConfig: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="#Result" class="extmbr" name="args4c.ConfigApp.Result">Result</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Exposes a run function which checks the parsedConfig for a 'show' user setting to display the config,
