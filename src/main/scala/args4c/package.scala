@@ -2,7 +2,7 @@ import java.net.URL
 import java.nio.file.{Files, Path, Paths}
 
 import args4c.RichConfig.ParseArg
-import com.typesafe.config.{Config, ConfigException, ConfigFactory}
+import com.typesafe.config._
 
 import scala.sys.SystemProperties
 

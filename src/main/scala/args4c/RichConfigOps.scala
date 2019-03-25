@@ -1,11 +1,9 @@
 package args4c
 
-import java.util.Map
 import java.util.concurrent.TimeUnit
 
 import com.typesafe.config._
 
-import scala.collection.mutable
 import scala.compat.Platform
 import scala.concurrent.duration._
 import scala.language.{implicitConversions, postfixOps}
@@ -17,6 +15,8 @@ import scala.util.Try
 trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
   def config: Config
+
+  def defaultRenderOptions = ConfigRenderOptions.concise.setJson(false)
 
   /**
     *
@@ -124,7 +124,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   /** And example which uses most of the below stuff to showcase what this is for
     * Note : writing a 'diff' using this would be pretty straight forward
     */
-  def uniquePaths: List[String] = withoutSystem.paths.sorted
+  def uniquePaths: Seq[String] = withoutSystem.paths.sorted
 
   /** this config w/o the system properties or environment variables */
   def withoutSystem: Config = {
@@ -150,35 +150,64 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
   /** @return all the unique paths for this configuration
     */
-  def paths: List[String] = entries.map(_.getKey).toList.sorted
+  def paths: Seq[String] = {
+    entries.map(_._1).toSeq.sorted
+  }
 
   /** @return the configuration entries as a set of entries
     */
-  def entries: mutable.Set[Map.Entry[String, ConfigValue]] = {
+  def entries: Set[(String, ConfigValue)] = {
     import scala.collection.JavaConverters._
-    config.entrySet().asScala
-  }
 
-  /** @return the configuration entries as a set of entry tuples
-    */
-  def entryPairs: mutable.Set[(String, ConfigValue)] = entries.map { entry =>
-    (entry.getKey, entry.getValue)
+    def prepend(prefix: String, cv: ConfigValue): Set[(String, ConfigValue)] = {
+      cv match {
+        case obj: ConfigObject =>
+          obj.toConfig.entries.map {
+            case (path, cv) => s"${prefix}.$path" -> cv
+          }
+        case list: ConfigList =>
+          import scala.collection.JavaConverters._
+          list
+            .listIterator()
+            .asScala
+            .zipWithIndex
+            .flatMap {
+              case (value: ConfigValue, i) => prepend(s"$prefix[$i]", value)
+            }
+            .toSet
+        case _ => Set(prefix -> cv)
+      }
+    }
+
+    val all = config.entrySet().asScala.flatMap { e =>
+      val key = e.getKey
+      e.getValue match {
+        case list: ConfigList =>
+          import scala.collection.JavaConverters._
+          list.listIterator().asScala.zipWithIndex.flatMap {
+            case (value: ConfigValue, i) => prepend(s"$key[$i]", value)
+          }
+        case cv => Set(key -> cv)
+      }
+    }
+    all.toSet
   }
 
   /** @return the config as a map
     */
-  def toMap = entryPairs.toMap
+  def toMap = entries.toMap
 
   /** @return a sorted list of the origins from when the config values come
     */
   def origins: List[String] = {
-    val urls = entries.flatMap { e =>
-      val origin = e.getValue.origin()
-      Option(origin.url). //
-      orElse(Option(origin.filename)). //
-      orElse(Option(origin.resource)). //
-      orElse(Option(origin.description)). //
-      map(_.toString)
+    val urls = entries.flatMap {
+      case (_, e) =>
+        val origin = e.origin()
+        Option(origin.url). //
+        orElse(Option(origin.filename)). //
+        orElse(Option(origin.resource)). //
+        orElse(Option(origin.description)). //
+        map(_.toString)
     }
     urls.toList.distinct.sorted
   }
@@ -198,22 +227,25 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     *
     * @param obscure a function which will 'safely' replace any config values with an obscured value
     */
-  def summaryEntries(obscure: (String, String) => String = obscurePassword(_, _)): List[StringEntry] = {
-    collectAsStrings.collect {
-      case (key, originalValue) =>
-        val stringValue = obscure(key, originalValue)
-        val value       = config.getValue(key)
-        val originString = {
-          val o       = value.origin
-          def resOpt  = Option(o.resource)
-          def descOpt = Option(o.description)
-          def line    = Option(o.lineNumber()).filterNot(_ < 0).map(": " + _).getOrElse("")
-          Option(o.url()).map(_.toString).orElse(Option(o.filename)).orElse(resOpt).map(_ + line).orElse(descOpt).getOrElse("unknown origin")
-        }
-        import scala.collection.JavaConverters._
-        val comments = value.origin().comments().asScala.toList
-        StringEntry(comments, originString, key, stringValue)
-    }
+  def summaryEntries(obscure: (String, String) => String = obscurePassword(_, _)): Seq[StringEntry] = {
+    val cro = defaultRenderOptions
+    entries
+      .collect {
+        case (key, value) =>
+          val stringValue = obscure(key, value.render(cro))
+          val originString = {
+            val o       = value.origin
+            def resOpt  = Option(o.resource)
+            def descOpt = Option(o.description)
+            def line    = Option(o.lineNumber()).filterNot(_ < 0).map(": " + _).getOrElse("")
+            Option(o.url()).map(_.toString).orElse(Option(o.filename)).orElse(resOpt).map(_ + line).orElse(descOpt).getOrElse("unknown origin")
+          }
+          import scala.collection.JavaConverters._
+          val comments = value.origin().comments().asScala.toList
+          StringEntry(comments, originString, key, stringValue)
+      }
+      .toSeq
+      .sortBy(_.key)
   }
 
   /** The available config roots.
@@ -230,19 +262,25 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     *
     * @return a sorted list of the root entries to the config.
     */
-  def pathRoots: List[String] = paths.map { p =>
+  def pathRoots: Seq[String] = paths.map { p =>
     ConfigUtil.splitPath(p).get(0)
   }
 
   /** @return the configuration as a set of key/value tuples
     */
-  def collectAsStrings: List[(String, String)] = paths.flatMap { key =>
-    Try(config.getString(key)).toOption.map(key ->)
-  }
+  def collectAsStrings(options: ConfigRenderOptions = defaultRenderOptions): Seq[(String, String)] =
+    entries
+      .map {
+        case (key, value) => (key, value.render(options))
+      }
+      .toSeq
+      .sorted
 
   /** @return the configuration as a map
     */
-  def collectAsMap: Predef.Map[String, String] = collectAsStrings.toMap
+  def collectAsMap(options: ConfigRenderOptions = defaultRenderOptions): Predef.Map[String, String] = {
+    collectAsStrings(options).toMap
+  }
 
   /** @param other
     * @return the configuration representing the intersection of the two configuration entries
@@ -260,7 +298,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   /** @param paths
     * @return this configuration which only contains the specified paths
     */
-  def withPaths(paths: List[String]): Config = {
+  def withPaths(paths: Seq[String]): Config = {
     paths.map(config.withOnlyPath).reduce(_ withFallback _)
   }
 }

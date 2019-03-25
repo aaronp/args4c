@@ -8,16 +8,41 @@ class RichConfigTest extends BaseSpec {
 
   import scala.collection.JavaConverters._
 
-  "RichConfig.summaryEntries" should {
+  "RichConfig.summary" should {
     "show a flatten summary of a configuration" in {
-      val conf                       = configForArgs(Array("test.foo=bar", "test.password=secret"))
-      val entries: List[StringEntry] = conf.summaryEntries()
+
+      val testConf                  = ConfigFactory.parseString("""
+          |test.stringArray : ["one", "two"]
+          |test.intArray : [1,2,3]
+          |test.objArray : [
+          |  {
+          |    x : "an object entry"
+          |    y : "another object entry"
+          |  },
+          |  {
+          |    foo : false
+          |  }
+          |]
+        """.stripMargin)
+      val conf                      = configForArgs(Array("test.foo=bar", "test.password=secret"), fallback = testConf)
+      val entries: Seq[StringEntry] = conf.summaryEntries()
+
+      val actual = conf.withPaths("test").summary()
+
       entries should contain(StringEntry(Nil, "command-line", "test.foo", "bar"))
       entries should contain(StringEntry(Nil, "command-line", "test.password", "**** obscured ****"))
 
-      conf.filter(_.startsWith("test")).summary() shouldBe
+      actual shouldBe
         """test.foo : bar # command-line
-          |test.password : **** obscured **** # command-line""".stripMargin
+          |test.intArray[0] : 1 # String: 3
+          |test.intArray[1] : 2 # String: 3
+          |test.intArray[2] : 3 # String: 3
+          |test.objArray[0].x : "an object entry" # String: 6
+          |test.objArray[0].y : "another object entry" # String: 7
+          |test.objArray[1].foo : false # String: 10
+          |test.password : **** obscured **** # command-line
+          |test.stringArray[0] : one # String: 2
+          |test.stringArray[1] : two # String: 2""".stripMargin
     }
   }
   "RichConfig.asDuration" should {
@@ -49,7 +74,7 @@ class RichConfigTest extends BaseSpec {
           | hyphenated-nested.foo : original3
           | value : original4""".stripMargin)
       val actual = conf.withUserArgs(Array("thing.value=new-one", "hyphenated-key=two"))
-      actual.collectAsMap shouldBe Map(
+      actual.collectAsMap() shouldBe Map(
         "thing.value"           -> "new-one",
         "hyphenated-key"        -> "two",
         "hyphenated-nested.foo" -> "original3",
@@ -91,7 +116,7 @@ class RichConfigTest extends BaseSpec {
           | }
           | bar : true
         """.stripMargin)
-      conf.collectAsMap shouldBe Map("thing.b" -> "2", "thing.c" -> "3", "bar" -> "true")
+      conf.collectAsMap() shouldBe Map("thing.b" -> "2", "thing.c" -> "3", "bar" -> "true")
     }
   }
   "RichConfig.intersect" should {

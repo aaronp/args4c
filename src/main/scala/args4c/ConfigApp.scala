@@ -52,6 +52,11 @@ import scala.io.StdIn
 trait ConfigApp extends LowPriorityArgs4cImplicits {
 
   /**
+    * The result of running this application
+    */
+  type Result
+
+  /**
     * exposes a main entry point which will then:
     *
     * 1) parse the user args as a configuration
@@ -73,11 +78,13 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param secretConfig the result of the secret config user arguments
     * @param parsedConfig the total configuration, potentially including the secret config
     */
-  protected def runWithConfig(secretConfig: SecretConfigResult, parsedConfig: Config): Unit = {
+  protected def runWithConfig(secretConfig: SecretConfigResult, parsedConfig: Config): Option[Result] = {
     parsedConfig.showIfSpecified(obscure(secretConfig.configOpt.map(_.paths))) match {
       // 'show' was not specified, let's run our app
-      case None               => run(parsedConfig)
-      case Some(specifiedArg) => showValue(specifiedArg, parsedConfig)
+      case None => Option(run(parsedConfig))
+      case Some(specifiedArg) =>
+        showValue(specifiedArg, parsedConfig)
+        None
     }
   }
 
@@ -111,7 +118,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
               readLine: String => String,
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
-              pathToSecretConfigArg: String = defaultSecretConfigArg): Unit = {
+              pathToSecretConfigArg: String = defaultSecretConfigArg): Option[Result] = {
 
     /**
       * should we configure the local passwords?
@@ -119,8 +126,8 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     if (isPasswordSetup(userArgs, setupUserArgFlag)) {
       val pathToConfig = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArg).getOrElse(SecretConfig.defaultSecretConfigPath())
       SecretConfig.writeSecretsUsingPrompt(pathToConfig, readLine)
+      None
     } else {
-
       val secretConfig: SecretConfigResult = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
       val parsedConfig = {
         val handledArgs = Set(setupUserArgFlag, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
@@ -135,7 +142,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected def isPasswordSetup(userArgs: Array[String], setupArg: String): Boolean = userArgs.contains(setupArg)
 
   // if we have a 'secret' config, then we should obscure those values
-  protected def obscure(secretPathsOpt: Option[List[String]])(configPath: String, value: String): String = {
+  protected def obscure(secretPathsOpt: Option[Seq[String]])(configPath: String, value: String): String = {
     secretPathsOpt match {
       case Some(secretPaths) =>
         if (secretPaths.contains(configPath)) {
@@ -149,7 +156,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
 
   /** @return the default config to overlay the user args over.
     */
-  protected def defaultConfig(): Config = args4c.defaultConfig()
+  def defaultConfig(): Config = args4c.defaultConfig()
 
   /**
     * displays the value for the given config for when the 'show' command-line arg was specified
@@ -164,7 +171,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     *
     * @param config the configuration to run with
     */
-  def run(config: Config): Unit
+  def run(config: Config): Result
 
   protected def onUnrecognizedUserArg(allowedArgs: Set[String])(arg: String): Config = {
     if (allowedArgs.contains(arg)) {
