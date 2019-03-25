@@ -22,4 +22,4 @@ You may need to run
 git push --set-upstream origin master
 ```
 
-Then log in to [sonatype nexus][https://oss.sonatype.org/#stagingRepositories] and test, then 'close' the staging repo.
+Then log in to [sonatype nexus](https://oss.sonatype.org/#stagingRepositories) and test, then 'close' the staging repo.
