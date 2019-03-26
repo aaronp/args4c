@@ -5,7 +5,7 @@ Args4c
 [![Coverage Status](https://coveralls.io/repos/github/aaronp/args4c/badge.svg?branch=master)](https://coveralls.io/github/aaronp/args4c?branch=master)
 [![Scaladoc](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.12)
 
-Args4c (arguments for configuration) is intended to add some helpers and utilities for obtaining a typesafe configuration from user arguments.
+Args4c (arguments for configuration) adds utilities to obtain a typesafe Config from user arguments.
 
 The dependency on the typesafe config is 'provided', so should work with the typesafe config
 already on your classpath (or, if there isn't one, you can bring one in)
