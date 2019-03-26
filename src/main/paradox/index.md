@@ -13,8 +13,6 @@ already on your classpath (or, if there isn't one, you can bring one in)
 
 Check out the latest scaladocs [here](https://aaronp.github.io/args4c/api/latest/args4c/index.html)
 
-## Content
-
 @@toc { depth=1 }
 
 @@@ index
@@ -24,7 +22,6 @@ Check out the latest scaladocs [here](https://aaronp.github.io/args4c/api/latest
 * [Usage](usage.md)
 * [Building/Releasing](building.md)
 * [Environment Overrides](environment.md)
-* [Encrypting/Decrypting Configs](secretConfig.md)
 * [License](license.md)
 
 @@@
