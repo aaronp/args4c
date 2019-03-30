@@ -242,7 +242,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
           }
           import scala.collection.JavaConverters._
           val comments = value.origin().comments().asScala.toList
-          StringEntry(comments, originString, key, stringValue)
+          StringEntry(comments, originString, key, unquote(stringValue))
       }
       .toSeq
       .sortBy(_.key)
@@ -271,7 +271,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   def collectAsStrings(options: ConfigRenderOptions = defaultRenderOptions): Seq[(String, String)] =
     entries
       .map {
-        case (key, value) => (key, value.render(options))
+        case (key, value) => (key, unquote(value.render(options)))
       }
       .toSeq
       .sorted

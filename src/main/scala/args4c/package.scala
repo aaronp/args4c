@@ -74,6 +74,26 @@ import scala.sys.SystemProperties
   */
 package object args4c {
 
+  private val UnquoteR = "\\s*\"(.*)\"\\s*".r
+
+  /**
+    * trims and unquotes a string (the single quotes is mine - added to demonstrate the full text):
+    *
+    * {{{
+    *  '"quoted"'     becomes: 'quoted'
+    *  '  "quoted"  ' becomes: 'quoted'
+    *  'quoted"  '    is unchanged: 'quoted"  '
+    *  '"quoted '     is unchanged: 'quoted"  '
+    * }}}
+    *
+    * @param str the string to unquote
+    * @return either the string unchanged or the single quotes removed as trimming whitespace around the quotes
+    */
+  def unquote(str: String) = str match {
+    case UnquoteR(middle) => middle
+    case _                => str
+  }
+
   /** Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:
     *
     * $ a configuration file on the classpath or file system

@@ -1,6 +1,14 @@
 package args4c
 
-import args4c.SecretConfig.defaultPermissions
+import args4c.SecretConfig.{
+  PromptForConfigFilePermissions,
+  PromptForExistingPassword,
+  PromptForPassword,
+  PromptForUpdatedPassword,
+  ReadNextKeyValuePair,
+  ReadNextKeyValuePairAfterError,
+  SaveSecretPrompt
+}
 
 class SecretConfigTest extends BaseSpec {
 
@@ -41,22 +49,25 @@ class SecretConfigTest extends BaseSpec {
 
 object SecretConfigTest {
 
-  def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String])(prompt: String): String = {
-    val Permissions = s"Config Permissions: [$defaultPermissions]"
-    val PathPrompt  = SecretConfig.saveSecretPrompt(pathToConfigFile)
-    val userInput = prompt match {
-      case PathPrompt                       => pathToConfigFile
-      case Permissions                      => SecretConfig.defaultPermissions
-      case _ if prompt.contains("Password") => "sEcre3t"
-      case "Add config path in the form <key>=<value> (leave blank when finished):" =>
+  def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String], password: String = "sEcre3t")(prompt: SecretConfig.Prompt): String = {
+    prompt match {
+      case SaveSecretPrompt(_)            => pathToConfigFile
+      case PromptForConfigFilePermissions => SecretConfig.defaultPermissions
+      case PromptForPassword              => password
+      case PromptForUpdatedPassword       => password
+      case PromptForExistingPassword(_)   => password
+      case ReadNextKeyValuePair =>
         if (testConfigEntries.hasNext) {
           testConfigEntries.next()
         } else {
           ""
         }
-      case _ => sys.error(s"test setup encountered unrecognized prompt for '$prompt'")
+      case ReadNextKeyValuePairAfterError(_) =>
+        if (testConfigEntries.hasNext) {
+          testConfigEntries.next()
+        } else {
+          ""
+        }
     }
-
-    userInput
   }
 }

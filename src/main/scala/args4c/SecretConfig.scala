@@ -20,7 +20,33 @@ import scala.util.control.NoStackTrace
 object SecretConfig {
 
   // format: off
-  type Prompt = String
+
+  sealed trait Prompt
+  case object ReadNextKeyValuePair extends Prompt
+  case class ReadNextKeyValuePairAfterError(previousInvalidEntry : String) extends Prompt
+  case object PromptForPassword extends Prompt
+  case object PromptForUpdatedPassword extends Prompt
+  case class PromptForExistingPassword(configPath : Path) extends Prompt
+  case object PromptForConfigFilePermissions extends Prompt
+  case class SaveSecretPrompt(configPath: String) extends Prompt
+
+  type Reader = Prompt => String
+
+  object Prompt {
+    def stdIn(userInput : String => String) : Prompt => String = {
+      val message = (_ : Prompt) match {
+        case PromptForPassword => "Config Password:"
+        case SaveSecretPrompt(configPath) => s"Save secret config to: [${configPath}]"
+        case PromptForUpdatedPassword => "New Config Password (or blank to reuse the existing one):"
+        case PromptForExistingPassword(configPath) => s"A config already exists at $configPath, enter password:"
+        case ReadNextKeyValuePair => "Add config path in the form <key>=<value> (leave blank when finished):"
+        case ReadNextKeyValuePairAfterError(previousInvalidEntry) => s"Invalid key=value pair '$previousInvalidEntry'. Entries should be in the for <path.to.config.entry>=some sensitive value"
+        case PromptForConfigFilePermissions => s"Config Permissions: [$defaultPermissions]"
+      }
+
+      message.andThen(userInput)
+    }
+  }
 
   /**
     * The environment variable which, if set, will be used to decrypt an encrypted config file (e.g. "--secret" for the default or "--secret=password.conf" for specifying one)
@@ -33,7 +59,7 @@ object SecretConfig {
     * @param readLine a means to accept user input for a particular prompt
     * @return the path to the encrypted configuration file
     */
-  def writeSecretsUsingPrompt(secretConfigFilePath : String, readLine: Prompt => String): Path = {
+  def writeSecretsUsingPrompt(secretConfigFilePath : String, readLine: Reader): Path = {
     val configPath = readSecretConfigPath(secretConfigFilePath, readLine)
     val permissions = readPermissions(readLine)
 
@@ -46,7 +72,7 @@ object SecretConfig {
     val config = {
       val newConfig = readSecretConfig(readLine)
       val existingConfig = if (Files.exists(configPath)) {
-        val pwd = readLine(s"A config already exists at $configPath, enter password:").getBytes("UTF-8")
+        val pwd = readLine(PromptForExistingPassword(configPath)).getBytes("UTF-8")
         previousConfigPassword = Option(pwd)
 
         readConfigAtPath(configPath, pwd, readLine)
@@ -62,7 +88,7 @@ object SecretConfig {
     }
 
     val pwd: Array[Byte] = {
-      val configPasswordPrompt = if (previousConfigPassword.isEmpty) "Config Password:" else "New Config Password (or blank to reuse the existing one):"
+      val configPasswordPrompt = if (previousConfigPassword.isEmpty) PromptForPassword else PromptForUpdatedPassword
       readLine(configPasswordPrompt) match {
         case "" if previousConfigPassword.nonEmpty =>
           val same = previousConfigPassword.get
@@ -93,7 +119,7 @@ object SecretConfig {
     * @param readLine the readline function to get user input
     * @return a configuration if the file exists
     */
-  def readSecretConfig(pathToEncryptedConfig: Path, readLine: String => String): Option[Config] = {
+  def readSecretConfig(pathToEncryptedConfig: Path, readLine: Prompt => String): Option[Config] = {
     if (Files.exists(pathToEncryptedConfig)) {
       val pwd = readConfigPassword(readLine)
       val conf = readConfigAtPath(pathToEncryptedConfig, pwd, readLine)
@@ -107,11 +133,11 @@ object SecretConfig {
   /** @param readLine the standard-in read function
     * @return the application config password used to encrypt the config
     */
-  protected def readConfigPassword(readLine: String => String): Array[Byte] = {
-    envOrProp(SecretEnvVariableName).getOrElse(readLine("Config Password:")).getBytes("UTF-8")
+  protected def readConfigPassword(readLine: Reader): Array[Byte] = {
+    envOrProp(SecretEnvVariableName).getOrElse(readLine()).getBytes("UTF-8")
   }
 
-  private def readConfigAtPath(path: Path, pwd: Array[Byte], readLine: String => String): Config = {
+  private def readConfigAtPath(path: Path, pwd: Array[Byte], readLine: Reader): Config = {
     require(Files.exists(path), s"$path does not exist")
     val bytes = Files.readAllBytes(path)
     val configText = try {
@@ -122,27 +148,24 @@ object SecretConfig {
     ConfigFactory.parseString(configText, ConfigParseOptions.defaults.setOriginDescription(path.getFileName.toString))
   }
 
-  private def readSecretConfig(readLine: Prompt => String): String = {
+  private def readSecretConfig(readLine: Reader): String = {
     import implicits._
-    readNext(Map.empty, readLine).map {
+    readNext(Map.empty, ReadNextKeyValuePair, readLine).map {
       case (key, value) => s"$key = ${value.quoted}"
     }.mkString(Platform.EOL)
   }
 
   @tailrec
-  private def readNext(entries: Map[String, String], readLine: Prompt => String): Map[String, String] = {
-    readLine("Add config path in the form <key>=<value> (leave blank when finished):").trim match {
-      case KeyValue(key, value) =>
-        readNext(entries.updated(key, value), readLine)
+  private def readNext(entries: Map[String, String], nextPrompt : Prompt, readLine: Reader): Map[String, String] = {
+    readLine(nextPrompt).trim match {
       case "" => entries
-      case _ =>
-        System.err.println("Invalid key=value pair. Entries should be in the for <path.to.config.entry>=some sensitive value")
-        entries
+      case KeyValue(key, value) => readNext(entries.updated(key, value), ReadNextKeyValuePair, readLine)
+      case other => readNext(entries, ReadNextKeyValuePairAfterError(other), readLine)
     }
   }
 
-  private def readPermissions(readLine: Prompt => String) = {
-    val permString = readLine(s"Config Permissions: [$defaultPermissions]") match {
+  private def readPermissions(readLine: Reader) = {
+    val permString = readLine(PromptForConfigFilePermissions) match {
       case "" => defaultPermissions
       case other => other
     }
@@ -150,19 +173,17 @@ object SecretConfig {
     PosixFilePermissions.fromString(permString)
   }
 
-  private def readSecretConfigPath(pathToSecretConfigFile : String, readLine: Prompt => String): Path = {
-    val path = readLine(saveSecretPrompt(pathToSecretConfigFile)) match {
+  private def readSecretConfigPath(pathToSecretConfigFile : String, readLine: Reader): Path = {
+    val path = readLine(SaveSecretPrompt(pathToSecretConfigFile)) match {
       case "" => pathToSecretConfigFile
       case path => path
     }
     Paths.get(path)
   }
 
-  private[args4c] def defaultPermissions = "rwx------"
+  private[args4c] val defaultPermissions = "rwx------"
 
-  private[args4c] def saveSecretPrompt(configPath: String) = s"Save secret config to: [${configPath}]"
-
-  private[args4c] def defaultSecretConfigPath(workDir: String = Properties.userDir): String = {
+  def defaultSecretConfigPath(workDir: String = Properties.userDir): String = {
     Paths.get(workDir).relativize(Paths.get(s"${workDir}/.config/secret.conf")).toString
   }
 

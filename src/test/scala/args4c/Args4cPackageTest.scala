@@ -16,6 +16,21 @@ class Args4cPackageTest extends BaseSpec {
     }
   }
 
+  "unquote" should {
+    List(
+      "foo"              -> "foo",
+      "foo\" "           -> "foo\" ",
+      "\" foo \" "       -> " foo ",
+      "some \" foo \" "  -> "some \" foo \" ",
+      "\" foo \" suffix" -> "\" foo \" suffix"
+    ).foreach {
+      case (input, expected) =>
+        s"Unquote >$input< as $expected" in {
+          unquote(input) shouldBe expected
+        }
+    }
+  }
+
   "prefixNotInSet" should {
     "return true if the set does not contain a prefix of the value" in {
       prefixNotInSet(Set("foo.bar"), "foo") shouldBe false

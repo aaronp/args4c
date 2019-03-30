@@ -75,10 +75,15 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     *
     * This method exposes access to the secret config parse result should the application need to do something with it
     *
+    * @param userArgs the original user args
+    * @param pathToSecretConfig the path where the secret config should be stored
     * @param secretConfig the result of the secret config user arguments
     * @param parsedConfig the total configuration, potentially including the secret config
     */
-  protected def runWithConfig(secretConfig: SecretConfigResult, parsedConfig: Config): Option[Result] = {
+  protected def runWithConfig(userArgs: Array[String],
+                              pathToSecretConfig : String,
+                              secretConfig: SecretConfigResult,
+                              parsedConfig: Config): Option[Result] = {
     parsedConfig.showIfSpecified(obscure(secretConfig.configOpt.map(_.paths))) match {
       // 'show' was not specified, let's run our app
       case None => Option(run(parsedConfig))
@@ -120,12 +125,13 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
               pathToSecretConfigArg: String = defaultSecretConfigArg): Option[Result] = {
 
+    val pathToSecretConfig: String = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArg).getOrElse(SecretConfig.defaultSecretConfigPath())
+
     /**
       * should we configure the local passwords?
       */
     if (isPasswordSetup(userArgs, setupUserArgFlag)) {
-      val pathToConfig = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArg).getOrElse(SecretConfig.defaultSecretConfigPath())
-      SecretConfig.writeSecretsUsingPrompt(pathToConfig, readLine)
+      SecretConfig.writeSecretsUsingPrompt(pathToSecretConfig, readLine)
       None
     } else {
       val secretConfig: SecretConfigResult = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
@@ -135,7 +141,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
         baseConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
       }
 
-      runWithConfig(secretConfig, parsedConfig)
+      runWithConfig(userArgs, pathToSecretConfig, secretConfig, parsedConfig)
     }
   }
 
