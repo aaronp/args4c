@@ -65,9 +65,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     *
     * @param args the user arguments
     */
-  def main(args: Array[String]): Unit = {
-    runMain(args, StdIn.readLine(_))
-  }
+  def main(args: Array[String]): Unit = runMain(args, StdIn.readLine(_))
 
   /**
     * Exposes a run function which checks the parsedConfig for a 'show' user setting to display the config,
@@ -123,7 +121,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
               readLine: String => String,
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
-              pathToSecretConfigArg: String = defaultSecretConfigArg): Option[Result] = {
+              pathToSecretConfigArg: String = defaultSecretConfigArgFlag): Option[Result] = {
 
     val pathToSecretConfig: String = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArg).getOrElse(SecretConfig.defaultSecretConfigPath())
 
@@ -233,6 +231,6 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
 
   /** @return the command-line argument to specify the path to an encrypted secret config file (e.g. MyApp -secret=.passwords.conf)
     */
-  protected def defaultSecretConfigArg: String = envOrProp("DefaultSecretArgFlag").getOrElse("--secret")
+  protected def defaultSecretConfigArgFlag: String = envOrProp("DefaultSecretArgFlag").getOrElse("--secret")
 
 }

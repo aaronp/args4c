@@ -5,7 +5,38 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 class ConfigAppTest extends BaseSpec {
 
-  "ConfigApp" should {
+  "ConfigApp.main" should {
+    "error if told to run with a --secret which doesn't exist" in {
+      val app = new ConfigApp {
+        type Result = Config
+        var lastConfig: Config = ConfigFactory.empty
+        override def run(config: Config) = {
+          lastConfig = config
+          config
+        }
+      }
+
+      val bang = intercept[Exception] {
+        app.main(Array("--secret=some/invalid/path"))
+      }
+      println(bang.getMessage)
+      bang.getMessage should include ("Unrecognized user arg 'someRawString'")
+    }
+    "invoke the correct function with 'onUnrecognizedUserArg'" in {
+      val app = new ConfigApp {
+        type Result = Config
+        var lastConfig: Config = ConfigFactory.empty
+        override def run(config: Config) = {
+          lastConfig = config
+          config
+        }
+      }
+
+      val bang = intercept[Exception] {
+        app.main(Array("someRawString"))
+      }
+      bang.getMessage should include ("Unrecognized user arg 'someRawString'")
+    }
     "be able to source sensitive config files" in {
       val app = new ConfigApp {
         type Result = Config
@@ -33,10 +64,12 @@ class ConfigAppTest extends BaseSpec {
     }
     "show values when a show is given" in {
       val app = new TestApp
-      app.main(Array("ignore.me=ok", "foo.bar.x=123", "foo.bar.y=456", "show=foo.bar"))
+      app.main(Array("foo.bar.password=secret!", "ignore.me=ok", "foo.bar.x=123", "foo.bar.y=456", "show=foo.bar"))
       app.lastConfig.getInt("foo.bar.x") shouldBe 123
       app.lastConfig.getInt("foo.bar.y") shouldBe 456
-      app.shown should include("""foo.bar.x : "123" # command-line
+      app.shown should not include("""ignore.me""")
+      app.shown should include("""foo.bar.password : **** obscured **** # command-line
+                                 |foo.bar.x : "123" # command-line
                                  |foo.bar.y : "456" # command-line""".stripMargin)
     }
     "include configurations on the classpath" in {
