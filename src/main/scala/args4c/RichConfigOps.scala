@@ -10,10 +10,12 @@ import scala.language.{implicitConversions, postfixOps}
 import scala.util.Try
 
 /**
-  * Provider operations on a 'config'
+  * Exposes new operations on a 'config'
   */
 trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
+  /** @return the configuration for which we're providing additional functionality
+    */
   def config: Config
 
   def defaultRenderOptions = ConfigRenderOptions.concise.setJson(false)
@@ -132,16 +134,67 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     without(sysConf)
   }
 
+  /** @param overrideConfig the configuration (as a string) which should override this config -- essentially the inverse of 'withFallback'
+    * @return a new configuration based on 'configString' with our config as a fallback
+    */
+  def overrideWith(overrideConfig: Config): Config = overrideConfig.withFallback(config)
+
+  /** @param configString the configuration (as a string) which should override this config -- essentially the inverse of 'withFallback'
+    * @return a new configuration based on 'configString' with our config as a fallback
+    */
+  def overrideWith(configString: String): Config = overrideWith(ConfigFactory.parseString(configString))
+
+  /** @param key the config path
+    * @param value the value to set
+    * @return a new configuration based on 'configString' with our config as a fallback
+    */
+  def set(key: String, value: Long): Config = set(Map(key -> value))
+
+  def set(key: String, value: String): Config = set(Map(key -> value))
+
+  def set(key: String, value: Boolean): Config = set(Map(key -> value))
+
+  def set[T](key: String, firstValue: T, secondValue: T, theRest: T*): Config = {
+    set(key, firstValue +: secondValue +: theRest.toSeq)
+  }
+
+  def set[T](key: String, value: Seq[T]): Config = {
+    import scala.collection.JavaConverters._
+    set(Map(key -> value.asJava))
+  }
+
+  def set(values: Map[String, Any]): Config = {
+    import scala.collection.JavaConverters._
+    overrideWith(ConfigFactory.parseMap(values.asJava))
+  }
+
+  /** @param other the configuration to remove from this config
+    * @return a new configuration with all values from 'other' removed
+    */
   def without(other: Config): Config = without(asRichConfig(other).paths)
 
+  /** @param firstPath the first path to remove
+    * @param theRest the remaining paths to remove
+    * @return a new configuration with the given paths removed
+    */
   def without(firstPath: String, theRest: String*): Config = without(firstPath +: theRest)
 
+  /** @param firstPath the first path to remove
+    * @param theRest the remaining paths to remove
+    * @return a new configuration with the given paths removed
+    */
   def without(configPaths: TraversableOnce[String]): Config = {
     configPaths.foldLeft(config)(_ withoutPath _)
   }
 
+  /** @param filter a predicate used to determine if the configuration path should be kept
+    * @return a new configuration which just keeps the paths which include the provided path predicate
+    */
   def filter(path: String => Boolean): Config = filterNot(path.andThen(_.unary_!))
 
+  /** @param filter a predicate used to determine if the configuration path should be kept
+    * @return a new configuration which just keeps the paths which do NOT include the provided path predicate
+    */
   def filterNot(path: String => Boolean): Config = without(paths.filter(path))
 
   /** @return the configuration as a json string

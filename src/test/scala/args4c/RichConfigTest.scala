@@ -8,6 +8,23 @@ class RichConfigTest extends BaseSpec {
 
   import scala.collection.JavaConverters._
 
+  "RichConfig.overrideWith" should {
+    "provide a config with the config values set" in {
+      val config = ConfigFactory.parseString("original =  1\nanInt=3").overrideWith("original = 2")
+      config.getInt("anInt") shouldBe 3
+      config.getInt("original") shouldBe 2
+    }
+  }
+  "RichConfig.set" should {
+    "provide a config with the config values set" in {
+      val baseConfig = configForArgs(Array("foo.x.y=1", "test.conf"))
+      val conf       = baseConfig.set("foo.x.y", 2).set("aBoolean", true).set("ints", Array(1, 2, 3)).set("strings", Array("four", "five"))
+      conf.getInt("foo.x.y") shouldBe 2
+      conf.getBoolean("aBoolean") shouldBe true
+      conf.getIntList("ints").asScala should contain inOrderOnly (1, 2, 3)
+      conf.getStringList("strings").asScala should contain inOrderOnly ("four", "five")
+    }
+  }
   "RichConfig.summary" should {
     "show a flatten summary of a configuration" in {
 
