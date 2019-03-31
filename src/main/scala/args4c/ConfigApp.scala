@@ -65,7 +65,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     *
     * @param args the user arguments
     */
-  def main(args: Array[String]): Unit = runMain(args, StdIn.readLine(_))
+  def main(args: Array[String]): Unit = runMain(args, Prompt(StdIn.readLine(_)))
 
   /**
     * Exposes a run function which checks the parsedConfig for a 'show' user setting to display the config,
@@ -78,10 +78,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param secretConfig the result of the secret config user arguments
     * @param parsedConfig the total configuration, potentially including the secret config
     */
-  protected def runWithConfig(userArgs: Array[String],
-                              pathToSecretConfig : String,
-                              secretConfig: SecretConfigResult,
-                              parsedConfig: Config): Option[Result] = {
+  protected def runWithConfig(userArgs: Array[String], pathToSecretConfig: String, secretConfig: SecretConfigResult, parsedConfig: Config): Option[Result] = {
     parsedConfig.showIfSpecified(obscure(secretConfig.configOpt.map(_.paths))) match {
       // 'show' was not specified, let's run our app
       case None => Option(run(parsedConfig))
@@ -118,7 +115,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param pathToSecretConfigArg the value for the key in the form <key>=<path to secret password config> (e.g. defaults to "--secret", as in --secret=/etc/passwords.conf)
     */
   def runMain(userArgs: Array[String],
-              readLine: String => String,
+              readLine: Prompt => String,
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
               pathToSecretConfigArg: String = defaultSecretConfigArgFlag): Option[Result] = {
@@ -200,7 +197,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   }
 
   protected def secretConfigForArgs(userArgs: Array[String],
-                                    readLine: String => String,
+                                    readLine: Prompt => String,
                                     ignoreDefaultSecretConfigArg: String,
                                     pathToSecretConfigArg: String): SecretConfigResult = {
 
