@@ -30,8 +30,6 @@ object SecretConfig {
   case object PromptForConfigFilePermissions extends Prompt
   case class SaveSecretPrompt(configPath: String) extends Prompt
 
-  type Reader = Prompt => String
-
   object Prompt {
     def stdIn(userInput : String => String) : Prompt => String = {
       val message = (_ : Prompt) match {

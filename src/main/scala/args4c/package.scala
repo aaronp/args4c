@@ -2,6 +2,7 @@ import java.net.URL
 import java.nio.file.{Files, Path, Paths}
 
 import args4c.RichConfig.ParseArg
+import args4c.SecretConfig.Prompt
 import com.typesafe.config._
 
 import scala.sys.SystemProperties
@@ -75,6 +76,8 @@ import scala.sys.SystemProperties
 package object args4c {
 
   private val UnquoteR = "\\s*\"(.*)\"\\s*".r
+
+  type Reader = Prompt => String
 
   /**
     * trims and unquotes a string (the single quotes is mine - added to demonstrate the full text):

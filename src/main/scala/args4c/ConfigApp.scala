@@ -3,7 +3,7 @@ package args4c
 import java.nio.file.{Files, Path, Paths}
 
 import args4c.RichConfig.ParseArg
-import args4c.SecretConfig.{defaultSecretConfigPath, readSecretConfig}
+import args4c.SecretConfig.{Prompt, Reader, defaultSecretConfigPath, readSecretConfig}
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.io.StdIn
@@ -66,7 +66,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param args the user arguments
     */
   def main(args: Array[String]): Unit = {
-    runMain(args, StdIn.readLine(_))
+    runMain(args, Prompt.stdIn)
   }
 
   /**
@@ -120,7 +120,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param pathToSecretConfigArg the value for the key in the form <key>=<path to secret password config> (e.g. defaults to "--secret", as in --secret=/etc/passwords.conf)
     */
   def runMain(userArgs: Array[String],
-              readLine: String => String,
+              readLine: Reader,
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
               pathToSecretConfigArg: String = defaultSecretConfigArg): Option[Result] = {
