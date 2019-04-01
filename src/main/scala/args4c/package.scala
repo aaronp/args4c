@@ -74,10 +74,7 @@ import scala.sys.SystemProperties
   */
 package object args4c {
 
-
-
   type Reader = Prompt => String
-
 
   private val UnquoteR = "\\s*\"(.*)\"\\s*".r
 

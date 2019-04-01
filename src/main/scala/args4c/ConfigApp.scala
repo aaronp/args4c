@@ -6,8 +6,6 @@ import args4c.RichConfig.ParseArg
 import args4c.SecretConfig.{defaultSecretConfigPath, readSecretConfig}
 import com.typesafe.config.{Config, ConfigFactory}
 
-import scala.io.StdIn
-
 /**
   * A convenience mix-in utility for a main entry point.
   *
@@ -65,7 +63,9 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     *
     * @param args the user arguments
     */
-  def main(args: Array[String]): Unit = runMain(args, Prompt(StdIn.readLine(_)))
+  def main(args: Array[String]): Unit = {
+    runMain(args, Prompt.stdIn())
+  }
 
   /**
     * Exposes a run function which checks the parsedConfig for a 'show' user setting to display the config,
@@ -112,15 +112,15 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param readLine a function to read in the user input
     * @param setupUserArgFlag the argument to check for in order to run the secret config setup
     * @param ignoreDefaultSecretConfigArg the argument which, if 'userArgs' contains this string, then we will NOT try
-    * @param pathToSecretConfigArg the value for the key in the form <key>=<path to secret password config> (e.g. defaults to "--secret", as in --secret=/etc/passwords.conf)
+    * @param pathToSecretConfigArgFlag the value for the key in the form <key>=<path to secret password config> (e.g. defaults to "--secret", as in --secret=/etc/passwords.conf)
     */
   def runMain(userArgs: Array[String],
-              readLine: Prompt => String,
+              readLine: Reader,
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
-              pathToSecretConfigArg: String = defaultSecretConfigArgFlag): Option[Result] = {
+              pathToSecretConfigArgFlag: String = defaultSecretConfigArgFlag): Option[Result] = {
 
-    val pathToSecretConfig: String = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArg).getOrElse(SecretConfig.defaultSecretConfigPath())
+    val pathToSecretConfig: String = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArgFlag).getOrElse(SecretConfig.defaultSecretConfigPath())
 
     /**
       * should we configure the local passwords?
@@ -129,10 +129,13 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       SecretConfig.writeSecretsUsingPrompt(pathToSecretConfig, readLine)
       None
     } else {
-      val secretConfig: SecretConfigResult = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
+      val secretConfig: SecretConfigResult = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArgFlag)
       val parsedConfig = {
-        val handledArgs = Set(setupUserArgFlag, ignoreDefaultSecretConfigArg, pathToSecretConfigArg)
-        val baseConfig  = secretConfig.configOpt.fold(defaultConfig())(_.withFallback(defaultConfig()))
+        val handledArgs = Set(setupUserArgFlag, ignoreDefaultSecretConfigArg, pathToSecretConfigArgFlag)
+        val baseConfig = secretConfig match {
+          case SecretConfigDoesntExist(path) => throw new IllegalStateException(s"Configuration at '$path' doesn't exist")
+          case other                         => other.configOpt.fold(defaultConfig())(_.withFallback(defaultConfig()))
+        }
         baseConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
       }
 
@@ -188,7 +191,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected case object SecretConfigNotSpecified                      extends SecretConfigResult(None)
 
   protected def pathToSecretConfigFromArgs(userArgs: Array[String], pathToSecretConfigArg: String): Option[String] = {
-    // our KeyValue regex trims leading '-' characters, so if our 'pathToSecretConfigArg' flag is e.g. '--secret' (i.e., the default),
+    // our KeyValue regex trims leading '-' characters, so if our 'pathToSecretConfigArgFlag' flag is e.g. '--secret' (i.e., the default),
     // then we need to drop those leading dashes
     val trimmedArg = pathToSecretConfigArg.dropWhile(_ == '-')
     userArgs.collectFirst {
@@ -197,7 +200,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   }
 
   protected def secretConfigForArgs(userArgs: Array[String],
-                                    readLine: Prompt => String,
+                                    readLine: Reader,
                                     ignoreDefaultSecretConfigArg: String,
                                     pathToSecretConfigArg: String): SecretConfigResult = {
 

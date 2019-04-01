@@ -16,11 +16,10 @@ class ConfigAppTest extends BaseSpec {
         }
       }
 
-      val bang = intercept[Exception] {
+      val bang = intercept[IllegalStateException] {
         app.main(Array("--secret=some/invalid/path"))
       }
-      println(bang.getMessage)
-      bang.getMessage should include ("Unrecognized user arg 'someRawString'")
+      bang.getMessage should include("Configuration at 'some/invalid/path' doesn't exist")
     }
     "invoke the correct function with 'onUnrecognizedUserArg'" in {
       val app = new ConfigApp {
@@ -35,7 +34,7 @@ class ConfigAppTest extends BaseSpec {
       val bang = intercept[Exception] {
         app.main(Array("someRawString"))
       }
-      bang.getMessage should include ("Unrecognized user arg 'someRawString'")
+      bang.getMessage should include("Unrecognized user arg 'someRawString'")
     }
     "be able to source sensitive config files" in {
       val app = new ConfigApp {
@@ -67,10 +66,10 @@ class ConfigAppTest extends BaseSpec {
       app.main(Array("foo.bar.password=secret!", "ignore.me=ok", "foo.bar.x=123", "foo.bar.y=456", "show=foo.bar"))
       app.lastConfig.getInt("foo.bar.x") shouldBe 123
       app.lastConfig.getInt("foo.bar.y") shouldBe 456
-      app.shown should not include("""ignore.me""")
-      app.shown should include("""foo.bar.password : **** obscured **** # command-line
-                                 |foo.bar.x : "123" # command-line
-                                 |foo.bar.y : "456" # command-line""".stripMargin)
+      app.shown should not include ("""ignore.me""")
+      app.shown.lines.toList should contain only ("foo.bar.password : **** obscured **** # command-line",
+      """foo.bar.x : 123 # command-line""",
+      """foo.bar.y : 456 # command-line""")
     }
     "include configurations on the classpath" in {
       val app = new TestApp
@@ -115,11 +114,13 @@ class ConfigAppTest extends BaseSpec {
       shown = value
     }
 
-    // don't try and load a secret config
     override protected def secretConfigForArgs(userArgs: Array[String],
-                                               readLine: String => String,
+                                               readLine: Reader,
                                                ignoreDefaultSecretConfigArg: String,
-                                               pathToSecretConfigArg: String) = SecretConfigNotSpecified
+                                               pathToSecretConfigArg: String): SecretConfigResult = {
+      SecretConfigNotSpecified
+    }
+
   }
 
 }

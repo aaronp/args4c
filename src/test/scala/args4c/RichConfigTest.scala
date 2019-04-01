@@ -54,8 +54,8 @@ class RichConfigTest extends BaseSpec {
           |test.intArray[0] : 1 # String: 3
           |test.intArray[1] : 2 # String: 3
           |test.intArray[2] : 3 # String: 3
-          |test.objArray[0].x : "an object entry" # String: 6
-          |test.objArray[0].y : "another object entry" # String: 7
+          |test.objArray[0].x : an object entry # String: 6
+          |test.objArray[0].y : another object entry # String: 7
           |test.objArray[1].foo : false # String: 10
           |test.password : **** obscured **** # command-line
           |test.stringArray[0] : one # String: 2

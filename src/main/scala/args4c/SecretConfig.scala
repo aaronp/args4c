@@ -93,7 +93,7 @@ object SecretConfig {
     * @param readLine the readline function to get user input
     * @return a configuration if the file exists
     */
-  def readSecretConfig(pathToEncryptedConfig: Path, readLine: Prompt => String): Option[Config] = {
+  def readSecretConfig(pathToEncryptedConfig: Path, readLine: Reader): Option[Config] = {
     if (Files.exists(pathToEncryptedConfig)) {
       val pwd = readConfigPassword(readLine)
       val conf = readConfigAtPath(pathToEncryptedConfig, pwd, readLine)
@@ -108,7 +108,7 @@ object SecretConfig {
     * @return the application config password used to encrypt the config
     */
   protected def readConfigPassword(readLine: Reader): Array[Byte] = {
-    envOrProp(SecretEnvVariableName).getOrElse(readLine()).getBytes("UTF-8")
+    envOrProp(SecretEnvVariableName).getOrElse(readLine(PromptForPassword)).getBytes("UTF-8")
   }
 
   private def readConfigAtPath(path: Path, pwd: Array[Byte], readLine: Reader): Config = {

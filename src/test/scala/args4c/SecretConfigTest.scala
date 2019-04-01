@@ -1,15 +1,5 @@
 package args4c
 
-import args4c.SecretConfig.{
-  PromptForConfigFilePermissions,
-  PromptForExistingPassword,
-  PromptForPassword,
-  PromptForUpdatedPassword,
-  ReadNextKeyValuePair,
-  ReadNextKeyValuePairAfterError,
-  SaveSecretPrompt
-}
-
 class SecretConfigTest extends BaseSpec {
 
   import SecretConfigTest._
@@ -49,7 +39,7 @@ class SecretConfigTest extends BaseSpec {
 
 object SecretConfigTest {
 
-  def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String], password: String = "sEcre3t")(prompt: SecretConfig.Prompt): String = {
+  def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String], password: String = "sEcre3t")(prompt: Prompt): String = {
     prompt match {
       case SaveSecretPrompt(_)            => pathToConfigFile
       case PromptForConfigFilePermissions => SecretConfig.defaultPermissions
