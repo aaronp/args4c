@@ -33,7 +33,7 @@ class SecureConfigTest extends BaseSpec {
                   Iterator(
                     "conf.original.one=first",
                     "conf.original.two=changed",
-                    "conf.updated=new",
+                    "conf.updated=new"
                   ))).setupSecureConfig(Paths.get(configPath))
 
       updated shouldBe pathToConfig
