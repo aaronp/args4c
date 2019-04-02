@@ -3,7 +3,7 @@ package args4c
 import java.nio.file.{Files, Path, Paths}
 
 import args4c.RichConfig.ParseArg
-import args4c.SecretConfig.{defaultSecretConfigPath, readSecretConfig}
+import args4c.SecureConfig.defaultSecretConfigPath
 import com.typesafe.config.{Config, ConfigFactory}
 
 /**
@@ -64,7 +64,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param args the user arguments
     */
   def main(args: Array[String]): Unit = {
-    runMain(args, Prompt.stdIn())
+    runMain(args, SecureConfig(Prompt.stdIn()))
   }
 
   /**
@@ -78,7 +78,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param secretConfig the result of the secret config user arguments
     * @param parsedConfig the total configuration, potentially including the secret config
     */
-  protected def runWithConfig(userArgs: Array[String], pathToSecretConfig: String, secretConfig: SecretConfigResult, parsedConfig: Config): Option[Result] = {
+  protected def runWithConfig(userArgs: Array[String], pathToSecretConfig: Path, secretConfig: SecretConfigResult, parsedConfig: Config): Option[Result] = {
     parsedConfig.showIfSpecified(obscure(secretConfig.configOpt.map(_.paths))) match {
       // 'show' was not specified, let's run our app
       case None => Option(run(parsedConfig))
@@ -109,27 +109,30 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * If either the default or specified encrypted files are found, then the password is taken either from the CONFIG_SECRET if set, or else it prompted for from standard input
     *
     * @param userArgs the user arguments
-    * @param readLine a function to read in the user input
+    * @param secureConfig a means to access/update a secure configuration
     * @param setupUserArgFlag the argument to check for in order to run the secret config setup
     * @param ignoreDefaultSecretConfigArg the argument which, if 'userArgs' contains this string, then we will NOT try
     * @param pathToSecretConfigArgFlag the value for the key in the form <key>=<path to secret password config> (e.g. defaults to "--secret", as in --secret=/etc/passwords.conf)
     */
   def runMain(userArgs: Array[String],
-              readLine: Reader,
+              secureConfig : SecureConfig,
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
               pathToSecretConfigArgFlag: String = defaultSecretConfigArgFlag): Option[Result] = {
 
-    val pathToSecretConfig: String = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArgFlag).getOrElse(SecretConfig.defaultSecretConfigPath())
+    val pathToSecretConfig: Path = {
+      val path = pathToSecretConfigFromArgs(userArgs, pathToSecretConfigArgFlag).getOrElse(SecureConfig.defaultSecretConfigPath())
+      Paths.get(path)
+    }
 
     /**
       * should we configure the local passwords?
       */
     if (isPasswordSetup(userArgs, setupUserArgFlag)) {
-      SecretConfig.writeSecretsUsingPrompt(pathToSecretConfig, readLine)
+      secureConfig.setupSecureConfig(pathToSecretConfig)
       None
     } else {
-      val secretConfig: SecretConfigResult = secretConfigForArgs(userArgs, readLine, ignoreDefaultSecretConfigArg, pathToSecretConfigArgFlag)
+      val secretConfig: SecretConfigResult = secretConfigForArgs(userArgs, secureConfig, ignoreDefaultSecretConfigArg, pathToSecretConfigArgFlag)
       val parsedConfig = {
         val handledArgs = Set(setupUserArgFlag, ignoreDefaultSecretConfigArg, pathToSecretConfigArgFlag)
         val baseConfig = secretConfig match {
@@ -200,7 +203,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   }
 
   protected def secretConfigForArgs(userArgs: Array[String],
-                                    readLine: Reader,
+                                    secureConfig : SecureConfig,
                                     ignoreDefaultSecretConfigArg: String,
                                     pathToSecretConfigArg: String): SecretConfigResult = {
 
@@ -212,7 +215,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       .orElse(defaultSecretConfig(userArgs))
       .map(Paths.get(_))
       .map { path =>
-        readSecretConfig(path, readLine) match {
+        secureConfig.readSecretConfig(path) match {
           case Some(config) => SecretConfigParsed(path, config)
           case None         => SecretConfigDoesntExist(path)
         }

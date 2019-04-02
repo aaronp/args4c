@@ -50,10 +50,10 @@ class ConfigAppTest extends BaseSpec {
 
       try {
         // set up a secret config
-        app.runMain(Array("--setup", s"--secret=$configFile"), SecretConfigTest.testInput(configFile, Iterator("my.password=test")))
+        app.runMain(Array("--setup", s"--secret=$configFile"), SecureConfig(SecureConfigTest.testInput(configFile, Iterator("my.password=test"))))
 
         // run our app w/ that config
-        app.runMain(Array(s"--secret=$configFile"), SecretConfigTest.testInput(configFile, Iterator()))
+        app.runMain(Array(s"--secret=$configFile"), SecureConfig(SecureConfigTest.testInput(configFile, Iterator())))
 
         app.lastConfig.getString("my.password") shouldBe "test"
 
@@ -115,7 +115,7 @@ class ConfigAppTest extends BaseSpec {
     }
 
     override protected def secretConfigForArgs(userArgs: Array[String],
-                                               readLine: Reader,
+                                               secureConfig : SecureConfig,
                                                ignoreDefaultSecretConfigArg: String,
                                                pathToSecretConfigArg: String): SecretConfigResult = {
       SecretConfigNotSpecified

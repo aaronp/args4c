@@ -30,7 +30,8 @@ import scala.sys.SystemProperties
   *        println("Starting MyApp with config:")
   *
   *        // let's "log" our app's config on startup:
-  *        config.filter(_.startsWith("myapp")).summary().foreach(println)
+  *        val flatSummary : String = config.filter(_.startsWith("myapp")).summary()
+  *        println(flatSummary) // "logging" our config
   *      }
   *   }
   * }}}
@@ -122,8 +123,6 @@ package object args4c {
 
   def prop(key: String): Option[String] = (new SystemProperties).get(key)
 
-  def propOrEnv(key: String): Option[String] = prop(key).orElse(env(key))
-
   def envOrProp(key: String): Option[String] = env(key).orElse(prop(key))
 
   def passwordBlacklist = Set("password", "credentials")
@@ -204,21 +203,6 @@ package object args4c {
   def pathAsFile(path: String): Option[Path] = Option(Paths.get(path)).filter(p => Files.exists(p))
 
   def pathAsUrl(path: String): Option[URL] = Option(getClass.getClassLoader.getResource(path))
-
-  def pathToBytes(path: String): Option[Array[Byte]] = {
-    pathAsFile(path)
-      .map(Files.readAllBytes)
-      .orElse(
-        pathAsUrl(path).map { url: URL =>
-          val is = url.openStream
-          try {
-            Stream.continually(is.read).takeWhile(_ != -1).map(_.toByte).toArray
-          } finally {
-            is.close()
-          }
-        }
-      )
-  }
 
   private[args4c] val KeyValue = "-{0,2}(.*?)=(.*)".r
 }

@@ -25,7 +25,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     * @param password
     * @return the encrypted configuration
     */
-  def encrypt(password: Array[Byte]) = Encryption.encryptAES(password, asJson)._2
+  def encrypt(password: Array[Byte]): Array[Byte] = Encryption.encryptAES(password, asJson)._2
 
   import ConfigFactory._
   import RichConfig._

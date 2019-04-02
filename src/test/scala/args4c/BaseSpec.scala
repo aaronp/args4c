@@ -1,5 +1,5 @@
 package args4c
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, Path, Paths}
 
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 
@@ -13,11 +13,12 @@ class BaseSpec extends WordSpec with Matchers with BeforeAndAfterAll with LowPri
   }
 
   def deleteDefaultConfig() = {
-    deleteFile(SecretConfig.defaultSecretConfigPath())
+    deleteFile(SecureConfig.defaultSecretConfigPath())
   }
 
-  def deleteFile(fileName: String) = {
-    val path = Paths.get(fileName)
+  def deleteFile(fileName: String): Unit = deleteFile(Paths.get(fileName))
+
+  def deleteFile(path: Path): Unit = {
     if (Files.exists(path)) {
       Files.delete(path)
     }

@@ -9,11 +9,13 @@ object ExampleApp extends ConfigApp {
   type Result = Config
 
   override def run(config: Config) = {
+    val s: String = config.withOnlyPath("foo").summary()
     println(s"""
          |Running with:
          |
-         |${config.withoutSystem.root.render()}
+         |${s}
        """.stripMargin)
+
     config
   }
 }
