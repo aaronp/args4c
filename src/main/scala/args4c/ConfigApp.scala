@@ -115,7 +115,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param pathToSecretConfigArgFlag the value for the key in the form <key>=<path to secret password config> (e.g. defaults to "--secret", as in --secret=/etc/passwords.conf)
     */
   def runMain(userArgs: Array[String],
-              secureConfig : SecureConfig,
+              secureConfig: SecureConfig,
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecretConfigArg: String = defaultIgnoreDefaultSecretConfigArg,
               pathToSecretConfigArgFlag: String = defaultSecretConfigArgFlag): Option[Result] = {
@@ -203,7 +203,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   }
 
   protected def secretConfigForArgs(userArgs: Array[String],
-                                    secureConfig : SecureConfig,
+                                    secureConfig: SecureConfig,
                                     ignoreDefaultSecretConfigArg: String,
                                     pathToSecretConfigArg: String): SecretConfigResult = {
 

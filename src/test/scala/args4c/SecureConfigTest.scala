@@ -105,7 +105,9 @@ class SecureConfigTest extends BaseSpec {
 
   def deleteConfigFiles() = {
     val dir = Paths.get(s"./target/${getClass.getName}")
-    dir.toFile.listFiles.map(_.toPath).foreach(deleteFile)
+    require(dir != null, "null dir")
+    require(dir.toFile != null, "null dir file")
+    Option(dir.toFile.listFiles).toList.flatten.map(_.toPath).foreach(deleteFile)
   }
 }
 

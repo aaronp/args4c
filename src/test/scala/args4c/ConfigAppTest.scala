@@ -115,7 +115,7 @@ class ConfigAppTest extends BaseSpec {
     }
 
     override protected def secretConfigForArgs(userArgs: Array[String],
-                                               secureConfig : SecureConfig,
+                                               secureConfig: SecureConfig,
                                                ignoreDefaultSecretConfigArg: String,
                                                pathToSecretConfigArg: String): SecretConfigResult = {
       SecretConfigNotSpecified
