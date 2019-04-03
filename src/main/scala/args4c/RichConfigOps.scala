@@ -237,8 +237,13 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
       e.getValue match {
         case list: ConfigList =>
           import scala.collection.JavaConverters._
-          list.listIterator().asScala.zipWithIndex.flatMap {
+          val all = list.listIterator().asScala.zipWithIndex.flatMap {
             case (value: ConfigValue, i) => prepend(s"$key[$i]", value)
+          }
+          if (all.isEmpty) {
+            Set(s"$key[]" -> list)
+          } else {
+            all
           }
         case cv => Set(key -> cv)
       }
