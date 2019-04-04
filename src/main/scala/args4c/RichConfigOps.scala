@@ -6,19 +6,21 @@ import com.typesafe.config._
 
 import scala.compat.Platform
 import scala.concurrent.duration._
-import scala.language.{implicitConversions, postfixOps}
+import scala.language.{dynamics, implicitConversions, postfixOps}
 import scala.util.Try
 
 /**
   * Exposes new operations on a 'config'
   */
-trait RichConfigOps extends LowPriorityArgs4cImplicits {
+trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
 
   /** @return the configuration for which we're providing additional functionality
     */
   def config: Config
 
   def defaultRenderOptions = ConfigRenderOptions.concise.setJson(false)
+
+  def selectDynamic(path: String): Selected = Selected(config.getValue(path))
 
   /**
     *
@@ -27,7 +29,6 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     */
   def encrypt(password: Array[Byte]): Array[Byte] = Encryption.encryptAES(password, asJson)._2
 
-  import ConfigFactory._
   import RichConfig._
 
   /** @param key the configuration path
@@ -123,17 +124,6 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     }
   }
 
-  /** And example which uses most of the below stuff to showcase what this is for
-    * Note : writing a 'diff' using this would be pretty straight forward
-    */
-  def uniquePaths: Seq[String] = withoutSystem.paths.sorted
-
-  /** this config w/o the system properties or environment variables */
-  def withoutSystem: Config = {
-    val sysConf = systemEnvironment.withFallback(systemProperties).withFallback(sysEnvAsConfig())
-    without(sysConf)
-  }
-
   /** @param overrideConfig the configuration (as a string) which should override this config -- essentially the inverse of 'withFallback'
     * @return a new configuration based on 'configString' with our config as a fallback
     */
@@ -154,7 +144,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
 
   def set(key: String, value: Boolean): Config = set(Map(key -> value))
 
-  def set[T](key: String, firstValue: T, secondValue: T, theRest: T*): Config = {
+  def setArray[T](key: String, firstValue: T, secondValue: T, theRest: T*): Config = {
     set(key, firstValue +: secondValue +: theRest.toSeq)
   }
 
@@ -171,7 +161,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
   /** @param other the configuration to remove from this config
     * @return a new configuration with all values from 'other' removed
     */
-  def without(other: Config): Config = without(asRichConfig(other).paths)
+  def without(other: Config): Config = without(configAsRichConfig(other).paths)
 
   /** @param firstPath the first path to remove
     * @param theRest the remaining paths to remove
@@ -179,23 +169,22 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
     */
   def without(firstPath: String, theRest: String*): Config = without(firstPath +: theRest)
 
-  /** @param firstPath the first path to remove
-    * @param theRest the remaining paths to remove
+  /** @param configPaths the paths to remove
     * @return a new configuration with the given paths removed
     */
   def without(configPaths: TraversableOnce[String]): Config = {
     configPaths.foldLeft(config)(_ withoutPath _)
   }
 
-  /** @param filter a predicate used to determine if the configuration path should be kept
+  /** @param pathFilter a predicate used to determine if the configuration path should be kept
     * @return a new configuration which just keeps the paths which include the provided path predicate
     */
-  def filter(path: String => Boolean): Config = filterNot(path.andThen(_.unary_!))
+  def filter(pathFilter: String => Boolean): Config = filterNot(pathFilter.andThen(_.unary_!))
 
-  /** @param filter a predicate used to determine if the configuration path should be kept
+  /** @param pathFilter a predicate used to determine if the configuration path should be kept
     * @return a new configuration which just keeps the paths which do NOT include the provided path predicate
     */
-  def filterNot(path: String => Boolean): Config = without(paths.filter(path))
+  def filterNot(pathFilter: String => Boolean): Config = without(paths.filter(pathFilter))
 
   /** @return the configuration as a json string
     */
@@ -220,7 +209,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
           }
         case list: ConfigList =>
           import scala.collection.JavaConverters._
-          list
+          val all = list
             .listIterator()
             .asScala
             .zipWithIndex
@@ -228,6 +217,12 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
               case (value: ConfigValue, i) => prepend(s"$prefix[$i]", value)
             }
             .toSet
+          // format :on
+          if (all.isEmpty) {
+            Set(prefix -> list)
+          } else {
+            all
+          }
         case _ => Set(prefix -> cv)
       }
     }
@@ -241,7 +236,7 @@ trait RichConfigOps extends LowPriorityArgs4cImplicits {
             case (value: ConfigValue, i) => prepend(s"$key[$i]", value)
           }
           if (all.isEmpty) {
-            Set(s"$key[]" -> list)
+            Set(key -> list)
           } else {
             all
           }
