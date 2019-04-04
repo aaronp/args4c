@@ -14,7 +14,7 @@ case class Selected(value: ConfigValue) extends Dynamic {
   def asRichConfig: RichConfig = {
     value match {
       case c: ConfigObject => new RichConfig(c.toConfig)
-      case other           =>
+      case other =>
         sys.error(s"$other for ${value.valueType()} is not a config: $value")
     }
   }

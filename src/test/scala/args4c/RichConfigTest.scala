@@ -18,7 +18,7 @@ class RichConfigTest extends BaseSpec {
       val bang = intercept[Exception] {
         config.a.int.asList("bang")
       }
-      bang.getMessage should include ("is not a config")
+      bang.getMessage should include("is not a config")
     }
   }
   "RichConfig.overrideWith" should {
