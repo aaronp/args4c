@@ -95,7 +95,8 @@ which can be made available by extending <a href="" class="extype" name="args4c.
      println(<span class="lit">"Starting MyApp with config:"</span>)
 
      <span class="cmt">// let's "log" our app's config on startup:</span>
-     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+     <span class="kw">val</span> flatSummary : <span class="std">String</span> = config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary()
+     println(flatSummary) <span class="cmt">// "logging" our config</span>
    }
 }</pre><p>Where the 'summary' will produce sorted <a href="StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
 obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
@@ -125,17 +126,53 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="trait" href="" title=""></a>
                         <a href="" title="">LowPriorityArgs4cImplicits</a>
                       </li><li class="current-entities indented1">
+                        <a class="object" href="Prompt$.html" title=""></a>
+                        <a class="trait" href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'"></a>
+                        <a href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'">Prompt</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="PromptForConfigFilePermissions$.html" title=""></a>
+                        <a href="PromptForConfigFilePermissions$.html" title="">PromptForConfigFilePermissions</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="class" href="PromptForExistingPassword.html" title=""></a>
+                        <a href="PromptForExistingPassword.html" title="">PromptForExistingPassword</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="PromptForPassword$.html" title=""></a>
+                        <a href="PromptForPassword$.html" title="">PromptForPassword</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="PromptForUpdatedPassword$.html" title=""></a>
+                        <a href="PromptForUpdatedPassword$.html" title="">PromptForUpdatedPassword</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="ReadNextKeyValuePair$.html" title=""></a>
+                        <a href="ReadNextKeyValuePair$.html" title="">ReadNextKeyValuePair</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="class" href="ReadNextKeyValuePairAfterError.html" title=""></a>
+                        <a href="ReadNextKeyValuePairAfterError.html" title="">ReadNextKeyValuePairAfterError</a>
+                      </li><li class="current-entities indented1">
                         <a class="object" href="RichConfig$.html" title=""></a>
                         <a class="class" href="RichConfig.html" title="Adds some scala utility around a typesafe config"></a>
                         <a href="RichConfig.html" title="Adds some scala utility around a typesafe config">RichConfig</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="trait" href="RichConfigOps.html" title="Provider operations on a 'config'"></a>
-                        <a href="RichConfigOps.html" title="Provider operations on a 'config'">RichConfigOps</a>
+                        <a class="trait" href="RichConfigOps.html" title="Exposes new operations on a 'config'"></a>
+                        <a href="RichConfigOps.html" title="Exposes new operations on a 'config'">RichConfigOps</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="object" href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs"></a>
-                        <a href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs">SecretConfig</a>
+                        <a class="class" href="SaveSecretPrompt.html" title=""></a>
+                        <a href="SaveSecretPrompt.html" title="">SaveSecretPrompt</a>
+                      </li><li class="current-entities indented1">
+                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs"></a>
+                        <a class="class" href="SecureConfig.html" title=""></a>
+                        <a href="SecureConfig.html" title="">SecureConfig</a>
+                      </li><li class="current-entities indented1">
+                        <a class="object" href="Selected$.html" title=""></a>
+                        <a class="class" href="Selected.html" title="An object returned from a dynamic select"></a>
+                        <a href="Selected.html" title="An object returned from a dynamic select">Selected</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
                         <a class="class" href="StringEntry.html" title=""></a>
@@ -333,22 +370,6 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="args4c.LowPriorityArgs4cImplicits#asRichConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asRichConfig(c:com.typesafe.config.Config):args4c.RichConfig"></a><a id="asRichConfig(Config):RichConfig"></a>
-      <span class="permalink">
-      <a href="../args4c/LowPriorityArgs4cImplicits.html#asRichConfig(c:com.typesafe.config.Config):args4c.RichConfig" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asRichConfig</span><span class="params">(<span name="c">c: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <a href="RichConfig.html" class="extype" name="args4c.RichConfig">RichConfig</a></span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
@@ -373,6 +394,22 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="args4c.LowPriorityArgs4cImplicits#configAsRichConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="configAsRichConfig(c:com.typesafe.config.Config):args4c.RichConfig"></a><a id="configAsRichConfig(Config):RichConfig"></a>
+      <span class="permalink">
+      <a href="../args4c/LowPriorityArgs4cImplicits.html#configAsRichConfig(c:com.typesafe.config.Config):args4c.RichConfig" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configAsRichConfig</span><span class="params">(<span name="c">c: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result">: <a href="RichConfig.html" class="extype" name="args4c.RichConfig">RichConfig</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">

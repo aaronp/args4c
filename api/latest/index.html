@@ -95,7 +95,8 @@ which can be made available by extending <a href="args4c/LowPriorityArgs4cImplic
      println(<span class="lit">"Starting MyApp with config:"</span>)
 
      <span class="cmt">// let's "log" our app's config on startup:</span>
-     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+     <span class="kw">val</span> flatSummary : <span class="std">String</span> = config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary()
+     println(flatSummary) <span class="cmt">// "logging" our config</span>
    }
 }</pre><p>Where the 'summary' will produce sorted <a href="args4c/StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
 obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line

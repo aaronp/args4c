@@ -122,7 +122,6 @@ aaronp/args4c
   <li><a href="usage.html" class="active page">Usage</a></li>
   <li><a href="building.html" class="page">Building</a></li>
   <li><a href="environment.html" class="page">Overrides from env variables</a></li>
-  <li><a href="secretConfig.html" class="page">Sensitive (Encrypted) Configurations</a></li>
   <li><a href="license.html" class="page">License</a></li>
 </ul>
 <nav class="md-nav md-nav--secondary">
@@ -132,6 +131,9 @@ aaronp/args4c
   <ul>
     <li><a href="usage.html#running" class="header">Running</a></li>
     <li><a href="usage.html#in-code" class="header">In Code</a></li>
+    <li><a href="usage.html#sensitive-encrypted-configurations" class="header">Sensitive (Encrypted) Configurations</a></li>
+    <li><a href="usage.html#setting-up-sensitive-config-entries" class="header">Setting up sensitive config entries</a></li>
+    <li><a href="usage.html#running-with-an-encrypted-config" class="header">Running with an encrypted config</a></li>
   </ul></li>
 </ul>
 </nav>
@@ -140,7 +142,7 @@ aaronp/args4c
 <ul style="display: none">
 <li class="md-nav__item md-version" id="project.version">
 <label class="md-nav__link" for="__version">
-<i class="md-icon" title="Version">label_outline</i> 0.4.2*
+<i class="md-icon" title="Version">label_outline</i> 0.5.1*
 </label>
 </li>
 </ul>
@@ -157,6 +159,9 @@ aaronp/args4c
   <ul>
     <li><a href="usage.html#running" class="header">Running</a></li>
     <li><a href="usage.html#in-code" class="header">In Code</a></li>
+    <li><a href="usage.html#sensitive-encrypted-configurations" class="header">Sensitive (Encrypted) Configurations</a></li>
+    <li><a href="usage.html#setting-up-sensitive-config-entries" class="header">Setting up sensitive config entries</a></li>
+    <li><a href="usage.html#running-with-an-encrypted-config" class="header">Running with an encrypted config</a></li>
   </ul></li>
 </ul>
 </nav>
@@ -171,7 +176,7 @@ aaronp/args4c
 <p>The goal for this library is to enable command-line arguments to affect the parsed typesafe config.</p>
 <h2><a href="#running" name="running" class="anchor"><span class="anchor-link"></span></a>Running</h2>
 <p>e.g., you just write your application against a &lsquo;Config&rsquo; instead of &lsquo;Array[String]&rsquo;, and then run it like this: </p>
-<pre class="prettyprint"><code class="language-bash">  java -cp app.jar MyApp foo.x=bar foo.x=ignored /opt/etc/overrides.conf prod.conf
+<pre class="prettyprint"><code class="language-bash">  java -cp myApp.jar my.App foo.x=bar /app/config/filesystem-config.conf classpathConfig.conf
 </code></pre>
 <h2><a href="#in-code" name="in-code" class="anchor"><span class="anchor-link"></span></a>In Code</h2>
 <p>The &lsquo;MyApp&rsquo; would then just use the args4c.implicits (or extend a ConfigApp) to be able to get the configuration: </p>
@@ -197,6 +202,53 @@ aaronp/args4c
 myapp.password : **** obscured **** # command-line
 myapp.saveTo : afile # file:/opt/etc/myapp/test.conf@3
 </code></pre>
+<h2><a href="#sensitive-encrypted-configurations" name="sensitive-encrypted-configurations" class="anchor"><span class="anchor-link"></span></a>Sensitive (Encrypted) Configurations</h2>
+<p>args4c also provides a &lsquo;args4c.ConfigApp&rsquo; trait which provides some additional functionality to configuration-based applications:</p>
+<pre class="prettyprint"><code class="language-scala">object MyApp extends args4c.ConfigApp with StrictLogging {
+
+  override def run(config : Config) : Unit = {
+     logger.info(s&quot;Running with ${config.withPaths(&quot;myapp&quot;).summary()}&quot;)
+      ...
+  }
+}
+</code></pre>
+<h2><a href="#setting-up-sensitive-config-entries" name="setting-up-sensitive-config-entries" class="anchor"><span class="anchor-link"></span></a>Setting up sensitive config entries</h2>
+<p>Aside from brining in the implicit configurations, it adds argument parsing support to run your application with &ldquo;&ndash;setup&rdquo; in so sensitive configuration settings can be supplied by the user using standard input.</p>
+<p>The user will be prompted to indicate where the encrypted config should be created (and with what permissions), followed by prompts for configuration entries:</p>
+<pre class="prettyprint"><code class="language-bash">&gt; java -cp app.jar MyApp --setup
+Save secure config to (.config/secret.conf):
+Config Permissions (rwx------):
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):example.password1=sEcr3t
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):example.config.entry.key=password
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):
+Config Password:myapp
+</code></pre>
+<p>or, you can supply the default config location via e.g. the &ndash;secure=path/to/password.conf argument:</p>
+<pre class="prettyprint"><code class="language-bash">&gt; java -cp app.jar MyApp --setup --secure=path/to/secret.conf
+Save secure config to (path/to/secret.conf):
+...
+</code></pre>
+<h2><a href="#running-with-an-encrypted-config" name="running-with-an-encrypted-config" class="anchor"><span class="anchor-link"></span></a>Running with an encrypted config</h2>
+<p>Then, to run the application with this config taken into account, launch it with the &lsquo;&ndash;secure=path/to/your/secret.conf&rsquo; (or just &ndash;secure to have it look in the default location). The application will then prompt for a config password from standard input.</p>
+<pre class="prettyprint"><code class="language-bash">&gt; java -cp app.jar MyApp --secure=path/to/secret.conf -other.settings=true uat.conf
+Config Password:_
+</code></pre>
+<p>or</p>
+<pre class="prettyprint"><code class="language-bash">&gt; java -cp app.jar MyApp --secure
+Config Password:_
+</code></pre>
+<p>Note: The &ndash;secure argument is in addition to any other configuration params:</p>
+<pre class="prettyprint"><code class="language-bash">&gt; java -cp app.jar MyApp --secure -show=foo.bar foo.x=true uat.conf
+Config Password:_
+</code></pre>
+<p>To avoid having to provide the password from standard input you can:  * set the &lsquo;CONFIG_SECRET&rsquo; environment variable  * set the &lsquo;CONFIG_SECRET&rsquo; system property to the JVM  * override the &lsquo;readConfigPassword&rsquo; function in your application</p>
+<p>(I&rsquo;m not recommending you expose your passwords via system properties or env variables &ndash; the option&rsquo;s just there if you need it)</p>
+<pre class="prettyprint"><code class="language-bash">&gt; java -DCONFIG_SECRET=confPassword -cp app.jar MyApp --secure show=foo
+foo.bar : some value # reference.conf
+&gt; export CONFIG_SECRET=confPassword
+&gt; java -cp app.jar MyApp --secure show=foo
+foo.bar : some value # reference.conf
+</code></pre>
 </div>
 <div>
 <a href="https://github.com/aaronp/args4c/tree/master/src/main/paradox/usage.md" title="Edit this page" class="md-source-file md-edit">
@@ -205,7 +257,7 @@ Edit this page
 </div>
 <div class="print-only">
 <span class="md-source-file md-version">
-0.4.2*
+0.5.1*
 </span>
 </div>
 </article>

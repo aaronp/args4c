@@ -95,7 +95,8 @@ which can be made available by extending <a href="LowPriorityArgs4cImplicits.htm
      println(<span class="lit">"Starting MyApp with config:"</span>)
 
      <span class="cmt">// let's "log" our app's config on startup:</span>
-     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+     <span class="kw">val</span> flatSummary : <span class="std">String</span> = config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary()
+     println(flatSummary) <span class="cmt">// "logging" our config</span>
    }
 }</pre><p>Where the 'summary' will produce sorted <a href="StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
 obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
@@ -125,17 +126,53 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
                         <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
                       </li><li class="current-entities indented1">
+                        <a class="object" href="Prompt$.html" title=""></a>
+                        <a class="trait" href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'"></a>
+                        <a href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'">Prompt</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="PromptForConfigFilePermissions$.html" title=""></a>
+                        <a href="PromptForConfigFilePermissions$.html" title="">PromptForConfigFilePermissions</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="class" href="PromptForExistingPassword.html" title=""></a>
+                        <a href="PromptForExistingPassword.html" title="">PromptForExistingPassword</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="PromptForPassword$.html" title=""></a>
+                        <a href="PromptForPassword$.html" title="">PromptForPassword</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="PromptForUpdatedPassword$.html" title=""></a>
+                        <a href="PromptForUpdatedPassword$.html" title="">PromptForUpdatedPassword</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="object" href="ReadNextKeyValuePair$.html" title=""></a>
+                        <a href="ReadNextKeyValuePair$.html" title="">ReadNextKeyValuePair</a>
+                      </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="class" href="ReadNextKeyValuePairAfterError.html" title=""></a>
+                        <a href="ReadNextKeyValuePairAfterError.html" title="">ReadNextKeyValuePairAfterError</a>
+                      </li><li class="current-entities indented1">
                         <a class="object" href="RichConfig$.html" title=""></a>
                         <a class="class" href="RichConfig.html" title="Adds some scala utility around a typesafe config"></a>
                         <a href="RichConfig.html" title="Adds some scala utility around a typesafe config">RichConfig</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="trait" href="RichConfigOps.html" title="Provider operations on a 'config'"></a>
-                        <a href="RichConfigOps.html" title="Provider operations on a 'config'">RichConfigOps</a>
+                        <a class="trait" href="RichConfigOps.html" title="Exposes new operations on a 'config'"></a>
+                        <a href="RichConfigOps.html" title="Exposes new operations on a 'config'">RichConfigOps</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="object" href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs"></a>
-                        <a href="SecretConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs">SecretConfig</a>
+                        <a class="class" href="SaveSecretPrompt.html" title=""></a>
+                        <a href="SaveSecretPrompt.html" title="">SaveSecretPrompt</a>
+                      </li><li class="current-entities indented1">
+                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs"></a>
+                        <a class="class" href="SecureConfig.html" title=""></a>
+                        <a href="SecureConfig.html" title="">SecureConfig</a>
+                      </li><li class="current-entities indented1">
+                        <a class="object" href="Selected$.html" title=""></a>
+                        <a class="class" href="Selected.html" title="An object returned from a dynamic select"></a>
+                        <a href="Selected.html" title="An object returned from a dynamic select">Selected</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
                         <a class="class" href="StringEntry.html" title=""></a>
@@ -182,7 +219,8 @@ which can be made available by extending <a href="LowPriorityArgs4cImplicits.htm
      println(<span class="lit">"Starting MyApp with config:"</span>)
 
      <span class="cmt">// let's "log" our app's config on startup:</span>
-     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+     <span class="kw">val</span> flatSummary : <span class="std">String</span> = config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary()
+     println(flatSummary) <span class="cmt">// "logging" our config</span>
    }
 }</pre><p>Where the 'summary' will produce sorted <a href="StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
 obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
@@ -293,6 +331,71 @@ separating the secret config from the remaining config, or just ensuring to limi
       </span>
       
       
+    </li><li name="args4c.Prompt" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PromptextendsAnyRef"></a><a id="Prompt:Prompt"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#PromptextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Represents a request for user input when configuring the 'sensitive configurations'" href="Prompt.html"><span class="name">Prompt</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Represents a request for user input when configuring the 'sensitive configurations'
+</p>
+    </li><li name="args4c.PromptForExistingPassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PromptForExistingPasswordextendsPromptwithProductwithSerializable"></a><a id="PromptForExistingPassword:PromptForExistingPassword"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#PromptForExistingPasswordextendsPromptwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="PromptForExistingPassword.html"><span class="name">PromptForExistingPassword</span></a><span class="params">(<span name="configPath">configPath: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.ReadNextKeyValuePairAfterError" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReadNextKeyValuePairAfterErrorextendsPromptwithProductwithSerializable"></a><a id="ReadNextKeyValuePairAfterError:ReadNextKeyValuePairAfterError"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#ReadNextKeyValuePairAfterErrorextendsPromptwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="ReadNextKeyValuePairAfterError.html"><span class="name">ReadNextKeyValuePairAfterError</span></a><span class="params">(<span name="previousInvalidEntry">previousInvalidEntry: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.Reader" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Reader=args4c.Prompt=&gt;String"></a><a id="Reader:Reader"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#Reader=args4c.Prompt=&gt;String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Reader</span><span class="result alias"> = (<a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="args4c.RichConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="RichConfigextendsRichConfigOps"></a><a id="RichConfig:RichConfig"></a>
       <span class="permalink">
@@ -311,9 +414,9 @@ separating the secret config from the remaining config, or just ensuring to limi
       <p class="shortcomment cmt">Adds some scala utility around a typesafe config
 </p>
     </li><li name="args4c.RichConfigOps" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="RichConfigOpsextendsLowPriorityArgs4cImplicits"></a><a id="RichConfigOps:RichConfigOps"></a>
+      <a id="RichConfigOpsextendsDynamicwithLowPriorityArgs4cImplicits"></a><a id="RichConfigOps:RichConfigOps"></a>
       <span class="permalink">
-      <a href="../args4c/index.html#RichConfigOpsextendsLowPriorityArgs4cImplicits" title="Permalink">
+      <a href="../args4c/index.html#RichConfigOpsextendsDynamicwithLowPriorityArgs4cImplicits" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -322,10 +425,59 @@ separating the secret config from the remaining config, or just ensuring to limi
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Provider operations on a 'config'" href="RichConfigOps.html"><span class="name">RichConfigOps</span></a><span class="result"> extends <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
+        <a title="Exposes new operations on a 'config'" href="RichConfigOps.html"><span class="name">RichConfigOps</span></a><span class="result"> extends <span class="extype" name="scala.Dynamic">Dynamic</span> with <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
       </span>
       
-      <p class="shortcomment cmt">Provider operations on a 'config'
+      <p class="shortcomment cmt">Exposes new operations on a 'config'
+</p>
+    </li><li name="args4c.SaveSecretPrompt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SaveSecretPromptextendsPromptwithProductwithSerializable"></a><a id="SaveSecretPrompt:SaveSecretPrompt"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#SaveSecretPromptextendsPromptwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="SaveSecretPrompt.html"><span class="name">SaveSecretPrompt</span></a><span class="params">(<span name="configPath">configPath: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.SecureConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SecureConfigextendsProductwithSerializable"></a><a id="SecureConfig:SecureConfig"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#SecureConfigextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="SecureConfig.html"><span class="name">SecureConfig</span></a><span class="params">(<span name="promptForInput">promptForInput: <a href="#Reader=args4c.Prompt=&gt;String" class="extmbr" name="args4c.Reader">Reader</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.Selected" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SelectedextendsDynamicwithProductwithSerializable"></a><a id="Selected:Selected"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#SelectedextendsDynamicwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="An object returned from a dynamic select" href="Selected.html"><span class="name">Selected</span></a><span class="params">(<span name="value">value: <span class="extype" name="com.typesafe.config.ConfigValue">ConfigValue</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Dynamic">Dynamic</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">An object returned from a dynamic select
 </p>
     </li><li name="args4c.StringEntry" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="StringEntryextendsProductwithSerializable"></a><a id="StringEntry:StringEntry"></a>
@@ -513,22 +665,6 @@ $ a key=value pair</p><p>Left-most values take precedence over right
       </span>
       
       
-    </li><li name="args4c#pathToBytes" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pathToBytes(path:String):Option[Array[Byte]]"></a><a id="pathToBytes(String):Option[Array[Byte]]"></a>
-      <span class="permalink">
-      <a href="../args4c/index.html#pathToBytes(path:String):Option[Array[Byte]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pathToBytes</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>
-      </span>
-      
-      
     </li><li name="args4c#prop" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="prop(key:String):Option[String]"></a><a id="prop(String):Option[String]"></a>
       <span class="permalink">
@@ -542,22 +678,6 @@ $ a key=value pair</p><p>Left-most values take precedence over right
       </span>
       <span class="symbol">
         <span class="name">prop</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      
-      
-    </li><li name="args4c#propOrEnv" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="propOrEnv(key:String):Option[String]"></a><a id="propOrEnv(String):Option[String]"></a>
-      <span class="permalink">
-      <a href="../args4c/index.html#propOrEnv(key:String):Option[String]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">propOrEnv</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       
@@ -580,6 +700,25 @@ $ a key=value pair</p><p>Left-most values take precedence over right
 based on an environment variable.</p><div class="fullcomment"><div class="comment cmt"><p>Converts environment variables into a configuration in order to more easily override any config setting
 based on an environment variable.</p><p>e.g. instead of having the config:</p><pre>foo.bar.x = <span class="num">123</span>
 foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert all environment variables split on '_' into lower-case configuration values.</p><p>e.g. 'FOO_BAR_X' would get converted into 'foo.bar.x'.</p></div></div>
+    </li><li name="args4c#unquote" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unquote(str:String):String"></a><a id="unquote(String):String"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#unquote(str:String):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unquote</span><span class="params">(<span name="str">str: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">trims and unquotes a string (the single quotes is mine - added to demonstrate the full text):</p><div class="fullcomment"><div class="comment cmt"><p>trims and unquotes a string (the single quotes is mine - added to demonstrate the full text):</p><pre>'<span class="lit">"quoted"</span>'     becomes: <span class="lit">'quoted'</span>
+'  <span class="lit">"quoted"</span>  ' becomes: <span class="lit">'quoted'</span>
+'quoted<span class="lit">"  '    is unchanged: 'quoted"</span>  <span class="lit">'
+'</span><span class="lit">"quoted '     is unchanged: 'quoted"</span>  <span class="lit">'</span></pre></div><dl class="paramcmts block"><dt class="param">str</dt><dd class="cmt"><p>the string to unquote</p></dd><dt>returns</dt><dd class="cmt"><p>either the string unchanged or the single quotes removed as trimming whitespace around the quotes</p></dd></dl></div>
     </li><li name="args4c.Encryption" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Encryption"></a><a id="Encryption:Encryption"></a>
       <span class="permalink">
@@ -593,6 +732,86 @@ foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert
       </span>
       <span class="symbol">
         <a title="" href="Encryption$.html"><span class="name">Encryption</span></a>
+      </span>
+      
+      
+    </li><li name="args4c.Prompt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Prompt"></a><a id="Prompt:Prompt"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#Prompt" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Prompt$.html"><span class="name">Prompt</span></a>
+      </span>
+      
+      
+    </li><li name="args4c.PromptForConfigFilePermissions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PromptForConfigFilePermissions"></a><a id="PromptForConfigFilePermissions:PromptForConfigFilePermissions"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#PromptForConfigFilePermissions" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="PromptForConfigFilePermissions$.html"><span class="name">PromptForConfigFilePermissions</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.PromptForPassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PromptForPassword"></a><a id="PromptForPassword:PromptForPassword"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#PromptForPassword" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="PromptForPassword$.html"><span class="name">PromptForPassword</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.PromptForUpdatedPassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PromptForUpdatedPassword"></a><a id="PromptForUpdatedPassword:PromptForUpdatedPassword"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#PromptForUpdatedPassword" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="PromptForUpdatedPassword$.html"><span class="name">PromptForUpdatedPassword</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.ReadNextKeyValuePair" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReadNextKeyValuePair"></a><a id="ReadNextKeyValuePair:ReadNextKeyValuePair"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#ReadNextKeyValuePair" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="ReadNextKeyValuePair$.html"><span class="name">ReadNextKeyValuePair</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -612,10 +831,10 @@ foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert
       </span>
       
       
-    </li><li name="args4c.SecretConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="SecretConfig"></a><a id="SecretConfig:SecretConfig"></a>
+    </li><li name="args4c.SecureConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SecureConfig"></a><a id="SecureConfig:SecureConfig"></a>
       <span class="permalink">
-      <a href="../args4c/index.html#SecretConfig" title="Permalink">
+      <a href="../args4c/index.html#SecureConfig" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -624,12 +843,28 @@ foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Makes available a means to initialize a sensitive, encrypted config file via SecretConfig.writeSecretsUsingPrompt and ConfigApp.secretConfigForArgs" href="SecretConfig$.html"><span class="name">SecretConfig</span></a>
+        <a title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs" href="SecureConfig$.html"><span class="name">SecureConfig</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Makes available a means to initialize a sensitive, encrypted config file via <a href="SecretConfig$.html#writeSecretsUsingPrompt(secretConfigFilePath:String,readLine:args4c.SecretConfig.Prompt=&gt;String):java.nio.file.Path" class="extmbr" name="args4c.SecretConfig#writeSecretsUsingPrompt">SecretConfig.writeSecretsUsingPrompt</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],readLine:String=&gt;String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><div class="fullcomment"><div class="comment cmt"><p>Makes available a means to initialize a sensitive, encrypted config file via <a href="SecretConfig$.html#writeSecretsUsingPrompt(secretConfigFilePath:String,readLine:args4c.SecretConfig.Prompt=&gt;String):java.nio.file.Path" class="extmbr" name="args4c.SecretConfig#writeSecretsUsingPrompt">SecretConfig.writeSecretsUsingPrompt</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],readLine:String=&gt;String,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><p>The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
+      <p class="shortcomment cmt">Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecretConfigFilePath:java.nio.file.Path):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],secureConfig:args4c.SecureConfig,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><div class="fullcomment"><div class="comment cmt"><p>Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecretConfigFilePath:java.nio.file.Path):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],secureConfig:args4c.SecureConfig,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><p>The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
 standard input, and an application an use those configuration entries thereafter by taking the password from standard input.
 </p></div></div>
+    </li><li name="args4c.Selected" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Selected"></a><a id="Selected:Selected"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#Selected" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Selected$.html"><span class="name">Selected</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
     </li><li name="args4c.implicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="implicits"></a><a id="implicits:implicits"></a>
       <span class="permalink">

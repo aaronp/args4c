@@ -95,7 +95,8 @@ which can be made available by extending <a href="LowPriorityArgs4cImplicits.htm
      println(<span class="lit">"Starting MyApp with config:"</span>)
 
      <span class="cmt">// let's "log" our app's config on startup:</span>
-     config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary().foreach(println)
+     <span class="kw">val</span> flatSummary : <span class="std">String</span> = config.filter(_.startsWith(<span class="lit">"myapp"</span>)).summary()
+     println(flatSummary) <span class="cmt">// "logging" our config</span>
    }
 }</pre><p>Where the 'summary' will produce sorted <a href="StringEntry.html" class="extype" name="args4c.StringEntry">args4c.StringEntry</a> values with potentially sensitive entries (e.g. passwords)
 obscured and a source comment for some sanity as to where each entry comes from:</p><pre>myapp.foo : bar # command-line
@@ -320,6 +321,22 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="args4c.LowPriorityArgs4cImplicits.RichArgs#asRichConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="asRichConfig(fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):args4c.RichConfig"></a><a id="asRichConfig(Config,(String)⇒Config):RichConfig"></a>
+      <span class="permalink">
+      <a href="../args4c/LowPriorityArgs4cImplicits$RichArgs.html#asRichConfig(fallback:com.typesafe.config.Config,onUnrecognizedArg:String=&gt;com.typesafe.config.Config):args4c.RichConfig" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRichConfig</span><span class="params">(<span name="fallback">fallback: <span class="extype" name="com.typesafe.config.Config">Config</span> = <span class="symbol"><span class="name"><a href="index.html#defaultConfig():com.typesafe.config.Config">defaultConfig()</a></span></span></span>, <span name="onUnrecognizedArg">onUnrecognizedArg: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="com.typesafe.config.Config">Config</span> = <span class="symbol"><span class="name"><a href="index.html">ParseArg.Throw</a></span></span></span>)</span><span class="result">: <a href="RichConfig.html" class="extype" name="args4c.RichConfig">RichConfig</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
