@@ -86,7 +86,7 @@ class SecureConfigTest extends BaseSpec {
       val pathToConfig = underTest.setupSecureConfig(Paths.get(configPath))
 
       // prove we can read back the config
-      val Some(readBack) = underTest.readSecretConfig(pathToConfig)
+      val Some(readBack) = underTest.readSecureConfigAtPath(pathToConfig)
       readBack.getString("mongo.password") shouldBe "secret"
       readBack.getString("anEntry.which.contains.an.equals.sign") shouldBe "abc=123"
       readBack.getString("credentials") shouldBe "don't tell"
@@ -117,10 +117,8 @@ object SecureConfigTest {
     prompt match {
       case SaveSecretPrompt(_)            => pathToConfigFile
       case PromptForConfigFilePermissions => SecureConfig.defaultPermissions
-      case PromptForPassword              => password
-      case PromptForUpdatedPassword       => password
-      case PromptForExistingPassword(_)   => password
-      case ReadNextKeyValuePair =>
+      case _: PasswordPrompt              => password
+      case ReadNextKeyValuePair(_, _) =>
         if (testConfigEntries.hasNext) {
           testConfigEntries.next()
         } else {

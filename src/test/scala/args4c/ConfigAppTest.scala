@@ -1,12 +1,86 @@
 package args4c
-import java.nio.file.Files
+import java.nio.file.{Files, Paths}
+import java.util.concurrent.atomic.AtomicInteger
 
 import com.typesafe.config.{Config, ConfigFactory}
+
+import scala.collection.mutable.ListBuffer
 
 class ConfigAppTest extends BaseSpec {
 
   "ConfigApp.main" should {
-    "error if told to run with a --secret which doesn't exist" in {
+    "prompt the user if there are any missing required entries" in withConfigFile { configFile =>
+      val prompts = ListBuffer[(Prompt, String)]()
+      val suppliedValues = Map(
+        "foo"  -> "the foo value",
+        "bar"  -> "bar= isComplicated",
+        "fizz" -> "\" fizz is quoted \""
+      )
+      val otherInputs = Iterator("meh=unprompted")
+      def inputs(prompt: Prompt) = {
+        val answer = prompt match {
+          case ReadNextKeyValuePair(key, _) if suppliedValues.contains(key) => suppliedValues(key)
+          case _                                                            => SecureConfigTest.testInput(configFile, otherInputs)(prompt)
+        }
+        prompts += (prompt -> answer)
+        answer
+      }
+      val app = new PromptingTestApp(SecureConfig(inputs))
+      app.main(Array("args4c.requiredConfigPaths=foo,bar,fizz,isAlreadySet", "isAlreadySet=yes"))
+
+      // verify we were prompted for the required values
+      suppliedValues.foreach {
+        case (key, value) =>
+          withClue(s"we should've been prompted for $key") {
+            val found = prompts.find {
+              case (_, v) => v == value
+            }
+            found should not be (empty)
+          }
+          app.lastConfig.getString(key) shouldBe value
+      }
+      app.lastConfig.getString("isAlreadySet") shouldBe "yes"
+      prompts.size shouldBe suppliedValues.size
+    }
+    "prompt the user if there are any missing required entries as well as any additional entries when setup is run" in withConfigFile { configFile =>
+      val testPassword = "whatever"
+
+      val prompts = ListBuffer[(Prompt, String)]()
+      val suppliedValues = Map(
+        "foo"  -> "the foo value",
+        "bar"  -> "bar= isComplicated",
+        "fizz" -> "\" fizz is quoted \""
+      )
+      val otherInputs = Iterator("meh=unprompted")
+      def inputs(prompt: Prompt): String = {
+        val answer = prompt match {
+          case ReadNextKeyValuePair(key, _) if suppliedValues.contains(key) => suppliedValues(key)
+          case _                                                            => SecureConfigTest.testInput(configFile, otherInputs, testPassword)(prompt)
+        }
+        prompts += (prompt -> answer)
+        answer
+      }
+
+      val app = new PromptingTestApp(SecureConfig(inputs))
+      app.main(Array("args4c.requiredConfigPaths=foo,bar,fizz", "--setup"))
+
+      // read back our fancy new populated config
+      val newlySetupConfig: Config = SecureConfig.readConfigAtPath(Paths.get(configFile), testPassword.getBytes("UTF-8"))
+
+      // verify we were prompted for the required values
+      suppliedValues.foreach {
+        case (key, value) =>
+          withClue(s"we should've been prompted for $key") {
+            val found = prompts.find {
+              case (_, v) => v == value
+            }
+            found should not be (empty)
+          }
+          newlySetupConfig.getString(key) shouldBe value
+      }
+      newlySetupConfig.getString("meh") shouldBe "unprompted"
+    }
+    "error if told to run with a --secure which doesn't exist" in {
       val app = new ConfigApp {
         type Result = Config
         var lastConfig: Config = ConfigFactory.empty
@@ -17,7 +91,7 @@ class ConfigAppTest extends BaseSpec {
       }
 
       val bang = intercept[IllegalStateException] {
-        app.main(Array("--secret=some/invalid/path"))
+        app.main(Array("--secure=some/invalid/path"))
       }
       bang.getMessage should include("Configuration at 'some/invalid/path' doesn't exist")
     }
@@ -37,28 +111,17 @@ class ConfigAppTest extends BaseSpec {
       bang.getMessage should include("Unrecognized user arg 'someRawString'")
     }
     "be able to source sensitive config files" in {
-      val app = new ConfigApp {
-        type Result = Config
-        var lastConfig: Config = ConfigFactory.empty
-        override def run(config: Config) = {
-          lastConfig = config
-          config
-        }
-      }
 
-      val configFile = "./target/ConfigAppTest.conf"
-
-      try {
+      withConfigFile { configFile =>
         // set up a secret config
-        app.runMain(Array("--setup", s"--secret=$configFile"), SecureConfig(SecureConfigTest.testInput(configFile, Iterator("my.password=test"))))
+        val app = new PromptingTestApp(SecureConfig(SecureConfigTest.testInput(configFile, Iterator("my.password=test"))))
+        app.runMain(Array("--setup", s"--secure=$configFile"))
 
         // run our app w/ that config
-        app.runMain(Array(s"--secret=$configFile"), SecureConfig(SecureConfigTest.testInput(configFile, Iterator())))
+        app.cfg = SecureConfig(SecureConfigTest.testInput(configFile, Iterator()))
+        app.runMain(Array(s"--secure=$configFile"))
 
         app.lastConfig.getString("my.password") shouldBe "test"
-
-      } finally {
-        deleteFile(configFile)
       }
     }
     "show values when a show is given" in {
@@ -99,6 +162,27 @@ class ConfigAppTest extends BaseSpec {
     }
   }
 
+  private val counter = new AtomicInteger(0)
+  def withConfigFile(test: String => Unit) = {
+    val configFile = s"./target/ConfigAppTest-${counter.incrementAndGet}.conf"
+    try {
+      test(configFile)
+    } finally {
+      deleteFile(configFile)
+    }
+  }
+
+  class PromptingTestApp(initial: SecureConfig) extends ConfigApp {
+    var cfg: SecureConfig                   = initial
+    override def secureConfig: SecureConfig = cfg
+
+    type Result = Config
+    var lastConfig: Config = ConfigFactory.empty
+    override def run(config: Config): Result = {
+      lastConfig = config
+      config
+    }
+  }
   class TestApp extends ConfigApp {
     type Result = Config
     var shown              = ""
@@ -114,13 +198,10 @@ class ConfigAppTest extends BaseSpec {
       shown = value
     }
 
-    override protected def secretConfigForArgs(userArgs: Array[String],
-                                               secureConfig: SecureConfig,
-                                               ignoreDefaultSecretConfigArg: String,
-                                               pathToSecretConfigArg: String): SecretConfigResult = {
-      SecretConfigNotSpecified
+    override protected def secureConfigForArgs(userArgs: Array[String],
+                                               ignoreDefaultSecureConfigArg: String,
+                                               pathToSecureConfigArg: String): SecureConfigState = {
+      SecureConfigNotSpecified
     }
-
   }
-
 }

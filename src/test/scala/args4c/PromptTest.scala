@@ -2,11 +2,14 @@ package args4c
 
 import java.nio.file.Paths
 
+import com.typesafe.config.ConfigFactory
+
 class PromptTest extends BaseSpec {
 
   "Prompt.format" should {
     List[Prompt](
-      ReadNextKeyValuePair,
+      ReadNextKeyValuePair("", ConfigFactory.empty()),
+      ReadNextKeyValuePair("required.path", ConfigFactory.empty()),
       ReadNextKeyValuePairAfterError("input"),
       PromptForPassword,
       PromptForUpdatedPassword,

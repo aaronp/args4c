@@ -42,7 +42,7 @@ class RichConfigTest extends BaseSpec {
     }
     "provide a config with the config values set" in {
       val baseConfig = configForArgs(Array("foo.x.y=1", "test.conf"))
-      val conf       = baseConfig.set("foo.x.y", 2).set("aBoolean", true).set("ints", Array(1, 2, 3)).set("strings", Array("four", "five"))
+      val conf       = baseConfig.set("foo.x.y", 2).set("aBoolean", true).setArray("ints", Array(1, 2, 3)).setArray("strings", Array("four", "five"))
       conf.getInt("foo.x.y") shouldBe 2
       conf.getBoolean("aBoolean") shouldBe true
       conf.getIntList("ints").asScala should contain inOrderOnly (1, 2, 3)

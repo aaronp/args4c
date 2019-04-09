@@ -13,7 +13,7 @@ class BaseSpec extends WordSpec with Matchers with BeforeAndAfterAll with LowPri
   }
 
   def deleteDefaultConfig() = {
-    deleteFile(SecureConfig.defaultSecretConfigPath())
+    deleteFile(SecureConfig.defaultSecureConfigPath())
   }
 
   def deleteFile(fileName: String): Unit = deleteFile(Paths.get(fileName))

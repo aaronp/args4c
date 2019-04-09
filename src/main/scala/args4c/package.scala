@@ -75,7 +75,9 @@ import scala.sys.SystemProperties
   */
 package object args4c {
 
-  type Reader = Prompt => String
+  /** A means to get a values from user prompts in order to set up a secure configuration
+    */
+  type UserInput = Prompt => String
 
   private val UnquoteR = "\\s*\"(.*)\"\\s*".r
 

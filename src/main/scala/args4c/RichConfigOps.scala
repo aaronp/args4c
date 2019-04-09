@@ -124,6 +124,11 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     }
   }
 
+  /** @param path the config path
+    * @return true if the config path is set in this config to a non-empty value. This will error if the path specified is an object or a list
+    */
+  def hasValue(path: String): Boolean = config.hasPath(path) && config.getString(path).nonEmpty
+
   /** @param overrideConfig the configuration (as a string) which should override this config -- essentially the inverse of 'withFallback'
     * @return a new configuration based on 'configString' with our config as a fallback
     */
@@ -145,17 +150,17 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
   def set(key: String, value: Boolean): Config = set(Map(key -> value))
 
   def setArray[T](key: String, firstValue: T, secondValue: T, theRest: T*): Config = {
-    set(key, firstValue +: secondValue +: theRest.toSeq)
+    setArray(key, firstValue +: secondValue +: theRest.toSeq)
   }
 
-  def set[T](key: String, value: Seq[T]): Config = {
+  def setArray[T](key: String, value: Seq[T], originDesc: String = null): Config = {
     import scala.collection.JavaConverters._
-    set(Map(key -> value.asJava))
+    set(Map(key -> value.asJava), originDesc)
   }
 
-  def set(values: Map[String, Any]): Config = {
+  def set(values: Map[String, Any], originDesc: String = "override"): Config = {
     import scala.collection.JavaConverters._
-    overrideWith(ConfigFactory.parseMap(values.asJava))
+    overrideWith(ConfigFactory.parseMap(values.asJava, originDesc))
   }
 
   /** @param other the configuration to remove from this config
