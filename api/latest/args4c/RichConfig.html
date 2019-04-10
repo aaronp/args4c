@@ -126,6 +126,10 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
                         <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
                       </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="PasswordPrompt.html" title=""></a>
+                        <a href="PasswordPrompt.html" title="">PasswordPrompt</a>
+                      </li><li class="current-entities indented1">
                         <a class="object" href="Prompt$.html" title=""></a>
                         <a class="trait" href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'"></a>
                         <a href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'">Prompt</a>
@@ -147,8 +151,8 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a href="PromptForUpdatedPassword$.html" title="">PromptForUpdatedPassword</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="object" href="ReadNextKeyValuePair$.html" title=""></a>
-                        <a href="ReadNextKeyValuePair$.html" title="">ReadNextKeyValuePair</a>
+                        <a class="class" href="ReadNextKeyValuePair.html" title=""></a>
+                        <a href="ReadNextKeyValuePair.html" title="">ReadNextKeyValuePair</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
                         <a class="class" href="ReadNextKeyValuePairAfterError.html" title=""></a>
@@ -166,7 +170,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="class" href="SaveSecretPrompt.html" title=""></a>
                         <a href="SaveSecretPrompt.html" title="">SaveSecretPrompt</a>
                       </li><li class="current-entities indented1">
-                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs"></a>
+                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secureConfigForArgs"></a>
                         <a class="class" href="SecureConfig.html" title=""></a>
                         <a href="SecureConfig.html" title="">SecureConfig</a>
                       </li><li class="current-entities indented1">
@@ -694,6 +698,22 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="args4c.RichConfigOps#hasValue" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hasValue(path:String):Boolean"></a><a id="hasValue(String):Boolean"></a>
+      <span class="permalink">
+      <a href="../args4c/RichConfig.html#hasValue(path:String):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasValue</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">path</dt><dd class="cmt"><p>the config path</p></dd><dt>returns</dt><dd class="cmt"><p>true if the config path is set in this config to a non-empty value. This will error if the path specified is an object or a list</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
@@ -900,9 +920,9 @@ bar.user = root</pre><p>The 'pathRoots' would return a [bar, foo, java]
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#set" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="set(values:Map[String,Any]):com.typesafe.config.Config"></a><a id="set(Map[String,Any]):Config"></a>
+      <a id="set(values:Map[String,Any],originDesc:String):com.typesafe.config.Config"></a><a id="set(Map[String,Any],String):Config"></a>
       <span class="permalink">
-      <a href="../args4c/RichConfig.html#set(values:Map[String,Any]):com.typesafe.config.Config" title="Permalink">
+      <a href="../args4c/RichConfig.html#set(values:Map[String,Any],originDesc:String):com.typesafe.config.Config" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -911,23 +931,7 @@ bar.user = root</pre><p>The 'pathRoots' would return a [bar, foo, java]
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">set</span><span class="params">(<span name="values">values: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
-    </li><li name="args4c.RichConfigOps#set" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="set[T](key:String,value:Seq[T]):com.typesafe.config.Config"></a><a id="set[T](String,Seq[T]):Config"></a>
-      <span class="permalink">
-      <a href="../args4c/RichConfig.html#set[T](key:String,value:Seq[T]):com.typesafe.config.Config" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">set</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="args4c.RichConfigOps.set.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+        <span class="name">set</span><span class="params">(<span name="values">values: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Any">Any</span>]</span>, <span name="originDesc">originDesc: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;override&quot;</span></span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
@@ -979,6 +983,22 @@ bar.user = root</pre><p>The 'pathRoots' would return a [bar, foo, java]
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">key</dt><dd class="cmt"><p>the config path</p></dd><dt class="param">value</dt><dd class="cmt"><p>the value to set</p></dd><dt>returns</dt><dd class="cmt"><p>a new configuration based on 'configString' with our config as a fallback</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
+    </li><li name="args4c.RichConfigOps#setArray" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setArray[T](key:String,value:Seq[T],originDesc:String):com.typesafe.config.Config"></a><a id="setArray[T](String,Seq[T],String):Config"></a>
+      <span class="permalink">
+      <a href="../args4c/RichConfig.html#setArray[T](key:String,value:Seq[T],originDesc:String):com.typesafe.config.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setArray</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="args4c.RichConfigOps.setArray.T">T</span>]</span>, <span name="originDesc">originDesc: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">null</span></span>)</span><span class="result">: <span class="extype" name="com.typesafe.config.Config">Config</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RichConfigOps.html" class="extype" name="args4c.RichConfigOps">RichConfigOps</a></dd></dl></div>
     </li><li name="args4c.RichConfigOps#setArray" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setArray[T](key:String,firstValue:T,secondValue:T,theRest:T*):com.typesafe.config.Config"></a><a id="setArray[T](String,T,T,T*):Config"></a>
       <span class="permalink">

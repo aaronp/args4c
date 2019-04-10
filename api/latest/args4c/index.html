@@ -126,6 +126,10 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
                         <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
                       </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="PasswordPrompt.html" title=""></a>
+                        <a href="PasswordPrompt.html" title="">PasswordPrompt</a>
+                      </li><li class="current-entities indented1">
                         <a class="object" href="Prompt$.html" title=""></a>
                         <a class="trait" href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'"></a>
                         <a href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'">Prompt</a>
@@ -147,8 +151,8 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a href="PromptForUpdatedPassword$.html" title="">PromptForUpdatedPassword</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="object" href="ReadNextKeyValuePair$.html" title=""></a>
-                        <a href="ReadNextKeyValuePair$.html" title="">ReadNextKeyValuePair</a>
+                        <a class="class" href="ReadNextKeyValuePair.html" title=""></a>
+                        <a href="ReadNextKeyValuePair.html" title="">ReadNextKeyValuePair</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
                         <a class="class" href="ReadNextKeyValuePairAfterError.html" title=""></a>
@@ -166,7 +170,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="class" href="SaveSecretPrompt.html" title=""></a>
                         <a href="SaveSecretPrompt.html" title="">SaveSecretPrompt</a>
                       </li><li class="current-entities indented1">
-                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs"></a>
+                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secureConfigForArgs"></a>
                         <a class="class" href="SecureConfig.html" title=""></a>
                         <a href="SecureConfig.html" title="">SecureConfig</a>
                       </li><li class="current-entities indented1">
@@ -303,17 +307,17 @@ applications.</p></div><div class="toggleContainer block">
         <a title="A convenience mix-in utility for a main entry point." href="ConfigApp.html"><span class="name">ConfigApp</span></a><span class="result"> extends <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
       </span>
       
-      <p class="shortcomment cmt">A convenience mix-in utility for a main entry point.</p><div class="fullcomment"><div class="comment cmt"><p>A convenience mix-in utility for a main entry point.</p><p>It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlaid)</p><p>If the config has a 'show=&lt;path&gt;' in it, then that path will be printed out and the program with return.</p><p>e.g. MyAppWhichExtendsConfigApp show=myapp.database.url</p><p>will display the value of myapp.database.url</p><p>It also interprets a single '--setup' to enable the configuration of sensitive configuration entries into a locally encrypted file.</p><p>Subsequent runs of your application would then use '--secret=path/to/encrypted.conf' to load that encrypted configuration and either
-take the password from an environment variable or standard input.</p><p>For example, running 'MyApp --setup' would then prompt like this:</p><pre>Save secret config to (/opt/etc/myapp/.config/secret.conf):config/secret.conf
+      <p class="shortcomment cmt">A convenience mix-in utility for a main entry point.</p><div class="fullcomment"><div class="comment cmt"><p>A convenience mix-in utility for a main entry point.</p><p>It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlaid)</p><p>If the config has a 'show=&lt;path&gt;' in it, then that path will be printed out and the program with return.</p><p>e.g. MyAppWhichExtendsConfigApp show=myapp.database.url</p><p>will display the value of myapp.database.url</p><p>It also interprets a single '--setup' to enable the configuration of sensitive configuration entries into a locally encrypted file.</p><p>Subsequent runs of your application would then use '--secure=path/to/encrypted.conf' to load that encrypted configuration and either
+take the password from an environment variable or standard input.</p><p>For example, running 'MyApp --setup' would then prompt like this:</p><pre>Save secure config to (/opt/etc/myapp/.config/secure.conf):config/secure.conf
 Config Permissions (defaults to rwx------): rwxrw----
-Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.secret.password=hi
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.secure.password=hi
 Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.another.config.entry=<span class="num">123</span>
 Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):
-Config Password:password</pre><p>Then, running 'MyApp --secret=config/secret.conf -myapp.whocares=visible -show=myapp'</p><p>would prompt for the password from standard input, then produce the following, hiding the values which were present in the secret config:</p><pre>myapp.another.config.entry : **** obscured **** # secret.conf: <span class="num">1</span>
-myapp.secret.password : **** obscured **** # secret.conf: <span class="num">1</span>
+Config Password:password</pre><p>Then, running 'MyApp --secure=config/secure.conf -myapp.whocares=visible -show=myapp'</p><p>would prompt for the password from standard input, then produce the following, hiding the values which were present in the secure config:</p><pre>myapp.another.config.entry : **** obscured **** # secure.conf: <span class="num">1</span>
+myapp.secure.password : **** obscured **** # secure.conf: <span class="num">1</span>
 myapp.whocares : visible # command-line</pre><p>NOTE: even though the summary obscures the values, they ARE present as PLAIN TEXT STRINGS in the configuration, so take
 care in limiting the scope of where the configuration is used, either by filtering back out those values, otherwise
-separating the secret config from the remaining config, or just ensuring to limit the scope of the config itself.
+separating the secure config from the remaining config, or just ensuring to limit the scope of the config itself.
 </p></div></div>
     </li><li name="args4c.LowPriorityArgs4cImplicits" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="LowPriorityArgs4cImplicitsextendsAnyRef"></a><a id="LowPriorityArgs4cImplicits:LowPriorityArgs4cImplicits"></a>
@@ -328,6 +332,22 @@ separating the secret config from the remaining config, or just ensuring to limi
       </span>
       <span class="symbol">
         <a title="" href="LowPriorityArgs4cImplicits.html"><span class="name">LowPriorityArgs4cImplicits</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.PasswordPrompt" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PasswordPromptextendsPrompt"></a><a id="PasswordPrompt:PasswordPrompt"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#PasswordPromptextendsPrompt" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="PasswordPrompt.html"><span class="name">PasswordPrompt</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a></span>
       </span>
       
       
@@ -349,9 +369,9 @@ separating the secret config from the remaining config, or just ensuring to limi
       <p class="shortcomment cmt">Represents a request for user input when configuring the 'sensitive configurations'
 </p>
     </li><li name="args4c.PromptForExistingPassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PromptForExistingPasswordextendsPromptwithProductwithSerializable"></a><a id="PromptForExistingPassword:PromptForExistingPassword"></a>
+      <a id="PromptForExistingPasswordextendsPasswordPromptwithProductwithSerializable"></a><a id="PromptForExistingPassword:PromptForExistingPassword"></a>
       <span class="permalink">
-      <a href="../args4c/index.html#PromptForExistingPasswordextendsPromptwithProductwithSerializable" title="Permalink">
+      <a href="../args4c/index.html#PromptForExistingPasswordextendsPasswordPromptwithProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -360,7 +380,23 @@ separating the secret config from the remaining config, or just ensuring to limi
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="PromptForExistingPassword.html"><span class="name">PromptForExistingPassword</span></a><span class="params">(<span name="configPath">configPath: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="PromptForExistingPassword.html"><span class="name">PromptForExistingPassword</span></a><span class="params">(<span name="configPath">configPath: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result"> extends <a href="PasswordPrompt.html" class="extype" name="args4c.PasswordPrompt">PasswordPrompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="args4c.ReadNextKeyValuePair" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReadNextKeyValuePairextendsPromptwithProductwithSerializable"></a><a id="ReadNextKeyValuePair:ReadNextKeyValuePair"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#ReadNextKeyValuePairextendsPromptwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="ReadNextKeyValuePair.html"><span class="name">ReadNextKeyValuePair</span></a><span class="params">(<span name="requiredConfigPath">requiredConfigPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="secureConfig">secureConfig: <span class="extype" name="com.typesafe.config.Config">Config</span></span>)</span><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -377,22 +413,6 @@ separating the secret config from the remaining config, or just ensuring to limi
       </span>
       <span class="symbol">
         <a title="" href="ReadNextKeyValuePairAfterError.html"><span class="name">ReadNextKeyValuePairAfterError</span></a><span class="params">(<span name="previousInvalidEntry">previousInvalidEntry: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
-    </li><li name="args4c.Reader" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Reader=args4c.Prompt=&gt;String"></a><a id="Reader:Reader"></a>
-      <span class="permalink">
-      <a href="../args4c/index.html#Reader=args4c.Prompt=&gt;String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Reader</span><span class="result alias"> = (<a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       
@@ -458,7 +478,7 @@ separating the secret config from the remaining config, or just ensuring to limi
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="SecureConfig.html"><span class="name">SecureConfig</span></a><span class="params">(<span name="promptForInput">promptForInput: <a href="#Reader=args4c.Prompt=&gt;String" class="extmbr" name="args4c.Reader">Reader</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="SecureConfig.html"><span class="name">SecureConfig</span></a><span class="params">(<span name="promptForInput">promptForInput: <a href="#UserInput=args4c.Prompt=&gt;String" class="extmbr" name="args4c.UserInput">UserInput</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -495,6 +515,23 @@ separating the secret config from the remaining config, or just ensuring to limi
       </span>
       
       
+    </li><li name="args4c.UserInput" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UserInput=args4c.Prompt=&gt;String"></a><a id="UserInput:UserInput"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#UserInput=args4c.Prompt=&gt;String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">UserInput</span><span class="result alias"> = (<a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">A means to get a values from user prompts in order to set up a secure configuration
+</p>
     </li></ol>
             </div>
 
@@ -779,7 +816,7 @@ foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="PromptForPassword$.html"><span class="name">PromptForPassword</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="PromptForPassword$.html"><span class="name">PromptForPassword</span></a><span class="result"> extends <a href="PasswordPrompt.html" class="extype" name="args4c.PasswordPrompt">PasswordPrompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -795,23 +832,7 @@ foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="PromptForUpdatedPassword$.html"><span class="name">PromptForUpdatedPassword</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      
-      
-    </li><li name="args4c.ReadNextKeyValuePair" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadNextKeyValuePair"></a><a id="ReadNextKeyValuePair:ReadNextKeyValuePair"></a>
-      <span class="permalink">
-      <a href="../args4c/index.html#ReadNextKeyValuePair" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="ReadNextKeyValuePair$.html"><span class="name">ReadNextKeyValuePair</span></a><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="PromptForUpdatedPassword$.html"><span class="name">PromptForUpdatedPassword</span></a><span class="result"> extends <a href="PasswordPrompt.html" class="extype" name="args4c.PasswordPrompt">PasswordPrompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -843,10 +864,10 @@ foo.bar.x = $${?FOO_BAR_X}</pre><p>repeated for each setting we can just convert
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs" href="SecureConfig$.html"><span class="name">SecureConfig</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secureConfigForArgs" href="SecureConfig$.html"><span class="name">SecureConfig</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <p class="shortcomment cmt">Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecretConfigFilePath:java.nio.file.Path):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],secureConfig:args4c.SecureConfig,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><div class="fullcomment"><div class="comment cmt"><p>Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecretConfigFilePath:java.nio.file.Path):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],secureConfig:args4c.SecureConfig,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><p>The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
+      <p class="shortcomment cmt">Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecureConfigFilePath:java.nio.file.Path,requiredPaths:Seq[String]):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secureConfigForArgs(userArgs:Array[String],ignoreDefaultSecureConfigArg:String,pathToSecureConfigArg:String):ConfigApp.this.SecureConfigState" class="extmbr" name="args4c.ConfigApp#secureConfigForArgs">ConfigApp.secureConfigForArgs</a></p><div class="fullcomment"><div class="comment cmt"><p>Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecureConfigFilePath:java.nio.file.Path,requiredPaths:Seq[String]):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secureConfigForArgs(userArgs:Array[String],ignoreDefaultSecureConfigArg:String,pathToSecureConfigArg:String):ConfigApp.this.SecureConfigState" class="extmbr" name="args4c.ConfigApp#secureConfigForArgs">ConfigApp.secureConfigForArgs</a></p><p>The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
 standard input, and an application an use those configuration entries thereafter by taking the password from standard input.
 </p></div></div>
     </li><li name="args4c.Selected" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">

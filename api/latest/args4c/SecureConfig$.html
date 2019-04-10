@@ -126,6 +126,10 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
                         <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
                       </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="PasswordPrompt.html" title=""></a>
+                        <a href="PasswordPrompt.html" title="">PasswordPrompt</a>
+                      </li><li class="current-entities indented1">
                         <a class="object" href="Prompt$.html" title=""></a>
                         <a class="trait" href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'"></a>
                         <a href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'">Prompt</a>
@@ -147,8 +151,8 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a href="PromptForUpdatedPassword$.html" title="">PromptForUpdatedPassword</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="object" href="ReadNextKeyValuePair$.html" title=""></a>
-                        <a href="ReadNextKeyValuePair$.html" title="">ReadNextKeyValuePair</a>
+                        <a class="class" href="ReadNextKeyValuePair.html" title=""></a>
+                        <a href="ReadNextKeyValuePair.html" title="">ReadNextKeyValuePair</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
                         <a class="class" href="ReadNextKeyValuePairAfterError.html" title=""></a>
@@ -166,7 +170,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="class" href="SaveSecretPrompt.html" title=""></a>
                         <a href="SaveSecretPrompt.html" title="">SaveSecretPrompt</a>
                       </li><li class="current-entities indented1">
-                        <a class="object" href="" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs"></a>
+                        <a class="object" href="" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secureConfigForArgs"></a>
                         <a class="class" href="SecureConfig.html" title=""></a>
                         <a href="SecureConfig.html" title="">SecureConfig</a>
                       </li><li class="current-entities indented1">
@@ -211,7 +215,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecretConfigFilePath:java.nio.file.Path):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secretConfigForArgs(userArgs:Array[String],secureConfig:args4c.SecureConfig,ignoreDefaultSecretConfigArg:String,pathToSecretConfigArg:String):ConfigApp.this.SecretConfigResult" class="extmbr" name="args4c.ConfigApp#secretConfigForArgs">ConfigApp.secretConfigForArgs</a></p><p>The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Makes available a means to initialize a sensitive, encrypted config file via <a href="SecureConfig.html#setupSecureConfig(defaultSecureConfigFilePath:java.nio.file.Path,requiredPaths:Seq[String]):java.nio.file.Path" class="extmbr" name="args4c.SecureConfig#setupSecureConfig">SecureConfig.setupSecureConfig</a> and <a href="ConfigApp.html#secureConfigForArgs(userArgs:Array[String],ignoreDefaultSecureConfigArg:String,pathToSecureConfigArg:String):ConfigApp.this.SecureConfigState" class="extmbr" name="args4c.ConfigApp#secureConfigForArgs">ConfigApp.secureConfigForArgs</a></p><p>The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
 standard input, and an application an use those configuration entries thereafter by taking the password from standard input.
 </p></div><div class="toggleContainer block">
           <span class="toggle">
@@ -318,10 +322,10 @@ standard input, and an application an use those configuration entries thereafter
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="args4c.SecureConfig#SecretEnvVariableName" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="SecretEnvVariableName:String"></a>
+    </li><li name="args4c.SecureConfig#SecureEnvVariableName" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SecureEnvVariableName:String"></a>
       <span class="permalink">
-      <a href="../args4c/SecureConfig$.html#SecretEnvVariableName:String" title="Permalink">
+      <a href="../args4c/SecureConfig$.html#SecureEnvVariableName:String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -330,7 +334,7 @@ standard input, and an application an use those configuration entries thereafter
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">SecretEnvVariableName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">SecureEnvVariableName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       
       <p class="shortcomment cmt">The environment variable which, if set, will be used to decrypt an encrypted config file (e.g.</p><div class="fullcomment"><div class="comment cmt"><p>The environment variable which, if set, will be used to decrypt an encrypted config file (e.g. &quot;--secure&quot; for the default or &quot;--secure=password.conf&quot; for specifying one)
@@ -375,10 +379,10 @@ standard input, and an application an use those configuration entries thereafter
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="args4c.SecureConfig#defaultSecretConfigPath" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="defaultSecretConfigPath(workDir:String):String"></a><a id="defaultSecretConfigPath(String):String"></a>
+    </li><li name="args4c.SecureConfig#defaultSecureConfigPath" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="defaultSecureConfigPath(workDir:String):String"></a><a id="defaultSecureConfigPath(String):String"></a>
       <span class="permalink">
-      <a href="../args4c/SecureConfig$.html#defaultSecretConfigPath(workDir:String):String" title="Permalink">
+      <a href="../args4c/SecureConfig$.html#defaultSecureConfigPath(workDir:String):String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -387,7 +391,7 @@ standard input, and an application an use those configuration entries thereafter
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">defaultSecretConfigPath</span><span class="params">(<span name="workDir">workDir: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">Properties.userDir</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">defaultSecureConfigPath</span><span class="params">(<span name="workDir">workDir: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">Properties.userDir</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       

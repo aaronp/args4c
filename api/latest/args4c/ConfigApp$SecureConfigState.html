@@ -113,85 +113,72 @@ foo.bazz=$${?FOO_BAZZ}
 
 ...</pre><p>Finally, args4c also provides a <a href="ConfigApp.html" class="extype" name="args4c.ConfigApp">args4c.ConfigApp</a> which provides some additional functionality to configuration-based
 applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li class="current-entities indented1">
+    </li><li name="args4c.ConfigApp" visbl="pub" class="indented2 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="ConfigAppextendsLowPriorityArgs4cImplicits"></a><a id="ConfigApp:ConfigApp"></a>
+      <span class="permalink">
+      <a href="../args4c/index.html#ConfigAppextendsLowPriorityArgs4cImplicits" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="A convenience mix-in utility for a main entry point." href="ConfigApp.html"><span class="name">ConfigApp</span></a><span class="result"> extends <a href="LowPriorityArgs4cImplicits.html" class="extype" name="args4c.LowPriorityArgs4cImplicits">LowPriorityArgs4cImplicits</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">A convenience mix-in utility for a main entry point.</p><div class="fullcomment"><div class="comment cmt"><p>A convenience mix-in utility for a main entry point.</p><p>It parsed the user arguments using the default config (which is ConfigFactory.load() but w/ system environment variables overlaid)</p><p>If the config has a 'show=&lt;path&gt;' in it, then that path will be printed out and the program with return.</p><p>e.g. MyAppWhichExtendsConfigApp show=myapp.database.url</p><p>will display the value of myapp.database.url</p><p>It also interprets a single '--setup' to enable the configuration of sensitive configuration entries into a locally encrypted file.</p><p>Subsequent runs of your application would then use '--secure=path/to/encrypted.conf' to load that encrypted configuration and either
+take the password from an environment variable or standard input.</p><p>For example, running 'MyApp --setup' would then prompt like this:</p><pre>Save secure config to (/opt/etc/myapp/.config/secure.conf):config/secure.conf
+Config Permissions (defaults to rwx------): rwxrw----
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.secure.password=hi
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):myapp.another.config.entry=<span class="num">123</span>
+Add config path in the form &lt;key&gt;=&lt;value&gt; (leave blank when finished):
+Config Password:password</pre><p>Then, running 'MyApp --secure=config/secure.conf -myapp.whocares=visible -show=myapp'</p><p>would prompt for the password from standard input, then produce the following, hiding the values which were present in the secure config:</p><pre>myapp.another.config.entry : **** obscured **** # secure.conf: <span class="num">1</span>
+myapp.secure.password : **** obscured **** # secure.conf: <span class="num">1</span>
+myapp.whocares : visible # command-line</pre><p>NOTE: even though the summary obscures the values, they ARE present as PLAIN TEXT STRINGS in the configuration, so take
+care in limiting the scope of where the configuration is used, either by filtering back out those values, otherwise
+separating the secure config from the remaining config, or just ensuring to limit the scope of the config itself.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="args4c">args4c</a></dd></dl></div>
+    </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="trait" href="ConfigApp.html" title="A convenience mix-in utility for a main entry point."></a>
-                        <a href="ConfigApp.html" title="A convenience mix-in utility for a main entry point.">ConfigApp</a>
-                      </li><li class="current-entities indented1">
+                        <a class="abstract type" href="ConfigApp$Result.html" title="The result of running this application"></a>
+                        <a href="ConfigApp$Result.html" title="The result of running this application">Result</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="Encryption$.html" title=""></a>
-                        <a href="Encryption$.html" title="">Encryption</a>
-                      </li><li class="current-entities indented1">
+                        <a class="class" href="LowPriorityArgs4cImplicits$RichArgs.html" title=""></a>
+                        <a href="LowPriorityArgs4cImplicits$RichArgs.html" title="">RichArgs</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
-                        <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
-                      </li><li class="current-entities indented1">
-                        <a class="object" href="Prompt$.html" title=""></a>
-                        <a class="trait" href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'"></a>
-                        <a href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'">Prompt</a>
-                      </li><li class="current-entities indented1">
+                        <a class="class" href="LowPriorityArgs4cImplicits$RichString.html" title=""></a>
+                        <a href="LowPriorityArgs4cImplicits$RichString.html" title="">RichString</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="PromptForConfigFilePermissions$.html" title=""></a>
-                        <a href="PromptForConfigFilePermissions$.html" title="">PromptForConfigFilePermissions</a>
-                      </li><li class="current-entities indented1">
+                        <a class="class" href="ConfigApp$SecureConfigDoesntExist.html" title=""></a>
+                        <a href="ConfigApp$SecureConfigDoesntExist.html" title="">SecureConfigDoesntExist</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="PromptForExistingPassword.html" title=""></a>
-                        <a href="PromptForExistingPassword.html" title="">PromptForExistingPassword</a>
-                      </li><li class="current-entities indented1">
+                        <a class="object" href="ConfigApp$SecureConfigNotSpecified$.html" title=""></a>
+                        <a href="ConfigApp$SecureConfigNotSpecified$.html" title="">SecureConfigNotSpecified</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="PromptForPassword$.html" title=""></a>
-                        <a href="PromptForPassword$.html" title="">PromptForPassword</a>
-                      </li><li class="current-entities indented1">
+                        <a class="class" href="ConfigApp$SecureConfigParsed.html" title=""></a>
+                        <a href="ConfigApp$SecureConfigParsed.html" title="">SecureConfigParsed</a>
+                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="object" href="PromptForUpdatedPassword$.html" title=""></a>
-                        <a href="PromptForUpdatedPassword$.html" title="">PromptForUpdatedPassword</a>
-                      </li><li class="current-entities indented1">
-                        <span class="separator"></span>
-                        <a class="object" href="" title=""></a>
-                        <a href="" title="">ReadNextKeyValuePair</a>
-                      </li><li class="current-entities indented1">
-                        <span class="separator"></span>
-                        <a class="class" href="ReadNextKeyValuePairAfterError.html" title=""></a>
-                        <a href="ReadNextKeyValuePairAfterError.html" title="">ReadNextKeyValuePairAfterError</a>
-                      </li><li class="current-entities indented1">
-                        <a class="object" href="RichConfig$.html" title=""></a>
-                        <a class="class" href="RichConfig.html" title="Adds some scala utility around a typesafe config"></a>
-                        <a href="RichConfig.html" title="Adds some scala utility around a typesafe config">RichConfig</a>
-                      </li><li class="current-entities indented1">
-                        <span class="separator"></span>
-                        <a class="trait" href="RichConfigOps.html" title="Exposes new operations on a 'config'"></a>
-                        <a href="RichConfigOps.html" title="Exposes new operations on a 'config'">RichConfigOps</a>
-                      </li><li class="current-entities indented1">
-                        <span class="separator"></span>
-                        <a class="class" href="SaveSecretPrompt.html" title=""></a>
-                        <a href="SaveSecretPrompt.html" title="">SaveSecretPrompt</a>
-                      </li><li class="current-entities indented1">
-                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs"></a>
-                        <a class="class" href="SecureConfig.html" title=""></a>
-                        <a href="SecureConfig.html" title="">SecureConfig</a>
-                      </li><li class="current-entities indented1">
-                        <a class="object" href="Selected$.html" title=""></a>
-                        <a class="class" href="Selected.html" title="An object returned from a dynamic select"></a>
-                        <a href="Selected.html" title="An object returned from a dynamic select">Selected</a>
-                      </li><li class="current-entities indented1">
-                        <span class="separator"></span>
-                        <a class="class" href="StringEntry.html" title=""></a>
-                        <a href="StringEntry.html" title="">StringEntry</a>
-                      </li><li class="current-entities indented1">
-                        <span class="separator"></span>
-                        <a class="object" href="implicits$.html" title="Exposes the entry point for using a RichConfig,"></a>
-                        <a href="implicits$.html" title="Exposes the entry point for using a RichConfig,">implicits</a>
+                        <a class="class" href="" title="Represents the state of the '--secure' config"></a>
+                        <a href="" title="Represents the state of the '--secure' config">SecureConfigState</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="object value">
+            <body class="class type">
       <div id="definition">
-        <div class="big-circle object">o</div>
-        <p id="owner"><a href="index.html" class="extype" name="args4c">args4c</a></p>
-        <h1>ReadNextKeyValuePair<span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html" title="Permalink">
+        <div class="big-circle class">c</div>
+        <p id="owner"><a href="index.html" class="extype" name="args4c">args4c</a>.<a href="ConfigApp.html" class="extype" name="args4c.ConfigApp">ConfigApp</a></p>
+        <h1>SecureConfigState<span class="permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -200,21 +187,27 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadNextKeyValuePair</span><span class="result"> extends <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">SecureConfigState</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Represents the state of the '--secure' config
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="ConfigApp$SecureConfigDoesntExist.html" class="extype" name="args4c.ConfigApp.SecureConfigDoesntExist">SecureConfigDoesntExist</a>, <a href="ConfigApp$SecureConfigNotSpecified$.html" class="extype" name="args4c.ConfigApp.SecureConfigNotSpecified">SecureConfigNotSpecified</a>, <a href="ConfigApp$SecureConfigParsed.html" class="extype" name="args4c.ConfigApp.SecureConfigParsed">SecureConfigParsed</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -239,7 +232,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="args4c.ReadNextKeyValuePair"><span>ReadNextKeyValuePair</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="args4c.Prompt"><span>Prompt</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="args4c.ConfigApp.SecureConfigState"><span>SecureConfigState</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -269,7 +262,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -285,7 +278,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html###():Int" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -301,7 +294,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -317,7 +310,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -333,7 +326,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#clone():Object" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -354,10 +347,26 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="args4c.ConfigApp.SecureConfigState#configOpt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="configOpt:Option[com.typesafe.config.Config]"></a><a id="configOpt:Option[Config]"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#configOpt:Option[com.typesafe.config.Config]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configOpt</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.typesafe.config.Config">Config</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -373,7 +382,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -389,7 +398,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#finalize():Unit" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -411,7 +420,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#getClass():Class[_]" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -427,10 +436,29 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#hashCode():Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -446,7 +474,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -462,7 +490,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#notify():Unit" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -481,7 +509,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#notifyAll():Unit" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -500,7 +528,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -513,10 +541,26 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <span class="permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#toString():String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#wait():Unit" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -538,7 +582,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -560,7 +604,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../args4c/ReadNextKeyValuePair$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../args4c/ConfigApp$SecureConfigState.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -591,17 +635,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="args4c.Prompt">
-              <h3>Inherited from <a href="Prompt.html" class="extype" name="args4c.Prompt">Prompt</a></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

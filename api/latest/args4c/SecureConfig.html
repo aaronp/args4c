@@ -126,6 +126,10 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="trait" href="LowPriorityArgs4cImplicits.html" title=""></a>
                         <a href="LowPriorityArgs4cImplicits.html" title="">LowPriorityArgs4cImplicits</a>
                       </li><li class="current-entities indented1">
+                        <span class="separator"></span>
+                        <a class="trait" href="PasswordPrompt.html" title=""></a>
+                        <a href="PasswordPrompt.html" title="">PasswordPrompt</a>
+                      </li><li class="current-entities indented1">
                         <a class="object" href="Prompt$.html" title=""></a>
                         <a class="trait" href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'"></a>
                         <a href="Prompt.html" title="Represents a request for user input when configuring the 'sensitive configurations'">Prompt</a>
@@ -147,8 +151,8 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a href="PromptForUpdatedPassword$.html" title="">PromptForUpdatedPassword</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
-                        <a class="object" href="ReadNextKeyValuePair$.html" title=""></a>
-                        <a href="ReadNextKeyValuePair$.html" title="">ReadNextKeyValuePair</a>
+                        <a class="class" href="ReadNextKeyValuePair.html" title=""></a>
+                        <a href="ReadNextKeyValuePair.html" title="">ReadNextKeyValuePair</a>
                       </li><li class="current-entities indented1">
                         <span class="separator"></span>
                         <a class="class" href="ReadNextKeyValuePairAfterError.html" title=""></a>
@@ -166,7 +170,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
                         <a class="class" href="SaveSecretPrompt.html" title=""></a>
                         <a href="SaveSecretPrompt.html" title="">SaveSecretPrompt</a>
                       </li><li class="current-entities indented1">
-                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secretConfigForArgs"></a>
+                        <a class="object" href="SecureConfig$.html" title="Makes available a means to initialize a sensitive, encrypted config file via SecureConfig.setupSecureConfig and ConfigApp.secureConfigForArgs"></a>
                         <a class="class" href="" title=""></a>
                         <a href="" title="">SecureConfig</a>
                       </li><li class="current-entities indented1">
@@ -206,7 +210,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">SecureConfig</span><span class="params">(<span name="promptForInput">promptForInput: <a href="index.html#Reader=args4c.Prompt=&gt;String" class="extmbr" name="args4c.Reader">Reader</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">SecureConfig</span><span class="params">(<span name="promptForInput">promptForInput: <a href="index.html#UserInput=args4c.Prompt=&gt;String" class="extmbr" name="args4c.UserInput">UserInput</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
@@ -262,9 +266,9 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="args4c.SecureConfig#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(promptForInput:args4c.Reader):args4c.SecureConfig"></a><a id="&lt;init&gt;:SecureConfig"></a>
+      <a id="&lt;init&gt;(promptForInput:args4c.UserInput):args4c.SecureConfig"></a><a id="&lt;init&gt;:SecureConfig"></a>
       <span class="permalink">
-      <a href="../args4c/SecureConfig.html#&lt;init&gt;(promptForInput:args4c.Reader):args4c.SecureConfig" title="Permalink">
+      <a href="../args4c/SecureConfig.html#&lt;init&gt;(promptForInput:args4c.UserInput):args4c.SecureConfig" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -273,7 +277,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SecureConfig</span><span class="params">(<span name="promptForInput">promptForInput: <a href="index.html#Reader=args4c.Prompt=&gt;String" class="extmbr" name="args4c.Reader">Reader</a></span>)</span>
+        <span class="name">SecureConfig</span><span class="params">(<span name="promptForInput">promptForInput: <a href="index.html#UserInput=args4c.Prompt=&gt;String" class="extmbr" name="args4c.UserInput">UserInput</a></span>)</span>
       </span>
       
       
@@ -503,9 +507,9 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
               
         </dd></dl></div>
     </li><li name="args4c.SecureConfig#promptForInput" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="promptForInput:args4c.Reader"></a><a id="promptForInput:Reader"></a>
+      <a id="promptForInput:args4c.UserInput"></a><a id="promptForInput:UserInput"></a>
       <span class="permalink">
-      <a href="../args4c/SecureConfig.html#promptForInput:args4c.Reader" title="Permalink">
+      <a href="../args4c/SecureConfig.html#promptForInput:args4c.UserInput" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -514,7 +518,7 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">promptForInput</span><span class="result">: <a href="index.html#Reader=args4c.Prompt=&gt;String" class="extmbr" name="args4c.Reader">Reader</a></span>
+        <span class="name">promptForInput</span><span class="result">: <a href="index.html#UserInput=args4c.Prompt=&gt;String" class="extmbr" name="args4c.UserInput">UserInput</a></span>
       </span>
       
       
@@ -534,10 +538,10 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the application config password used to encrypt the config</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="args4c.SecureConfig#readSecretConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="readSecretConfig(pathToEncryptedConfig:java.nio.file.Path):Option[com.typesafe.config.Config]"></a><a id="readSecretConfig(Path):Option[Config]"></a>
+    </li><li name="args4c.SecureConfig#readSecureConfigAtPath" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="readSecureConfigAtPath(pathToEncryptedConfig:java.nio.file.Path):Option[com.typesafe.config.Config]"></a><a id="readSecureConfigAtPath(Path):Option[Config]"></a>
       <span class="permalink">
-      <a href="../args4c/SecureConfig.html#readSecretConfig(pathToEncryptedConfig:java.nio.file.Path):Option[com.typesafe.config.Config]" title="Permalink">
+      <a href="../args4c/SecureConfig.html#readSecureConfigAtPath(pathToEncryptedConfig:java.nio.file.Path):Option[com.typesafe.config.Config]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -546,18 +550,18 @@ applications.</p></div><dl class="attributes block"> <dt>Definition Classes</dt>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">readSecretConfig</span><span class="params">(<span name="pathToEncryptedConfig">pathToEncryptedConfig: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.typesafe.config.Config">Config</span>]</span>
+        <span class="name">readSecureConfigAtPath</span><span class="params">(<span name="pathToEncryptedConfig">pathToEncryptedConfig: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.typesafe.config.Config">Config</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">read the configuration from the given path, prompting for the password via 'promptForInput' should the  <a href="SecureConfig$.html#SecretEnvVariableName:String" class="extmbr" name="args4c.SecureConfig#SecretEnvVariableName">SecureConfig.SecretEnvVariableName</a>
+      <p class="shortcomment cmt">read the configuration from the given path, prompting for the password via 'promptForInput' should the  <a href="SecureConfig$.html#SecureEnvVariableName:String" class="extmbr" name="args4c.SecureConfig#SecureEnvVariableName">SecureConfig.SecureEnvVariableName</a>
 environment variable not be set
-</p><div class="fullcomment"><div class="comment cmt"><p>read the configuration from the given path, prompting for the password via 'promptForInput' should the  <a href="SecureConfig$.html#SecretEnvVariableName:String" class="extmbr" name="args4c.SecureConfig#SecretEnvVariableName">SecureConfig.SecretEnvVariableName</a>
+</p><div class="fullcomment"><div class="comment cmt"><p>read the configuration from the given path, prompting for the password via 'promptForInput' should the  <a href="SecureConfig$.html#SecureEnvVariableName:String" class="extmbr" name="args4c.SecureConfig#SecureEnvVariableName">SecureConfig.SecureEnvVariableName</a>
 environment variable not be set
 </p></div><dl class="paramcmts block"><dt class="param">pathToEncryptedConfig</dt><dd class="cmt"><p>the path pointing at the encrypted config</p></dd><dt>returns</dt><dd class="cmt"><p>a configuration if the file exists</p></dd></dl></div>
     </li><li name="args4c.SecureConfig#setupSecureConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setupSecureConfig(defaultSecretConfigFilePath:java.nio.file.Path):java.nio.file.Path"></a><a id="setupSecureConfig(Path):Path"></a>
+      <a id="setupSecureConfig(defaultSecureConfigFilePath:java.nio.file.Path,requiredPaths:Seq[String]):java.nio.file.Path"></a><a id="setupSecureConfig(Path,Seq[String]):Path"></a>
       <span class="permalink">
-      <a href="../args4c/SecureConfig.html#setupSecureConfig(defaultSecretConfigFilePath:java.nio.file.Path):java.nio.file.Path" title="Permalink">
+      <a href="../args4c/SecureConfig.html#setupSecureConfig(defaultSecureConfigFilePath:java.nio.file.Path,requiredPaths:Seq[String]):java.nio.file.Path" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -566,10 +570,10 @@ environment variable not be set
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setupSecureConfig</span><span class="params">(<span name="defaultSecretConfigFilePath">defaultSecretConfigFilePath: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="java.nio.file.Path">Path</span></span>
+        <span class="name">setupSecureConfig</span><span class="params">(<span name="defaultSecureConfigFilePath">defaultSecureConfigFilePath: <span class="extype" name="java.nio.file.Path">Path</span></span>, <span name="requiredPaths">requiredPaths: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Nil</span></span>)</span><span class="result">: <span class="extype" name="java.nio.file.Path">Path</span></span>
       </span>
       
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">defaultSecretConfigFilePath</dt><dd class="cmt"><p>the default path to store the configuration in, either from the --secure=x/y/z user arg, and env variable or default</p></dd><dt>returns</dt><dd class="cmt"><p>the path to the secure config</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">defaultSecureConfigFilePath</dt><dd class="cmt"><p>the default path to store the configuration in, either from the --secure=x/y/z user arg, and env variable or default</p></dd><dt class="param">requiredPaths</dt><dd class="cmt"><p>a potentially empty list of configuration paths which need to have values specified</p></dd><dt>returns</dt><dd class="cmt"><p>the path to the secure config</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -587,9 +591,9 @@ environment variable not be set
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="args4c.SecureConfig#updateSecureConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="updateSecureConfig(configPath:java.nio.file.Path):java.nio.file.Path"></a><a id="updateSecureConfig(Path):Path"></a>
+      <a id="updateSecureConfig(configPath:java.nio.file.Path,requiredPaths:Seq[String]):java.nio.file.Path"></a><a id="updateSecureConfig(Path,Seq[String]):Path"></a>
       <span class="permalink">
-      <a href="../args4c/SecureConfig.html#updateSecureConfig(configPath:java.nio.file.Path):java.nio.file.Path" title="Permalink">
+      <a href="../args4c/SecureConfig.html#updateSecureConfig(configPath:java.nio.file.Path,requiredPaths:Seq[String]):java.nio.file.Path" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -598,12 +602,12 @@ environment variable not be set
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">updateSecureConfig</span><span class="params">(<span name="configPath">configPath: <span class="extype" name="java.nio.file.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="java.nio.file.Path">Path</span></span>
+        <span class="name">updateSecureConfig</span><span class="params">(<span name="configPath">configPath: <span class="extype" name="java.nio.file.Path">Path</span></span>, <span name="requiredPaths">requiredPaths: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="java.nio.file.Path">Path</span></span>
       </span>
       
       <p class="shortcomment cmt">prompt for and set some secure values
 </p><div class="fullcomment"><div class="comment cmt"><p>prompt for and set some secure values
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path to the encrypted configuration file</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">configPath</dt><dd class="cmt"><p>the path where the secure config is written</p></dd><dt class="param">requiredPaths</dt><dd class="cmt"><p>a potentially empty list of configuration paths which need to have values specified</p></dd><dt>returns</dt><dd class="cmt"><p>the path to the encrypted configuration file</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
