@@ -1,6 +1,7 @@
 package args4c
 
 import java.nio.file.Paths
+import java.util.UUID
 
 class SecureConfigTest extends BaseSpec {
 
@@ -79,7 +80,7 @@ class SecureConfigTest extends BaseSpec {
       readBack.getString("conf.original.two") shouldBe "leftAlone"
     }
     "allow secret passwords to be set up" in {
-      val configPath = testConfigFile("vanilla")
+      val configPath = testConfigFile(s"vanilla-${UUID.randomUUID}")
       def underTest  = SecureConfig(testInput(configPath, testConfigEntries))
 
       // call the method under test to write 'testConfigFile'

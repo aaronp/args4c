@@ -96,7 +96,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     */
   protected def runWithConfig(userArgs: Array[String], pathToSecureConfig: Path, secureConfigState: SecureConfigState, parsedConfig: Config): Option[Result] = {
     val resolvedConfig = parsedConfig.resolve()
-    resolvedConfig.showIfSpecified(obscure(secureConfigState.configOpt.map(_.paths))) match {
+    resolvedConfig.showIfSpecified(obscure(secureConfigState.configOpt.map(_.paths()))) match {
       // 'show' was not specified, let's run our app
       case None =>
         val missingRequiredConfigEntries = missingRequiredConfigEntriesForConfig(resolvedConfig)

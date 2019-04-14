@@ -58,13 +58,14 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     */
   def showIfSpecified(obscure: (String, String) => String = obscurePassword(_, _)): Option[String] = {
     if (config.hasPath("show")) {
-      val filteredConf = config.getString("show") match {
-        case "all" | "" | "root" => config
+      val shown = config.getString("show") match {
+        case "all" | "" | "root" => config.withoutPath("show").summary()
         case path =>
-          val lcPath = path.toLowerCase
-          config.filter(_.toLowerCase.contains(lcPath))
+          val lcPath          = path.toLowerCase
+          val filteredEntries = config.withoutPath("show").summaryEntries(obscure).map(_.toString).filter(_.toLowerCase.contains(lcPath))
+          filteredEntries.mkString(Platform.EOL)
       }
-      Option(filteredConf.summary(obscure))
+      Option(shown)
     } else {
       None
     }
@@ -166,7 +167,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
   /** @param other the configuration to remove from this config
     * @return a new configuration with all values from 'other' removed
     */
-  def without(other: Config): Config = without(configAsRichConfig(other).paths)
+  def without(other: Config): Config = without(configAsRichConfig(other).paths(false))
 
   /** @param firstPath the first path to remove
     * @param theRest the remaining paths to remove
@@ -189,7 +190,9 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
   /** @param pathFilter a predicate used to determine if the configuration path should be kept
     * @return a new configuration which just keeps the paths which do NOT include the provided path predicate
     */
-  def filterNot(pathFilter: String => Boolean): Config = without(paths.filter(pathFilter))
+  def filterNot(pathFilter: String => Boolean): Config = {
+    without(entries(false).map(_._1).filter(pathFilter))
+  }
 
   /** @return the configuration as a json string
     */
@@ -197,36 +200,42 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
 
   /** @return all the unique paths for this configuration
     */
-  def paths: Seq[String] = {
-    entries.map(_._1).toSeq.sorted
+  def paths(arraySyntax: Boolean = true): Seq[String] = {
+    entries(arraySyntax).map(_._1).toSeq.sorted
   }
 
-  /** @return the configuration entries as a set of entries
+  /**
+    * @param arraySyntax if true expand arrays with '.[x]' syntax
+    * @return the configuration entries as a set of entries
     */
-  def entries: Set[(String, ConfigValue)] = {
+  def entries(arraySyntax: Boolean = true): Set[(String, ConfigValue)] = {
     import scala.collection.JavaConverters._
 
     def prepend(prefix: String, cv: ConfigValue): Set[(String, ConfigValue)] = {
       cv match {
         case obj: ConfigObject =>
-          obj.toConfig.entries.map {
+          obj.toConfig.entries(arraySyntax).map {
             case (path, cv) => s"${prefix}.$path" -> cv
           }
         case list: ConfigList =>
           import scala.collection.JavaConverters._
-          val all = list
-            .listIterator()
-            .asScala
-            .zipWithIndex
-            .flatMap {
+          val all = list.listIterator().asScala.zipWithIndex
+
+          val expanded = if (arraySyntax) {
+            all.flatMap {
               case (value: ConfigValue, i) => prepend(s"$prefix[$i]", value)
-            }
-            .toSet
+            }.toSet
+          } else {
+            all.flatMap {
+              case (value: ConfigValue, i) => prepend(s"$prefix.$i", value)
+            }.toSet
+          }
+
           // format :on
-          if (all.isEmpty) {
+          if (expanded.isEmpty) {
             Set(prefix -> list)
           } else {
-            all
+            expanded
           }
         case _ => Set(prefix -> cv)
       }
@@ -237,13 +246,22 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
       e.getValue match {
         case list: ConfigList =>
           import scala.collection.JavaConverters._
-          val all = list.listIterator().asScala.zipWithIndex.flatMap {
-            case (value: ConfigValue, i) => prepend(s"$key[$i]", value)
+
+          val all = list.listIterator().asScala.zipWithIndex
+
+          val expanded = if (arraySyntax) {
+            all.flatMap {
+              case (value: ConfigValue, i) => prepend(s"$key[$i]", value)
+            }
+          } else {
+            all.flatMap {
+              case (value: ConfigValue, i) => prepend(s"$key.$i", value)
+            }
           }
-          if (all.isEmpty) {
+          if (expanded.isEmpty) {
             Set(key -> list)
           } else {
-            all
+            expanded
           }
         case cv => Set(key -> cv)
       }
@@ -253,12 +271,12 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
 
   /** @return the config as a map
     */
-  def toMap = entries.toMap
+  def toMap = entries().toMap
 
   /** @return a sorted list of the origins from when the config values come
     */
   def origins: List[String] = {
-    val urls = entries.flatMap {
+    val urls = entries().flatMap {
       case (_, e) =>
         val origin = e.origin()
         Option(origin.url). //
@@ -287,7 +305,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     */
   def summaryEntries(obscure: (String, String) => String = obscurePassword(_, _)): Seq[StringEntry] = {
     val cro = defaultRenderOptions
-    entries
+    entries()
       .collect {
         case (key, value) =>
           val stringValue = obscure(key, value.render(cro))
@@ -320,14 +338,14 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     *
     * @return a sorted list of the root entries to the config.
     */
-  def pathRoots: Seq[String] = paths.map { p =>
+  def pathRoots: Seq[String] = paths(false).map { p =>
     ConfigUtil.splitPath(p).get(0)
   }
 
   /** @return the configuration as a set of key/value tuples
     */
   def collectAsStrings(options: ConfigRenderOptions = defaultRenderOptions): Seq[(String, String)] =
-    entries
+    entries()
       .map {
         case (key, value) => (key, unquote(value.render(options)))
       }
@@ -344,7 +362,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     * @return the configuration representing the intersection of the two configuration entries
     */
   def intersect(other: Config): Config = {
-    withPaths(other.paths)
+    withPaths(other.paths(false))
   }
 
   /** @param first   the first path to include (keep)

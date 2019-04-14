@@ -1,5 +1,6 @@
 package args4c
 import java.nio.file.{Files, Paths}
+import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.typesafe.config.{Config, ConfigFactory}
@@ -125,12 +126,16 @@ class ConfigAppTest extends BaseSpec {
       }
     }
     "show values when a show is given" in {
-      val app = new TestApp
+      val app = new TestApp {
+        override val defaultConfig = ConfigFactory.parseString("""foo.bar.array : [1]""".stripMargin)
+      }
+
       app.main(Array("foo.bar.password=secret!", "ignore.me=ok", "foo.bar.x=123", "foo.bar.y=456", "show=foo.bar"))
       app.lastConfig.getInt("foo.bar.x") shouldBe 123
       app.lastConfig.getInt("foo.bar.y") shouldBe 456
       app.shown should not include ("""ignore.me""")
-      app.shown.lines.toList should contain only ("foo.bar.password : **** obscured **** # command-line",
+      app.shown.lines.toList should contain only ("foo.bar.array[0] : 1 # String: 1",
+      "foo.bar.password : **** obscured **** # command-line",
       """foo.bar.x : 123 # command-line""",
       """foo.bar.y : 456 # command-line""")
     }
@@ -162,9 +167,8 @@ class ConfigAppTest extends BaseSpec {
     }
   }
 
-  private val counter = new AtomicInteger(0)
   def withConfigFile(test: String => Unit) = {
-    val configFile = s"./target/ConfigAppTest-${counter.incrementAndGet}.conf"
+    val configFile = s"./target/ConfigAppTest-${UUID.randomUUID}.conf"
     try {
       test(configFile)
     } finally {

@@ -144,7 +144,7 @@ class RichConfigTest extends BaseSpec {
   }
   "RichConfig.without" should {
     "return a configuration which excludes the paths from another config" in {
-      val remaining = defaultConfig.without(defaultConfig).paths
+      val remaining = defaultConfig.without(defaultConfig).paths()
       remaining shouldBe (empty)
     }
   }
@@ -192,7 +192,7 @@ class RichConfigTest extends BaseSpec {
           | }
           | foo : x
         """.stripMargin)
-      a.intersect(b).paths shouldBe List("thing.b")
+      a.intersect(b).paths() shouldBe List("thing.b")
     }
   }
 
