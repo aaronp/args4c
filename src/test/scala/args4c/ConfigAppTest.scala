@@ -1,7 +1,6 @@
 package args4c
 import java.nio.file.{Files, Paths}
 import java.util.UUID
-import java.util.concurrent.atomic.AtomicInteger
 
 import com.typesafe.config.{Config, ConfigFactory}
 

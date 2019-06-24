@@ -15,8 +15,11 @@ enablePlugins(ParadoxMaterialThemePlugin) // see https://jonas.github.io/paradox
 val username            = "aaronp"
 val scalaEleven         = "2.11.8"
 val scalaTwelve         = "2.12.7"
-val defaultScalaVersion = scalaTwelve
-crossScalaVersions := Seq(scalaEleven, scalaTwelve)
+val scalaThirteen       = "2.13.0"
+val defaultScalaVersion = scalaThirteen
+crossScalaVersions := Seq(scalaEleven, scalaTwelve, scalaThirteen)
+
+scalaVersion := defaultScalaVersion
 
 paradoxProperties += ("project.url" -> "https://aaronp.github.io/args4c/docs/current/")
 
@@ -38,11 +41,21 @@ siteSubdirName in SiteScaladoc := "api/latest"
 libraryDependencies += "com.typesafe" % "config" % "1.3.3" % "provided"
 
 libraryDependencies ++= List(
-  "org.scalactic" %% "scalactic" % "3.0.4" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-  "org.pegdown"   % "pegdown"    % "1.6.0" % "test",
-  "junit"         % "junit"      % "4.12"  % "test"
+  "org.pegdown" % "pegdown" % "1.6.0" % "test",
+  "junit"       % "junit"   % "4.12"  % "test"
 )
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
+
+// libraryDependencies += "org.scalactic" % "scalatest"  % "3.0.4" cross CrossVersion.binaryMapped {
+//   case "2.13.0" => "2.13"
+//   case x => x
+// }
+
+// libraryDependencies += "org.scalactic" % "scalactic"  % "3.0.4" cross CrossVersion.binaryMapped {
+//   case "2.13.0" => "2.13"
+//   case x => x
+// }
 
 publishMavenStyle := true
 releaseCrossBuild := true

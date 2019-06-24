@@ -4,6 +4,7 @@ import java.nio.file.{Files, Path, Paths}
 import args4c.RichConfig.ParseArg
 import com.typesafe.config._
 
+import scala.collection.MapView
 import scala.sys.SystemProperties
 
 /**
@@ -147,12 +148,15 @@ package object args4c {
     *
     */
   def sysEnvAsConfig(env: Map[String, String] = sys.env): Config = {
-    val confMap = env
+    val confMap: MapView[String, String] = env
       .map {
         case (key, value) => envToPath(key) -> value
       }
-      .filterKeys(_.nonEmpty)
-    configForMap(confMap)
+      .view
+      .filterKeys { x: String =>
+        x.nonEmpty
+      }
+    configForMap(confMap.toMap)
   }
 
   /** @param confMap
@@ -161,11 +165,11 @@ package object args4c {
   def configForMap(confMap: Map[String, String]): Config = {
     import scala.collection.JavaConverters._
     try {
-      val trimmed = {
+      val trimmed: MapView[String, String] = {
         val keys: Set[String] = confMap.keySet
-        confMap.filterKeys(prefixNotInSet(keys, _))
+        confMap.view.filterKeys(prefixNotInSet(keys, _))
       }
-      ConfigFactory.parseMap(trimmed.asJava, "environment variable")
+      ConfigFactory.parseMap(trimmed.toMap.asJava, "environment variable")
     } catch {
       case exp: ConfigException => throw new IllegalStateException(s"couldn't parse: ${confMap.mkString("\n")}", exp)
     }
@@ -176,7 +180,7 @@ package object args4c {
     !otherKeys.exists(_.startsWith(value))
   }
 
-  private[args4c] def envToPath(str: String) = {
+  private[args4c] def envToPath(str: String): String = {
     val TrimDotsR = """\.*(.*)\.*""".r
 
     str.split('_').map(_.toLowerCase).mkString(".").dropWhile(_ == '.') match {
