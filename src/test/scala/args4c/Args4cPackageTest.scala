@@ -16,13 +16,6 @@ class Args4cPackageTest extends BaseSpec {
     }
   }
 
-  "args4c" should {
-    "handled colons in keys" in {
-      val config: Config = configForArgs(Array("affinity:container=hello"))
-      config.getString("\"affinity:container\"") shouldBe "hello"
-    }
-  }
-
   "unquote" should {
     List(
       "foo"              -> "foo",
@@ -68,6 +61,10 @@ class Args4cPackageTest extends BaseSpec {
     }
   }
   "configForArgs" should {
+    "handled colons in keys" in {
+      val config: Config = configForArgs(Array("affinity:container=hello"))
+      config.getString("\"affinity:container\"") shouldBe "hello"
+    }
     "ignore malformed arguments when when ParseArg.Ignore is specified" in {
       val conf = configForArgs(Array("invalid", "file.doesn't.exist", "ok=true"), onUnrecognizedArg = ParseArg.Ignore).resolve
       conf.getBoolean("ok") shouldBe true
