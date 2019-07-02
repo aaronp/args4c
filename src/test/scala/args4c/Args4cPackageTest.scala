@@ -4,7 +4,7 @@ import java.nio.file.{Files, Paths}
 import java.util.UUID
 
 import args4c.RichConfig.ParseArg
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 class Args4cPackageTest extends BaseSpec {
 
@@ -13,6 +13,13 @@ class Args4cPackageTest extends BaseSpec {
       "convert JAVA_HOME variables into a configuration" in {
         sysEnvAsConfig().getString("java.home") should not be (empty)
       }
+    }
+  }
+
+  "args4c" should {
+    "handled colons in keys" in {
+      val config: Config = configForArgs(Array("affinity:container=hello"))
+      config.getString("\"affinity:container\"") shouldBe "hello"
     }
   }
 

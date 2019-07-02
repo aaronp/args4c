@@ -81,27 +81,37 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     * @return a configuration with the given user-argument overrides applied over top
     */
   def withUserArgs(args: Array[String], unrecognizedArg: String => Config = ParseArg.Throw): Config = {
-    def isSimpleList(key: String) = {
-      def isList = Try(config.getStringList(key)).isSuccess
+    def isValidKey(key: String): Boolean = {
+      try {
+        config.hasPath(key)
+      } catch {
+        case _: ConfigException => false
+      }
+    }
 
+    def isSimpleList(key: String): Boolean = {
+      def isList = Try(config.getStringList(key)).isSuccess
       config.hasPath(key) && isList
     }
 
     def isObjectList(key: String) = {
       def isList = Try(config.getObjectList(key)).isSuccess
-
       config.hasPath(key) && isList
     }
 
     val configs: Array[Config] = args.map {
-      case KeyValue(k, v) if isSimpleList(k) =>
+      case KeyValue(k, v) if isValidKey(k) && isSimpleList(k) =>
         asConfig(k, java.util.Arrays.asList(v.split(",", -1): _*))
-      case KeyValue(k, v) if isObjectList(k) =>
+      case KeyValue(k, v) if isValidKey(k) && isObjectList(k) =>
         sys.error(s"Path '$k' tried to override an object list with '$v'")
-      case KeyValue(k, v)    => asConfig(k, v)
-      case FilePathConfig(c) => c
-      case UrlPathConfig(c)  => c
-      case other             => unrecognizedArg(other)
+      case KeyValue(k, v) if isValidKey(k) => asConfig(k, v)
+      case FilePathConfig(c)               => c
+      case UrlPathConfig(c)                => c
+      case other @ KeyValue(k, v) =>
+        val safeKey = ConfigUtil.quoteString(k)
+        asConfig(safeKey, v)
+      case other =>
+        unrecognizedArg(other)
     }
 
     (configs :+ config).reduce(_ withFallback _)
