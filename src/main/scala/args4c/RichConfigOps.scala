@@ -84,6 +84,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     def isValidKey(key: String): Boolean = {
       try {
         config.hasPath(key)
+        true
       } catch {
         case _: ConfigException => false
       }
@@ -100,13 +101,16 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     }
 
     val configs: Array[Config] = args.map {
-      case KeyValue(k, v) if isValidKey(k) && isSimpleList(k) =>
+      case KeyValue(k, v) if !isValidKey(k) =>
+        val safeKey = ConfigUtil.quoteString(k)
+        asConfig(safeKey, v)
+      case KeyValue(k, v) if isSimpleList(k) =>
         asConfig(k, java.util.Arrays.asList(v.split(",", -1): _*))
-      case KeyValue(k, v) if isValidKey(k) && isObjectList(k) =>
+      case KeyValue(k, v) if isObjectList(k) =>
         sys.error(s"Path '$k' tried to override an object list with '$v'")
-      case KeyValue(k, v) if isValidKey(k) => asConfig(k, v)
-      case FilePathConfig(c)               => c
-      case UrlPathConfig(c)                => c
+      case KeyValue(k, v)    => asConfig(k, v)
+      case FilePathConfig(c) => c
+      case UrlPathConfig(c)  => c
       case other @ KeyValue(k, v) =>
         val safeKey = ConfigUtil.quoteString(k)
         asConfig(safeKey, v)
