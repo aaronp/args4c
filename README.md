@@ -4,8 +4,7 @@ Args4c
 [![Build Status](https://travis-ci.org/aaronp/args4c.svg?branch=master)](https://travis-ci.org/aaronp/args4c)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_2.12/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_2.12)
 [![Coverage Status](https://coveralls.io/repos/github/aaronp/args4c/badge.svg?branch=master)](https://coveralls.io/github/aaronp/args4c?branch=master)
-[![Scaladoc](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.12)]
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)]
+[![Scaladoc](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.12)
 
 An "arguments for config" zero-dependency* utility to aid in producing a [lightbend (typesafe) config](https://github.com/lightbend/config) from command-line arguments, as well as some convenience methods for working with configurations such as:
 
