@@ -9,6 +9,7 @@ jdk:
 after_success: "sbt coverageReport coveralls"
 
 sudo: false
+dist: trusty
 
 cache:
   directories:
