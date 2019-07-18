@@ -13,16 +13,17 @@ enablePlugins(ParadoxMaterialThemePlugin) // see https://jonas.github.io/paradox
 //ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)
 
 val username            = "aaronp"
-val scalaEleven         = "2.11.8"
-val scalaTwelve         = "2.12.7"
-val defaultScalaVersion = scalaTwelve
-crossScalaVersions := Seq(scalaEleven, scalaTwelve)
+val scalaTwelve         = "2.12.8"
+val scalaThirteen       = "2.13.0"
+val defaultScalaVersion = scalaThirteen
+scalaVersion := defaultScalaVersion
+crossScalaVersions := Seq(scalaTwelve, scalaThirteen)
 
 paradoxProperties += ("project.url" -> "https://aaronp.github.io/args4c/docs/current/")
 
 Compile / paradoxMaterialTheme ~= {
   _.withLanguage(java.util.Locale.ENGLISH)
-    .withColor("red", "orange")
+    .withColor("blue", "grey")
     .withLogoIcon("cloud")
     .withRepository(uri("https://github.com/aaronp/args4c"))
     .withSocial(uri("https://github.com/aaronp"))
@@ -35,11 +36,11 @@ siteSourceDirectory := target.value / "paradox" / "site" / "main"
 
 siteSubdirName in SiteScaladoc := "api/latest"
 
-libraryDependencies += "com.typesafe" % "config" % "1.3.3" % "provided"
+libraryDependencies += "com.typesafe" % "config" % "1.3.4" % "provided"
 
 libraryDependencies ++= List(
-  "org.scalactic" %% "scalactic" % "3.0.4" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.4" % "test",
+  "org.scalactic" %% "scalactic" % "3.0.8" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "org.pegdown"   % "pegdown"    % "1.6.0" % "test",
   "junit"         % "junit"      % "4.12"  % "test"
 )

@@ -22,9 +22,10 @@ object Encryption {
     * @return the total bytes and encrypted text
     */
   def encryptAES(password: Array[Byte], inputString: String): (Int, Array[Byte]) = {
+    encryptAES(password, inputString.getBytes("UTF-8"))
+  }
 
-    val input = inputString.getBytes("UTF-8")
-
+  def encryptAES(password: Array[Byte], input: Array[Byte]): (Int, Array[Byte]) = {
     val keyBytes: Array[Byte] = asKey(password)
 
     val sks    = new SecretKeySpec(keyBytes, "AES")
@@ -37,7 +38,11 @@ object Encryption {
   }
 
   def decryptAES(password: Array[Byte], encrypted: Array[Byte], len: Int): String = {
+    val (decrypted, total) = decryptAESBytes(password, encrypted, len)
+    new String(decrypted, "UTF-8").take(total)
+  }
 
+  def decryptAESBytes(password: Array[Byte], encrypted: Array[Byte], len: Int): (Array[Byte], Int) = {
     val keyBytes: Array[Byte] = asKey(password)
     val sks                   = new SecretKeySpec(keyBytes, "AES")
     val cipher                = Cipher.getInstance("AES")
@@ -45,7 +50,7 @@ object Encryption {
     val decrypted = Array.ofDim[Byte](len)
     val decLen    = cipher.update(encrypted, 0, len, decrypted, 0)
     val total     = decLen + cipher.doFinal(decrypted, decLen)
-    new String(decrypted, "UTF-8").take(total)
+    decrypted -> total
   }
 
 }

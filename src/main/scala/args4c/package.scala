@@ -116,10 +116,9 @@ package object args4c {
     fallback.withUserArgs(args, onUnrecognizedArg)
   }
 
-  /**
-    * @return essentially ConfigFactory.load() but with [[sysEnvAsConfig]] layered over the default application
+  /** @return ConfigFactory.load()
     */
-  def defaultConfig(): Config = ConfigFactory.load(sysEnvAsConfig().withFallback(ConfigFactory.defaultApplication()))
+  def defaultConfig(): Config = ConfigFactory.load()
 
   def env(key: String): Option[String] = sys.env.get(key)
 
@@ -129,32 +128,6 @@ package object args4c {
 
   def passwordBlacklist = Set("password", "credentials")
 
-  /**
-    * Converts environment variables into a configuration in order to more easily override any config setting
-    * based on an environment variable.
-    *
-    * e.g. instead of having the config:
-    *
-    * {{{
-    *   foo.bar.x = 123
-    *   foo.bar.x = $${?FOO_BAR_X}
-    * }}}
-    *
-    * repeated for each setting we can just convert all environment variables split on '_' into lower-case configuration values.
-    *
-    * e.g. 'FOO_BAR_X' would get converted into 'foo.bar.x'.
-    *
-    *
-    */
-  def sysEnvAsConfig(env: Map[String, String] = sys.env): Config = {
-    val confMap = env
-      .map {
-        case (key, value) => envToPath(key) -> value
-      }
-      .filterKeys(_.nonEmpty)
-    configForMap(confMap)
-  }
-
   /** @param confMap
     * @return a config for this map
     */
@@ -163,9 +136,11 @@ package object args4c {
     try {
       val trimmed = {
         val keys: Set[String] = confMap.keySet
-        confMap.filterKeys(prefixNotInSet(keys, _))
+        confMap.view.filter {
+          case (k, _) => prefixNotInSet(keys, k)
+        }
       }
-      ConfigFactory.parseMap(trimmed.asJava, "environment variable")
+      ConfigFactory.parseMap(trimmed.toMap.asJava, "environment variable")
     } catch {
       case exp: ConfigException => throw new IllegalStateException(s"couldn't parse: ${confMap.mkString("\n")}", exp)
     }

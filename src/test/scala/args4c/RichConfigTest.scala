@@ -42,7 +42,7 @@ class RichConfigTest extends BaseSpec {
     }
     "provide a config with the config values set" in {
       val baseConfig = configForArgs(Array("foo.x.y=1", "test.conf"))
-      val conf       = baseConfig.set("foo.x.y", 2).set("aBoolean", true).setArray("ints", Array(1, 2, 3)).setArray("strings", Array("four", "five"))
+      val conf       = baseConfig.set("foo.x.y", 2).set("aBoolean", true).setArray("ints", Array(1, 2, 3)).setArray[String]("strings", Array("four", "five"))
       conf.getInt("foo.x.y") shouldBe 2
       conf.getBoolean("aBoolean") shouldBe true
       conf.getIntList("ints").asScala should contain inOrderOnly (1, 2, 3)
@@ -157,7 +157,7 @@ class RichConfigTest extends BaseSpec {
   "RichConfig.origins" should {
     "return the unique origins from which the configurations were sources" in {
       val conf = configForArgs(Array("foo.x.y=1", "test.conf"))
-      conf.origins should contain allOf ("command-line", "environment variable")
+      conf.origins should contain("command-line")
       conf.origins.exists(_.contains("test.conf")) shouldBe true
     }
   }

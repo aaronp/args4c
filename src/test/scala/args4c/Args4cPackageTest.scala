@@ -8,14 +8,6 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 class Args4cPackageTest extends BaseSpec {
 
-  sys.env.get("JAVA_HOME").foreach { _ =>
-    "sysEnvAsConfig" should {
-      "convert JAVA_HOME variables into a configuration" in {
-        sysEnvAsConfig().getString("java.home") should not be (empty)
-      }
-    }
-  }
-
   "unquote" should {
     List(
       "foo"              -> "foo",
@@ -42,7 +34,7 @@ class Args4cPackageTest extends BaseSpec {
     "discard values in favour of longer paths" in {
       val map  = Map("someroot" -> "short", "someroot.value" -> "long")
       val conf = configForMap(map)
-      conf.toMap.mapValues(_.unwrapped) shouldBe Map("someroot.value" -> "long")
+      conf.toMap.mapValues(_.unwrapped).toMap shouldBe Map("someroot.value" -> "long")
     }
   }
 
