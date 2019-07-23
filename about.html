@@ -125,16 +125,45 @@ aaronp/args4c
   <li><a href="license.html" class="page">License</a></li>
 </ul>
 <nav class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">Table of contents</label>
+<ul>
+  <li><a href="about.html#about" class="header">About</a>
+  <ul>
+    <li><a href="about.html#no-args-e-g-using-our-reference-conf-" class="header">No args (e.g. using our reference.conf)</a></li>
+    <li><a href="about.html#using-the-acme-test-conf-resource-file-" class="header">Using the acme-test.conf resource file:</a></li>
+    <li><a href="about.html#specifying-an-absolute-path-to-prod-conf" class="header">Specifying an absolute path to prod.conf</a></li>
+    <li><a href="about.html#our-prod-conf-file-overridden-on-the-command-line" class="header">Our prod.conf file, overridden on the command-line</a></li>
+  </ul></li>
+</ul>
 </nav>
 
 </nav>
 <ul style="display: none">
 <li class="md-nav__item md-version" id="project.version">
 <label class="md-nav__link" for="__version">
-<i class="md-icon" title="Version">label_outline</i> 0.6.7*
+<i class="md-icon" title="Version">label_outline</i> 0.7.1*
 </label>
 </li>
 </ul>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">Table of contents</label>
+<ul>
+  <li><a href="about.html#about" class="header">About</a>
+  <ul>
+    <li><a href="about.html#no-args-e-g-using-our-reference-conf-" class="header">No args (e.g. using our reference.conf)</a></li>
+    <li><a href="about.html#using-the-acme-test-conf-resource-file-" class="header">Using the acme-test.conf resource file:</a></li>
+    <li><a href="about.html#specifying-an-absolute-path-to-prod-conf" class="header">Specifying an absolute path to prod.conf</a></li>
+    <li><a href="about.html#our-prod-conf-file-overridden-on-the-command-line" class="header">Our prod.conf file, overridden on the command-line</a></li>
+  </ul></li>
+</ul>
+</nav>
+
 </div>
 </div>
 </div>
@@ -144,7 +173,68 @@ aaronp/args4c
 <h2><a href="#about" name="about" class="anchor"><span class="anchor-link"></span></a>About</h2>
 <p>The typesafe config itself is marked as a &lsquo;provided&rsquo; dependency, so to use this library, you&rsquo;ll still need to include the typesafe config.</p>
 <p>The core is simply to convert an Array[String] to a Config where the arguments are either paths to configuration resources or simple key=value pairs.</p>
-<p>Left-most arguments take precedence. In this example, we assume &lsquo;prod.conf&rsquo; is a resource on the classpath:</p>
+<p>So, consider this application:</p>
+<pre class="prettyprint"><code class="language-scala">package acme
+
+import args4c.ConfigApp
+import com.typesafe.config.Config
+import com.typesafe.scalalogging.StrictLogging
+
+object MyMain extends ConfigApp with StrictLogging {
+  override type Result = String
+  override def run(config : Config) = {
+    logger.info(&quot;Running MyMain with:\n&quot; + config.getConfig(&quot;acme&quot;).summary())
+    
+    val message = &quot;Hello ${config.getString(&quot;acme.name&quot;)}&quot;
+    logger.info(message)
+    
+    // let&#39;s return our message, so our main class can actually act as a function from Config =&gt; String
+    message
+  }
+}
+</code></pre>
+<p>which also has these resources:</p>
+<p>src/main/resources/reference.conf</p>
+<pre><code>acme.name : &quot;default&quot;
+acme.password : &quot;&quot;
+</code></pre>
+<p>and </p>
+<p>src/main/resources/acme-test.conf</p>
+<pre><code>acme.name : &quot;testing&quot;
+</code></pre>
+<p>Let&rsquo;s also assume there is an &lsquo;/app/config/prod.conf&rsquo; file which contains</p>
+<pre><code>acme.name : &quot;production&quot;
+acme.password : &quot;S3creT&quot;
+</code></pre>
+<p>When we run the application, we can observe the left-most arguments take presedence.</p>
+<h3><a href="#no-args-e-g-using-our-reference-conf-" name="no-args-e-g-using-our-reference-conf-" class="anchor"><span class="anchor-link"></span></a>No args (e.g. using our reference.conf)</h3>
+<pre class="prettyprint"><code class="language-scala">java -jar myapp.jar
+Running MyMain with:
+name : default # reference.conf
+password : **** obscured **** # reference.conf
+</code></pre>
+<h3><a href="#using-the-acme-test-conf-resource-file-" name="using-the-acme-test-conf-resource-file-" class="anchor"><span class="anchor-link"></span></a>Using the acme-test.conf resource file:</h3>
+<pre class="prettyprint"><code class="language-scala">java -jar myapp.jar acme-test.conf
+Running MyMain with:
+name : testing # acme-test.conf
+password : **** obscured **** # reference.conf
+</code></pre>
+<p>Note: If you ran it with e.g. </p>
+<pre><code>java -cp /opt/config:/opt/lib/myapp.jar acme.MyMain fileInOptConfig.conf 
+</code></pre>
+<p>It would find and use /opt/config/fileInOptConfig.conf </p>
+<h3><a href="#specifying-an-absolute-path-to-prod-conf" name="specifying-an-absolute-path-to-prod-conf" class="anchor"><span class="anchor-link"></span></a>Specifying an absolute path to prod.conf</h3>
+<pre class="prettyprint"><code class="language-scala">java -jar myapp.jar /app/config/prod.conf
+Running MyMain with:
+name : production # /app/config/prod.conf
+password : **** obscured **** # /app/config/prod.conf
+</code></pre>
+<h3><a href="#our-prod-conf-file-overridden-on-the-command-line" name="our-prod-conf-file-overridden-on-the-command-line" class="anchor"><span class="anchor-link"></span></a>Our prod.conf file, overridden on the command-line</h3>
+<pre class="prettyprint"><code class="language-scala">java -jar myapp.jar acme.name=foo /app/config/prod.conf
+Running MyMain with:
+name : foo # command-line
+password : **** obscured **** # reference.conf
+</code></pre>
 </div>
 <div>
 <a href="https://github.com/aaronp/args4c/tree/master/src/main/paradox/about.md" title="Edit this page" class="md-source-file md-edit">
@@ -153,7 +243,7 @@ Edit this page
 </div>
 <div class="print-only">
 <span class="md-source-file md-version">
-0.6.7*
+0.7.1*
 </span>
 </div>
 </article>
