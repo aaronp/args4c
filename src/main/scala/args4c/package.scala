@@ -181,5 +181,26 @@ package object args4c {
 
   def pathAsUrl(path: String): Option[URL] = Option(getClass.getClassLoader.getResource(path))
 
+  /** @param c1ass  the main class running
+    * @param config the config used to start this app
+    * @return a pretty-print of the config keys/values (minus sensitive ones) of our 'configPrefix' config
+    */
+  def startupLog(c1ass: Class[_], config: Config, configPrefix: String): String = {
+    startupLog(c1ass.getSimpleName.filter(_.isLetter), config, configPrefix)
+  }
+
+  def startupLog(appName: String, config: Config, configPrefix: String): String = {
+    import implicits._
+    val subConfig = config
+      .getConfig(configPrefix)
+      .summary()
+      .linesIterator
+      .map { line =>
+        s"\tconfigPrefix.${line}"
+      }
+      .mkString("\n")
+    s"Running ${appName} with: \n${subConfig}\n\n"
+  }
+
   private[args4c] val KeyValue = "-{0,2}(.*?)=(.*)".r
 }
