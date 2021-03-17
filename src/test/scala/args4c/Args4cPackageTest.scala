@@ -34,7 +34,7 @@ class Args4cPackageTest extends BaseSpec {
     "discard values in favour of longer paths" in {
       val map  = Map("someroot" -> "short", "someroot.value" -> "long")
       val conf = configForMap(map)
-      conf.toMap.mapValues(_.unwrapped).toMap shouldBe Map("someroot.value" -> "long")
+      conf.toMap.view.mapValues(_.unwrapped).toMap shouldBe Map("someroot.value" -> "long")
     }
   }
 

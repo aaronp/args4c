@@ -8,6 +8,7 @@ import scala.compat.Platform
 import scala.concurrent.duration._
 import scala.language.{dynamics, implicitConversions, postfixOps}
 import scala.util.Try
+import System.{lineSeparator => EOL}
 
 /**
   * Exposes new operations on a 'config'
@@ -63,7 +64,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
         case path =>
           val lcPath          = path.toLowerCase
           val filteredEntries = config.withoutPath("show").summaryEntries(obscure).map(_.toString).filter(_.toLowerCase.contains(lcPath))
-          filteredEntries.mkString(Platform.EOL)
+          filteredEntries.mkString(EOL)
       }
       Option(shown)
     } else {
@@ -111,9 +112,6 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
       case KeyValue(k, v)    => asConfig(k, v)
       case FilePathConfig(c) => c
       case UrlPathConfig(c)  => c
-      case other @ KeyValue(k, v) =>
-        val safeKey = ConfigUtil.quoteString(k)
-        asConfig(safeKey, v)
       case other =>
         unrecognizedArg(other)
     }
@@ -193,7 +191,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     * @return a new configuration with the given paths removed
     */
   def without(configPaths: TraversableOnce[String]): Config = {
-    configPaths.foldLeft(config)(_ withoutPath _)
+    configPaths.iterator.foldLeft(config)(_ withoutPath _)
   }
 
   /** @param pathFilter a predicate used to determine if the configuration path should be kept
@@ -308,8 +306,18 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     * @param obscure a function which will 'safely' replace any config values with an obscured value
     * @return a summary of the configuration
     */
-  def summary(obscure: (String, String) => String = obscurePassword(_, _)): String = {
-    summaryEntries(obscure).mkString(Platform.EOL)
+  def summary(prefix: String = "", obscure: (String, String) => String = obscurePassword(_, _)): String = {
+    val summaries = if (prefix.isEmpty) summaryEntries(obscure) else summaryEntries(obscure).map(_.withPrefix(prefix))
+    summaries.mkString(EOL)
+  }
+
+  /**
+    * @param path the path to a subconfig
+    * @param obscure an obscure function
+    * @return the summary at the given path
+    */
+  def summaryAtPath(path: String, obscure: (String, String) => String = obscurePassword(_, _)): String = {
+    config.getConfig(path).summary(s"$path.", obscure)
   }
 
   /**

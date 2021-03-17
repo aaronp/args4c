@@ -1,11 +1,10 @@
 package args4c
 
+import com.typesafe.config._
+
 import java.nio.file.attribute.PosixFilePermissions
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
-
-import com.typesafe.config._
 import javax.crypto.BadPaddingException
-
 import scala.annotation.tailrec
 import scala.compat.Platform
 import scala.util.Properties
@@ -146,10 +145,9 @@ case class SecureConfig(promptForInput: UserInput) {
 
   @tailrec
   private def readNextRecursive(wipConfig: Config, promptedForConfigPath : Option[String], nextPrompt : Prompt, requiredPaths : Seq[String]): Config = {
-        import implicits._
-    val userReply = promptForInput(nextPrompt).trim
-    userReply match {
-        
+
+    import implicits._
+    promptForInput(nextPrompt).trim match {
       case ""  =>
         promptedForConfigPath match {
             //

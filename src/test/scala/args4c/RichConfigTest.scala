@@ -42,7 +42,7 @@ class RichConfigTest extends BaseSpec {
     }
     "provide a config with the config values set" in {
       val baseConfig = configForArgs(Array("foo.x.y=1", "test.conf"))
-      val conf       = baseConfig.set("foo.x.y", 2).set("aBoolean", true).setArray("ints", Array(1, 2, 3)).setArray[String]("strings", Array("four", "five"))
+      val conf       = baseConfig.set("foo.x.y", 2).set("aBoolean", true).setArray("ints", Seq(1, 2, 3)).setArray[String]("strings", Seq("four", "five"))
       conf.getInt("foo.x.y") shouldBe 2
       conf.getBoolean("aBoolean") shouldBe true
       conf.getIntList("ints").asScala should contain inOrderOnly (1, 2, 3)
@@ -50,30 +50,32 @@ class RichConfigTest extends BaseSpec {
     }
   }
   "RichConfig.summary" should {
+
+    val testConf = ConfigFactory.parseString("""
+                                               |test.stringArray : ["one", "two"]
+                                               |test.intArray : [1,2,3]
+                                               |test.emptyArray : []
+                                               |test.nested: [
+                                               |   [ { id :  1}, {id : 2 } ],
+                                               |   [ { id :  3, array : ["yes"] } ],
+                                               |   [],
+                                               |   [[[{deep : "very"}]]]
+                                               |]
+                                               |test.objArray : [
+                                               |  {
+                                               |    x : "an object entry"
+                                               |    y : "another object entry"
+                                               |  },
+                                               |  {
+                                               |    foo : false
+                                               |  }
+                                               |]
+      """.stripMargin)
+
     "show a flatten summary of a configuration" in {
 
-      val testConf = ConfigFactory.parseString("""
-          |test.stringArray : ["one", "two"]
-          |test.intArray : [1,2,3]
-          |test.emptyArray : []
-          |test.nested: [
-          |   [ { id :  1}, {id : 2 } ],
-          |   [ { id :  3, array : ["yes"] } ],
-          |   [],
-          |   [[[{deep : "very"}]]]
-          |]
-          |test.objArray : [
-          |  {
-          |    x : "an object entry"
-          |    y : "another object entry"
-          |  },
-          |  {
-          |    foo : false
-          |  }
-          |]
-        """.stripMargin)
-      val conf     = configForArgs(Array("test.foo=bar", "test.password=secret"), fallback = testConf)
-      val entries  = conf.summaryEntries().map(e => (e.key, e.value))
+      val conf    = configForArgs(Array("test.foo=bar", "test.password=secret"), fallback = testConf)
+      val entries = conf.summaryEntries().map(e => (e.key, e.value))
 
       val actual = conf.withPaths("test").summary()
 
@@ -102,6 +104,27 @@ class RichConfigTest extends BaseSpec {
           |test.password : **** obscured **** # command-line
           |test.stringArray[0] : one # String: 2
           |test.stringArray[1] : two # String: 2""".stripMargin
+    }
+    "show the summary for summaryAtPath" in {
+      val expected = """test.emptyArray : [] # String: 4
+                        |test.intArray[0] : 1 # String: 3
+                        |test.intArray[1] : 2 # String: 3
+                        |test.intArray[2] : 3 # String: 3
+                        |test.nested[0][0].id : 1 # String: 6
+                        |test.nested[0][1].id : 2 # String: 6
+                        |test.nested[1][0].array[0] : yes # String: 7
+                        |test.nested[1][0].id : 3 # String: 7
+                        |test.nested[2] : [] # String: 8
+                        |test.nested[3][0][0][0].deep : very # String: 9
+                        |test.objArray[0].x : an object entry # String: 13
+                        |test.objArray[0].y : another object entry # String: 14
+                        |test.objArray[1].foo : false # String: 17
+                        |test.stringArray[0] : one # String: 2
+                        |test.stringArray[1] : two # String: 2""".stripMargin
+
+      testConf.summaryAtPath("test").linesIterator.zip(expected.linesIterator).foreach {
+        case (a, e) => a shouldBe e
+      }
     }
   }
   "RichConfig.asDuration" should {
@@ -144,7 +167,7 @@ class RichConfigTest extends BaseSpec {
   }
   "RichConfig.without" should {
     "return a configuration which excludes the paths from another config" in {
-      val remaining = defaultConfig.without(defaultConfig).paths()
+      val remaining = defaultConfig().without(defaultConfig()).paths()
       remaining shouldBe (empty)
     }
   }
@@ -158,6 +181,7 @@ class RichConfigTest extends BaseSpec {
     "return the unique origins from which the configurations were sources" in {
       val conf = configForArgs(Array("foo.x.y=1", "test.conf"))
       conf.origins should contain("command-line")
+      withClue(conf.origins.mkString("Origins:\n", "\n", "\n"))
       conf.origins.exists(_.contains("test.conf")) shouldBe true
     }
   }

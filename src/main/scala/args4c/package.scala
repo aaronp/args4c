@@ -179,7 +179,11 @@ package object args4c {
 
   def pathAsFile(path: String): Option[Path] = Option(Paths.get(path)).filter(p => Files.exists(p))
 
-  def pathAsUrl(path: String): Option[URL] = Option(getClass.getClassLoader.getResource(path))
+  def pathAsUrl(path: String): Option[URL] = {
+    Option(getClass.getClassLoader.getResource(path)).orElse {
+      Option(Thread.currentThread().getContextClassLoader.getResource(path))
+    }
+  }
 
   private[args4c] val KeyValue = "-{0,2}(.*?)=(.*)".r
 }

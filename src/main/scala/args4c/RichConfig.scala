@@ -2,6 +2,7 @@ package args4c
 
 import com.typesafe.config.impl.ConfigImpl
 import com.typesafe.config.{Config, ConfigFactory}
+import scala.language.dynamics
 
 /**
   * Adds some scala utility around a typesafe config

@@ -2,6 +2,7 @@ package args4c
 
 import args4c.RichConfig.ParseArg
 import com.typesafe.config.{Config, ConfigUtil}
+import scala.language.implicitConversions
 
 trait LowPriorityArgs4cImplicits {
 

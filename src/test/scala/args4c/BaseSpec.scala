@@ -1,9 +1,11 @@
 package args4c
+
 import java.nio.file.{Files, Path, Paths}
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
-
-class BaseSpec extends WordSpec with Matchers with BeforeAndAfterAll with LowPriorityArgs4cImplicits {
+class BaseSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with LowPriorityArgs4cImplicits {
 
   override def beforeAll(): Unit = {
     deleteDefaultConfig()

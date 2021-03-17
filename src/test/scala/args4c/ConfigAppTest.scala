@@ -134,7 +134,7 @@ class ConfigAppTest extends BaseSpec {
       app.lastConfig.getInt("foo.bar.x") shouldBe 123
       app.lastConfig.getInt("foo.bar.y") shouldBe 456
       app.shown should not include ("""ignore.me""")
-      app.shown.lines.toList should contain only ("foo.bar.array[0] : 1 # String: 1",
+      app.shown.linesIterator.toList should contain only ("foo.bar.array[0] : 1 # String: 1",
       "foo.bar.password : **** obscured **** # command-line",
       """foo.bar.x : 123 # command-line""",
       """foo.bar.y : 456 # command-line""")

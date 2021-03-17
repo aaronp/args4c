@@ -159,7 +159,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     /** Has the user explicitly passed the '--setup' flag?
       */
     if (isSetupSpecified(userArgs, setupUserArgFlag)) {
-      val configSoFar                  = defaultConfig().withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
+      val configSoFar                  = defaultConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
       val missingRequiredConfigEntries = missingRequiredConfigEntriesForConfig(configSoFar)
       secureConfig.setupSecureConfig(pathToSecureConfig, missingRequiredConfigEntries.sorted)
       None
@@ -168,7 +168,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       val parsedConfig = {
         val baseConfig = secureConfigState match {
           case SecureConfigDoesntExist(path) => throw new IllegalStateException(s"Configuration at '$path' doesn't exist")
-          case other                         => other.configOpt.fold(defaultConfig())(_.withFallback(defaultConfig()))
+          case other                         => other.configOpt.fold(defaultConfig)(_.withFallback(defaultConfig))
         }
         baseConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
       }
@@ -194,7 +194,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
 
   /** @return the default config to overlay the user args over.
     */
-  def defaultConfig(): Config = args4c.defaultConfig()
+  def defaultConfig: Config = args4c.defaultConfig()
 
   /**
     * displays the value for the given config for when the 'show' command-line arg was specified
