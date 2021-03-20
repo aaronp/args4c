@@ -58,7 +58,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     * @return the optional value of what's pointed to if 'show=<path>' is specified
     */
   def showIfSpecified(obscure: (String, String) => String = obscurePassword(_, _)): Option[String] = {
-    if (config.hasPath("show")) {
+    if config.hasPath("show") then {
       val shown = config.getString("show") match {
         case "all" | "" | "root" => config.withoutPath("show").summary()
         case path =>
@@ -233,7 +233,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
           import scala.collection.JavaConverters._
           val all = list.listIterator().asScala.zipWithIndex
 
-          val expanded = if (arraySyntax) {
+          val expanded = if arraySyntax then {
             all.flatMap {
               case (value: ConfigValue, i) => prepend(s"$prefix[$i]", value)
             }.toSet
@@ -244,7 +244,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
           }
 
           // format :on
-          if (expanded.isEmpty) {
+          if expanded.isEmpty then {
             Set(prefix -> list)
           } else {
             expanded
@@ -261,7 +261,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
 
           val all = list.listIterator().asScala.zipWithIndex
 
-          val expanded = if (arraySyntax) {
+          val expanded = if arraySyntax then {
             all.flatMap {
               case (value: ConfigValue, i) => prepend(s"$key[$i]", value)
             }
@@ -270,7 +270,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
               case (value: ConfigValue, i) => prepend(s"$key.$i", value)
             }
           }
-          if (expanded.isEmpty) {
+          if expanded.isEmpty then {
             Set(key -> list)
           } else {
             expanded
@@ -307,7 +307,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits {
     * @return a summary of the configuration
     */
   def summary(prefix: String = "", obscure: (String, String) => String = obscurePassword(_, _)): String = {
-    val summaries = if (prefix.isEmpty) summaryEntries(obscure) else summaryEntries(obscure).map(_.withPrefix(prefix))
+    val summaries = if prefix.isEmpty then summaryEntries(obscure) else summaryEntries(obscure).map(_.withPrefix(prefix))
     summaries.mkString(EOL)
   }
 

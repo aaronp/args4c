@@ -28,7 +28,15 @@ Compile / paradoxMaterialTheme ~= {
     .withoutSearch()
 }
 
-//scalacOptions += Seq("-encoding", "UTF-8")
+ThisBuild / scalacOptions ++= List(
+  "-encoding", "UTF-8",
+  "-language:implicitConversions",
+  "-source:3.0-migration",
+  "-rewrite",
+  "-indent",
+  "-new-syntax",
+  //  "-indent",
+)
 
 siteSourceDirectory := target.value / "paradox" / "site" / "main"
 

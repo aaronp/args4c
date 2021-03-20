@@ -21,7 +21,7 @@ class BaseSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with Low
   def deleteFile(fileName: String): Unit = deleteFile(Paths.get(fileName))
 
   def deleteFile(path: Path): Unit = {
-    if (Files.exists(path)) {
+    if Files.exists(path) then {
       Files.delete(path)
     }
   }

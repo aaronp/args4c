@@ -75,7 +75,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     *                       @return any paths for invalid/missing configurations (e.g. a 'password' field is left empty, or a hostPort field)
     */
   def missingRequiredConfigEntriesForConfig(resolvedConfig: Config): Seq[String] = {
-    if (resolvedConfig.hasPath(configKeyForRequiredEntries)) {
+    if resolvedConfig.hasPath(configKeyForRequiredEntries) then {
       resolvedConfig.asList(configKeyForRequiredEntries).filterNot(resolvedConfig.hasValue)
     } else {
       Nil
@@ -101,7 +101,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
       case None =>
         val missingRequiredConfigEntries = missingRequiredConfigEntriesForConfig(resolvedConfig)
 
-        val appConfig = if (missingRequiredConfigEntries.nonEmpty) {
+        val appConfig = if missingRequiredConfigEntries.nonEmpty then {
           missingRequiredConfigEntries.foldLeft(resolvedConfig) {
             case (config, missingPath) =>
               val value = secureConfig.promptForInput(ReadNextKeyValuePair(missingPath, config))
@@ -158,7 +158,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
 
     /** Has the user explicitly passed the '--setup' flag?
       */
-    if (isSetupSpecified(userArgs, setupUserArgFlag)) {
+    if isSetupSpecified(userArgs, setupUserArgFlag) then {
       val configSoFar                  = defaultConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
       val missingRequiredConfigEntries = missingRequiredConfigEntriesForConfig(configSoFar)
       secureConfig.setupSecureConfig(pathToSecureConfig, missingRequiredConfigEntries.sorted)
@@ -183,7 +183,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected def obscure(securePathsOpt: Option[Seq[String]])(configPath: String, value: String): String = {
     securePathsOpt match {
       case Some(securePaths) =>
-        if (securePaths.contains(configPath)) {
+        if securePaths.contains(configPath) then {
           defaultObscuredText
         } else {
           value
@@ -212,7 +212,7 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   def run(config: Config): Result
 
   protected def onUnrecognizedUserArg(allowedArgs: Set[String])(arg: String): Config = {
-    if (allowedArgs.contains(arg)) {
+    if allowedArgs.contains(arg) then {
       ConfigFactory.empty
     } else {
       ParseArg.Throw(arg)

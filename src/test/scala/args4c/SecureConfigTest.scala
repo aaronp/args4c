@@ -120,13 +120,13 @@ object SecureConfigTest {
       case PromptForConfigFilePermissions => SecureConfig.defaultPermissions
       case _: PasswordPrompt              => password
       case ReadNextKeyValuePair(_, _) =>
-        if (testConfigEntries.hasNext) {
+        if testConfigEntries.hasNext then {
           testConfigEntries.next()
         } else {
           ""
         }
       case ReadNextKeyValuePairAfterError(_) =>
-        if (testConfigEntries.hasNext) {
+        if testConfigEntries.hasNext then {
           testConfigEntries.next()
         } else {
           ""

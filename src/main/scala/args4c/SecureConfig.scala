@@ -69,14 +69,14 @@ case class SecureConfig(promptForInput: UserInput) {
   def updateSecureConfig(configPath : Path, requiredPaths : Seq[String]): Path = {
     val permissions = readPermissions()
 
-    if (configPath.getParent != null && !Files.exists(configPath.getParent)) {
+    if configPath.getParent != null && !Files.exists(configPath.getParent) then {
       Files.createDirectories(configPath.getParent)
     }
 
     val (previousConfigPassword, config) = readSecureConfig(configPath, requiredPaths.distinct)
 
     val pwd: Array[Byte] = {
-      val configPasswordPrompt = if (previousConfigPassword.isEmpty) PromptForPassword else PromptForUpdatedPassword
+      val configPasswordPrompt = if previousConfigPassword.isEmpty then PromptForPassword else PromptForUpdatedPassword
       promptForInput(configPasswordPrompt) match {
         case "" if previousConfigPassword.nonEmpty => previousConfigPassword.get
         case password => password.getBytes("UTF-8")
@@ -89,7 +89,7 @@ case class SecureConfig(promptForInput: UserInput) {
 
     import StandardOpenOption._
     
-    if (!Files.exists(configPath)) {
+    if !Files.exists(configPath) then {
       // touch the file to set the permissions
       Files.write(configPath, Array[Byte](), TRUNCATE_EXISTING, CREATE, CREATE_NEW, SYNC)
     }
@@ -107,7 +107,7 @@ case class SecureConfig(promptForInput: UserInput) {
     * @return a configuration if the file exists
     */
   def readSecureConfigAtPath(pathToEncryptedConfig: Path): Option[Config] = {
-    if (Files.exists(pathToEncryptedConfig)) {
+    if Files.exists(pathToEncryptedConfig) then {
       val pwd = readConfigPassword()
       val conf = readConfigAtPath(pathToEncryptedConfig, pwd)
       Encryption.clear(pwd)
@@ -130,7 +130,7 @@ case class SecureConfig(promptForInput: UserInput) {
 
     var previousConfigPassword: Option[Array[Byte]] = None
 
-    val existingConfig: Config = if (Files.exists(configPath)) {
+    val existingConfig: Config = if Files.exists(configPath) then {
       val pwd = promptForInput(PromptForExistingPassword(configPath)).getBytes("UTF-8")
       previousConfigPassword = Option(pwd)
 

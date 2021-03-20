@@ -170,7 +170,7 @@ package object args4c {
     */
   def obscurePassword(configPath: String, value: String, blacklist: Set[String] = passwordBlacklist, obscuredValue: String = defaultObscuredText): String = {
     val lc = configPath.toLowerCase
-    if (blacklist.exists(lc.contains)) {
+    if blacklist.exists(lc.contains) then {
       obscuredValue
     } else {
       value
