@@ -73,7 +73,7 @@ import scala.sys.SystemProperties
   * applications.
   *
   */
-package object args4c {
+package object args4c:
 
   /** A means to get a values from user prompts in order to set up a secure configuration
     */
@@ -94,10 +94,9 @@ package object args4c {
     * @param str the string to unquote
     * @return either the string unchanged or the single quotes removed as trimming whitespace around the quotes
     */
-  def unquote(str: String) = str match {
+  def unquote(str: String) = str match
     case UnquoteR(middle) => middle
     case _                => str
-  }
 
   /** Given the user arguments, produce a loaded configuration which interprets the user-args from left to right as:
     *
@@ -111,10 +110,9 @@ package object args4c {
     * @param onUnrecognizedArg the handler for unrecognized user arguments
     * @return a parsed configuration
     */
-  def configForArgs(args: Array[String], fallback: Config = defaultConfig(), onUnrecognizedArg: String => Config = ParseArg.Throw): Config = {
+  def configForArgs(args: Array[String], fallback: Config = defaultConfig(), onUnrecognizedArg: String => Config = ParseArg.Throw): Config =
     import args4c.implicits._
     fallback.withUserArgs(args, onUnrecognizedArg)
-  }
 
   /** @return ConfigFactory.load()
     */
@@ -131,34 +129,28 @@ package object args4c {
   /** @param confMap
     * @return a config for this map
     */
-  def configForMap(confMap: Map[String, String]): Config = {
+  def configForMap(confMap: Map[String, String]): Config =
     import scala.collection.JavaConverters._
-    try {
-      val trimmed = {
+    try
+      val trimmed =
         val keys: Set[String] = confMap.keySet
         confMap.view.filter {
           case (k, _) => prefixNotInSet(keys, k)
         }
-      }
       ConfigFactory.parseMap(trimmed.toMap.asJava, "environment variable")
-    } catch {
+    catch
       case exp: ConfigException => throw new IllegalStateException(s"couldn't parse: ${confMap.mkString("\n")}", exp)
-    }
-  }
 
-  private[args4c] def prefixNotInSet(keys: Set[String], value: String) = {
+  private[args4c] def prefixNotInSet(keys: Set[String], value: String) =
     val otherKeys = keys - value
     !otherKeys.exists(_.startsWith(value))
-  }
 
-  private[args4c] def envToPath(str: String) = {
+  private[args4c] def envToPath(str: String) =
     val TrimDotsR = """\.*(.*)\.*""".r
 
-    str.split('_').map(_.toLowerCase).mkString(".").dropWhile(_ == '.') match {
+    str.split('_').map(_.toLowerCase).mkString(".").dropWhile(_ == '.') match
       case TrimDotsR(trimmed) => trimmed.replaceAll("\\.+", ".")
       case other              => other
-    }
-  }
 
   val defaultObscuredText = "**** obscured ****"
 
@@ -168,22 +160,18 @@ package object args4c {
     * @param blacklist a 'blacklist' which, if any of the entries are found anywhere in the configPath, then the value will be obscured
     * @return the
     */
-  def obscurePassword(configPath: String, value: String, blacklist: Set[String] = passwordBlacklist, obscuredValue: String = defaultObscuredText): String = {
+  def obscurePassword(configPath: String, value: String, blacklist: Set[String] = passwordBlacklist, obscuredValue: String = defaultObscuredText): String =
     val lc = configPath.toLowerCase
-    if blacklist.exists(lc.contains) then {
+    if blacklist.exists(lc.contains) then
       obscuredValue
-    } else {
+    else
       value
-    }
-  }
 
   def pathAsFile(path: String): Option[Path] = Option(Paths.get(path)).filter(p => Files.exists(p))
 
-  def pathAsUrl(path: String): Option[URL] = {
+  def pathAsUrl(path: String): Option[URL] =
     Option(getClass.getClassLoader.getResource(path)).orElse {
       Option(Thread.currentThread().getContextClassLoader.getResource(path))
     }
-  }
 
   private[args4c] val KeyValue = "-{0,2}(.*?)=(.*)".r
-}

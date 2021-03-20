@@ -7,7 +7,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.collection.mutable.ListBuffer
 
-class ConfigAppTest extends BaseSpec {
+class ConfigAppTest extends BaseSpec:
 
   "ConfigApp.main" should {
     "prompt the user if there are any missing required entries" in withConfigFile { configFile =>
@@ -18,14 +18,12 @@ class ConfigAppTest extends BaseSpec {
         "fizz" -> "\" fizz is quoted \""
       )
       val otherInputs = Iterator("meh=unprompted")
-      def inputs(prompt: Prompt) = {
-        val answer = prompt match {
+      def inputs(prompt: Prompt) =
+        val answer = prompt match
           case ReadNextKeyValuePair(key, _) if suppliedValues.contains(key) => suppliedValues(key)
           case _                                                            => SecureConfigTest.testInput(configFile, otherInputs)(prompt)
-        }
         prompts += (prompt -> answer)
         answer
-      }
       val app = new PromptingTestApp(SecureConfig(inputs))
       app.main(Array("args4c.requiredConfigPaths=foo,bar,fizz,isAlreadySet", "isAlreadySet=yes"))
 
@@ -53,14 +51,12 @@ class ConfigAppTest extends BaseSpec {
         "fizz" -> "\" fizz is quoted \""
       )
       val otherInputs = Iterator("meh=unprompted")
-      def inputs(prompt: Prompt): String = {
-        val answer = prompt match {
+      def inputs(prompt: Prompt): String =
+        val answer = prompt match
           case ReadNextKeyValuePair(key, _) if suppliedValues.contains(key) => suppliedValues(key)
           case _                                                            => SecureConfigTest.testInput(configFile, otherInputs, testPassword)(prompt)
-        }
         prompts += (prompt -> answer)
         answer
-      }
 
       val app = new PromptingTestApp(SecureConfig(inputs))
       app.main(Array("args4c.requiredConfigPaths=foo,bar,fizz", "--setup"))
@@ -85,10 +81,9 @@ class ConfigAppTest extends BaseSpec {
       val app = new ConfigApp {
         type Result = Config
         var lastConfig: Config = ConfigFactory.empty
-        override def run(config: Config) = {
+        override def run(config: Config) =
           lastConfig = config
           config
-        }
       }
 
       val bang = intercept[IllegalStateException] {
@@ -100,10 +95,9 @@ class ConfigAppTest extends BaseSpec {
       val app = new ConfigApp {
         type Result = Config
         var lastConfig: Config = ConfigFactory.empty
-        override def run(config: Config) = {
+        override def run(config: Config) =
           lastConfig = config
           config
-        }
       }
 
       val bang = intercept[Exception] {
@@ -157,55 +151,44 @@ class ConfigAppTest extends BaseSpec {
 
       val file = Files.createTempFile("temporary", ".conf")
       Files.write(file, "source=absolutePath".getBytes)
-      try {
+      try
         app.main(Array(file.toAbsolutePath.toString))
         app.lastConfig.getString("source") shouldBe "absolutePath"
-
-      } finally {
+      finally
         Files.delete(file)
-      }
     }
   }
 
-  def withConfigFile(test: String => Unit) = {
+  def withConfigFile(test: String => Unit) =
     val configFile = s"./target/ConfigAppTest-${UUID.randomUUID}.conf"
-    try {
+    try
       test(configFile)
-    } finally {
+    finally
       deleteFile(configFile)
-    }
-  }
 
-  class PromptingTestApp(initial: SecureConfig) extends ConfigApp {
+  class PromptingTestApp(initial: SecureConfig) extends ConfigApp:
     var cfg: SecureConfig                   = initial
     override def secureConfig: SecureConfig = cfg
 
     type Result = Config
     var lastConfig: Config = ConfigFactory.empty
-    override def run(config: Config): Result = {
+    override def run(config: Config): Result =
       lastConfig = config
       config
-    }
-  }
-  class TestApp extends ConfigApp {
+  class TestApp extends ConfigApp:
     type Result = Config
     var shown              = ""
     var lastConfig: Config = ConfigFactory.empty
 
-    override def run(config: Config) = {
+    override def run(config: Config) =
       lastConfig = config
       config
-    }
 
-    override protected def showValue(value: String, config: Config): Unit = {
+    override protected def showValue(value: String, config: Config): Unit =
       lastConfig = config
       shown = value
-    }
 
     override protected def secureConfigForArgs(userArgs: Array[String],
                                                ignoreDefaultSecureConfigArg: String,
-                                               pathToSecureConfigArg: String): SecureConfigState = {
+                                               pathToSecureConfigArg: String): SecureConfigState =
       SecureConfigNotSpecified
-    }
-  }
-}

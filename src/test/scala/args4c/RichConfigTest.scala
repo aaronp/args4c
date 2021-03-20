@@ -4,7 +4,7 @@ import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration._
 
-class RichConfigTest extends BaseSpec {
+class RichConfigTest extends BaseSpec:
 
   import scala.collection.JavaConverters._
 
@@ -223,4 +223,3 @@ class RichConfigTest extends BaseSpec {
   def listConfig = ConfigFactory.parseString("""stringList = [a,b,c]
       |objectList = [{value :1},{value :2}]
       |justAString = original""".stripMargin)
-}

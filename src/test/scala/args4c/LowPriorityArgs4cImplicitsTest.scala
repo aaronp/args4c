@@ -1,6 +1,6 @@
 package args4c
 
-class LowPriorityArgs4cImplicitsTest extends BaseSpec {
+class LowPriorityArgs4cImplicitsTest extends BaseSpec:
 
   "userargs.asConfig" should {
     "produce a configuration for the arguments" in {
@@ -15,4 +15,3 @@ class LowPriorityArgs4cImplicitsTest extends BaseSpec {
     }
   }
 
-}

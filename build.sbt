@@ -34,7 +34,7 @@ ThisBuild / scalacOptions ++= List(
   "-source:3.0-migration",
   "-rewrite",
   "-indent",
-  "-new-syntax",
+//  "-new-syntax",
   //  "-indent",
 )
 

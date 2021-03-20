@@ -16,7 +16,7 @@ import scala.util.control.NoStackTrace
   * The idea is that a (service) user-only readable, password-protected AES encrypted config file can be set up via reading entries from
   * standard input, and an application an use those configuration entries thereafter by taking the password from standard input.
   */
-object SecureConfig {
+object SecureConfig:
 
   // format: off
 
@@ -28,25 +28,21 @@ object SecureConfig {
 
   private[args4c] val defaultPermissions = "rwx------"
 
-  def defaultSecureConfigPath(workDir: String = Properties.userDir): String = {
+  def defaultSecureConfigPath(workDir: String = Properties.userDir): String =
     Paths.get(workDir).relativize(Paths.get(s"${workDir}/.config/secure.conf")).toString
-  }
 
 
-  def readConfigAtPath(path: Path, pwd: Array[Byte]): Config = {
+  def readConfigAtPath(path: Path, pwd: Array[Byte]): Config =
     require(Files.exists(path), s"$path does not exist")
     val bytes = Files.readAllBytes(path)
-    val configText = try {
+    val configText = try
       Encryption.decryptAES(pwd, bytes, bytes.length)
-    } catch {
+    catch
       case _ : BadPaddingException => throw new IllegalAccessException(s"Invalid password for ${path.getFileName}") with NoStackTrace
-    }
 
     ConfigFactory.parseString(configText, ConfigParseOptions.defaults.setOriginDescription(path.getFileName.toString))
-  }
-}
 
-case class SecureConfig(promptForInput: UserInput) {
+case class SecureConfig(promptForInput: UserInput):
 
   import SecureConfig._
 
@@ -54,10 +50,9 @@ case class SecureConfig(promptForInput: UserInput) {
     * @param requiredPaths a potentially empty list of configuration paths which need to have values specified
     * @return the path to the secure config
     */
-  def setupSecureConfig(defaultSecureConfigFilePath : Path, requiredPaths : Seq[String] = Nil): Path = {
+  def setupSecureConfig(defaultSecureConfigFilePath : Path, requiredPaths : Seq[String] = Nil): Path =
     val configPath = readSecureConfigPath(defaultSecureConfigFilePath)
     updateSecureConfig(configPath, requiredPaths)
-  }
 
   /**
     * prompt for and set some secure values
@@ -66,22 +61,19 @@ case class SecureConfig(promptForInput: UserInput) {
     * @param requiredPaths a potentially empty list of configuration paths which need to have values specified
     * @return the path to the encrypted configuration file
     */
-  def updateSecureConfig(configPath : Path, requiredPaths : Seq[String]): Path = {
+  def updateSecureConfig(configPath : Path, requiredPaths : Seq[String]): Path =
     val permissions = readPermissions()
 
-    if configPath.getParent != null && !Files.exists(configPath.getParent) then {
+    if configPath.getParent != null && !Files.exists(configPath.getParent) then
       Files.createDirectories(configPath.getParent)
-    }
 
     val (previousConfigPassword, config) = readSecureConfig(configPath, requiredPaths.distinct)
 
-    val pwd: Array[Byte] = {
+    val pwd: Array[Byte] =
       val configPasswordPrompt = if previousConfigPassword.isEmpty then PromptForPassword else PromptForUpdatedPassword
-      promptForInput(configPasswordPrompt) match {
+      promptForInput(configPasswordPrompt) match
         case "" if previousConfigPassword.nonEmpty => previousConfigPassword.get
         case password => password.getBytes("UTF-8")
-      }
-    }
 
     import args4c.implicits._
     val encrypted = config.encrypt(pwd)
@@ -89,15 +81,13 @@ case class SecureConfig(promptForInput: UserInput) {
 
     import StandardOpenOption._
     
-    if !Files.exists(configPath) then {
+    if !Files.exists(configPath) then
       // touch the file to set the permissions
       Files.write(configPath, Array[Byte](), TRUNCATE_EXISTING, CREATE, CREATE_NEW, SYNC)
-    }
     Files.setPosixFilePermissions(configPath, permissions)
 
     // now create the actual file
     Files.write(configPath, encrypted, TRUNCATE_EXISTING, SYNC)
-  }
 
   /**
     * read the configuration from the given path, prompting for the password via 'promptForInput' should the  [[SecureConfig.SecureEnvVariableName]]
@@ -106,50 +96,45 @@ case class SecureConfig(promptForInput: UserInput) {
     * @param pathToEncryptedConfig the path pointing at the encrypted config
     * @return a configuration if the file exists
     */
-  def readSecureConfigAtPath(pathToEncryptedConfig: Path): Option[Config] = {
-    if Files.exists(pathToEncryptedConfig) then {
+  def readSecureConfigAtPath(pathToEncryptedConfig: Path): Option[Config] =
+    if Files.exists(pathToEncryptedConfig) then
       val pwd = readConfigPassword()
       val conf = readConfigAtPath(pathToEncryptedConfig, pwd)
       Encryption.clear(pwd)
       Option(conf)
-    } else {
+    else
       None
-    }
-  }
 
   /** @return the application config password used to encrypt the config
     */
-  protected def readConfigPassword(): Array[Byte] = {
+  protected def readConfigPassword(): Array[Byte] =
     envOrProp(SecureEnvVariableName).getOrElse(promptForInput(PromptForPassword)).getBytes("UTF-8")
-  }
 
   /** @return the user-supplied key/value pairs as a parse-able block of text
     */
-  private def readSecureConfig(configPath : Path, requiredPaths : Seq[String])  = {
+  private def readSecureConfig(configPath : Path, requiredPaths : Seq[String])  =
     import implicits._
 
     var previousConfigPassword: Option[Array[Byte]] = None
 
-    val existingConfig: Config = if Files.exists(configPath) then {
+    val existingConfig: Config = if Files.exists(configPath) then
       val pwd = promptForInput(PromptForExistingPassword(configPath)).getBytes("UTF-8")
       previousConfigPassword = Option(pwd)
 
       readConfigAtPath(configPath, pwd)
-    } else {
+    else
       ConfigFactory.empty
-    }
 
     val filteredRequired = requiredPaths.filterNot(existingConfig.hasValue)
     previousConfigPassword -> readNextRecursive(existingConfig, filteredRequired.headOption, ReadNextKeyValuePair(filteredRequired.headOption.getOrElse(""), existingConfig), filteredRequired)
-  }
 
   @tailrec
-  private def readNextRecursive(wipConfig: Config, promptedForConfigPath : Option[String], nextPrompt : Prompt, requiredPaths : Seq[String]): Config = {
+  private def readNextRecursive(wipConfig: Config, promptedForConfigPath : Option[String], nextPrompt : Prompt, requiredPaths : Seq[String]): Config =
 
     import implicits._
-    promptForInput(nextPrompt).trim match {
+    promptForInput(nextPrompt).trim match
       case ""  =>
-        promptedForConfigPath match {
+        promptedForConfigPath match
             //
             // they were prompted for a value but intentionally left it blank
             //
@@ -162,7 +147,6 @@ case class SecureConfig(promptForInput: UserInput) {
             //
           case None =>
             wipConfig
-        }
 
         //
         // The case where the user was NOT prompted to supply an explicit entry (the previousKey is None) and so supplied the text 'foo.path=bar'
@@ -172,7 +156,7 @@ case class SecureConfig(promptForInput: UserInput) {
         val newRequired = requiredPaths.filterNot(updated.hasValue)
         readNextRecursive(updated, newRequired.headOption, ReadNextKeyValuePair(newRequired.headOption.getOrElse(""), updated), newRequired)
       case other =>
-        promptedForConfigPath match {
+        promptedForConfigPath match
           case None =>
             val newRequired = requiredPaths.filterNot(wipConfig.hasValue)
             readNextRecursive(wipConfig, newRequired.headOption, ReadNextKeyValuePairAfterError(other), requiredPaths)
@@ -180,27 +164,19 @@ case class SecureConfig(promptForInput: UserInput) {
             val updated = wipConfig.set(promptedForKey, other)
             val newRequired = requiredPaths.filterNot(updated.hasValue)
             readNextRecursive(updated, newRequired.headOption, ReadNextKeyValuePair(newRequired.headOption.getOrElse(""), updated), newRequired)
-        }
-    }
-  }
 
-  private def readPermissions() = {
-    val permString = promptForInput(PromptForConfigFilePermissions) match {
+  private def readPermissions() =
+    val permString = promptForInput(PromptForConfigFilePermissions) match
       case "" => defaultPermissions
       case other => other
-    }
 
     PosixFilePermissions.fromString(permString)
-  }
 
   /** ask where we should save the config
     */
-  private def readSecureConfigPath(pathToSecureConfigFile : Path): Path = {
-    promptForInput(SaveSecretPrompt(pathToSecureConfigFile)) match {
+  private def readSecureConfigPath(pathToSecureConfigFile : Path): Path =
+    promptForInput(SaveSecretPrompt(pathToSecureConfigFile)) match
       case "" => pathToSecureConfigFile
       case path => Paths.get(path)
-    }
-  }
 
   // format: on
-}

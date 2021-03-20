@@ -21,15 +21,15 @@ case class PromptForExistingPassword(configPath: Path)                          
 case object PromptForConfigFilePermissions                                        extends Prompt
 case class SaveSecretPrompt(configPath: Path)                                     extends Prompt
 
-object Prompt {
+object Prompt:
 
   /** @param userInput a function which accepts user input
     * @return a UserInput from the user input
     */
   def stdIn(userInput: String => String = StdIn.readLine(_)): UserInput = (format _).andThen(userInput)
 
-  def format(prompt: Prompt): String = {
-    prompt match {
+  def format(prompt: Prompt): String =
+    prompt match
       case PromptForPassword                                                          => "Config Password:"
       case PromptForUpdatedPassword                                                   => "New Config Password (or blank to reuse the existing one):"
       case PromptForExistingPassword(configPath)                                      => s"A config already exists at $configPath, enter password:"
@@ -39,6 +39,3 @@ object Prompt {
       case ReadNextKeyValuePairAfterError(previousInvalidEntry) =>
         s"Invalid key=value pair '$previousInvalidEntry'. Entries should be in the for <path.to.config.entry>=some sensitive value"
       case PromptForConfigFilePermissions => s"Config Permissions: [$defaultPermissions]"
-    }
-  }
-}

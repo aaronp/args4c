@@ -3,7 +3,7 @@ package args4c
 import java.nio.file.Paths
 import java.util.UUID
 
-class SecureConfigTest extends BaseSpec {
+class SecureConfigTest extends BaseSpec:
 
   import SecureConfigTest._
 
@@ -56,17 +56,14 @@ class SecureConfigTest extends BaseSpec {
                   ))).setupSecureConfig(Paths.get(configPath))
 
       // run the app again with different values
-      val updated = {
+      val updated =
         val original: Prompt => String = testInput(configPath, Iterator("conf.original.one=changed"), "newPassword") _
-        def newInput(prompt: Prompt) = {
-          prompt match {
+        def newInput(prompt: Prompt) =
+          prompt match
             case PromptForExistingPassword(_) => "sEcre3t"
             case PromptForUpdatedPassword     => "newPassword"
             case p                            => original(p)
-          }
-        }
         SecureConfig(newInput).setupSecureConfig(Paths.get(configPath))
-      }
 
       updated shouldBe pathToConfig
 
@@ -94,43 +91,34 @@ class SecureConfigTest extends BaseSpec {
     }
   }
 
-  override def beforeAll(): Unit = {
+  override def beforeAll(): Unit =
     super.beforeAll()
     deleteConfigFiles()
-  }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     super.afterAll()
     deleteConfigFiles()
-  }
 
-  def deleteConfigFiles() = {
+  def deleteConfigFiles() =
     val dir = Paths.get(s"./target/${getClass.getName}")
     require(dir != null, "null dir")
     require(dir.toFile != null, "null dir file")
     Option(dir.toFile.listFiles).toList.flatten.map(_.toPath).foreach(deleteFile)
-  }
-}
 
-object SecureConfigTest {
+object SecureConfigTest:
 
-  def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String], password: String = "sEcre3t")(prompt: Prompt): String = {
-    prompt match {
+  def testInput(pathToConfigFile: String, testConfigEntries: Iterator[String], password: String = "sEcre3t")(prompt: Prompt): String =
+    prompt match
       case SaveSecretPrompt(_)            => pathToConfigFile
       case PromptForConfigFilePermissions => SecureConfig.defaultPermissions
       case _: PasswordPrompt              => password
       case ReadNextKeyValuePair(_, _) =>
-        if testConfigEntries.hasNext then {
+        if testConfigEntries.hasNext then
           testConfigEntries.next()
-        } else {
+        else
           ""
-        }
       case ReadNextKeyValuePairAfterError(_) =>
-        if testConfigEntries.hasNext then {
+        if testConfigEntries.hasNext then
           testConfigEntries.next()
-        } else {
+        else
           ""
-        }
-    }
-  }
-}

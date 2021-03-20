@@ -47,7 +47,7 @@ import com.typesafe.config.{Config, ConfigFactory}
   * care in limiting the scope of where the configuration is used, either by filtering back out those values, otherwise
   * separating the secure config from the remaining config, or just ensuring to limit the scope of the config itself.
   */
-trait ConfigApp extends LowPriorityArgs4cImplicits {
+trait ConfigApp extends LowPriorityArgs4cImplicits:
 
   /**
     * The result of running this application
@@ -63,9 +63,8 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     *
     * @param args the user arguments
     */
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     runMain(args)
-  }
 
   /** @return a means to read/write a secure (encrypted) config
     */
@@ -74,13 +73,11 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   /** @param resolvedConfig the configuration we are to run with
     *                       @return any paths for invalid/missing configurations (e.g. a 'password' field is left empty, or a hostPort field)
     */
-  def missingRequiredConfigEntriesForConfig(resolvedConfig: Config): Seq[String] = {
-    if resolvedConfig.hasPath(configKeyForRequiredEntries) then {
+  def missingRequiredConfigEntriesForConfig(resolvedConfig: Config): Seq[String] =
+    if resolvedConfig.hasPath(configKeyForRequiredEntries) then
       resolvedConfig.asList(configKeyForRequiredEntries).filterNot(resolvedConfig.hasValue)
-    } else {
+    else
       Nil
-    }
-  }
   protected val configKeyForRequiredEntries = "args4c.requiredConfigPaths"
 
   /**
@@ -94,30 +91,27 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     * @param secureConfigState the result of the secure config user arguments
     * @param parsedConfig the total configuration, potentially including the secure config
     */
-  protected def runWithConfig(userArgs: Array[String], pathToSecureConfig: Path, secureConfigState: SecureConfigState, parsedConfig: Config): Option[Result] = {
+  protected def runWithConfig(userArgs: Array[String], pathToSecureConfig: Path, secureConfigState: SecureConfigState, parsedConfig: Config): Option[Result] =
     val resolvedConfig = parsedConfig.resolve()
-    resolvedConfig.showIfSpecified(obscure(secureConfigState.configOpt.map(_.paths()))) match {
+    resolvedConfig.showIfSpecified(obscure(secureConfigState.configOpt.map(_.paths()))) match
       // 'show' was not specified, let's run our app
       case None =>
         val missingRequiredConfigEntries = missingRequiredConfigEntriesForConfig(resolvedConfig)
 
-        val appConfig = if missingRequiredConfigEntries.nonEmpty then {
+        val appConfig = if missingRequiredConfigEntries.nonEmpty then
           missingRequiredConfigEntries.foldLeft(resolvedConfig) {
             case (config, missingPath) =>
               val value = secureConfig.promptForInput(ReadNextKeyValuePair(missingPath, config))
               config.set(missingPath, value)
           }
-        } else {
+        else
           resolvedConfig
-        }
         val mainAppResult = run(appConfig)
 
         Option(mainAppResult)
       case Some(specifiedArg) =>
         showValue(specifiedArg, resolvedConfig)
         None
-    }
-  }
 
   /** launch the application, which will create a typesafe config instance from the user arguments by :
     *
@@ -147,50 +141,42 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   def runMain(userArgs: Array[String],
               setupUserArgFlag: String = defaultSetupUserArgFlag,
               ignoreDefaultSecureConfigArg: String = defaultIgnoreDefaultSecureConfigArg,
-              pathToSecureConfigArgFlag: String = defaultSecureConfigArgFlag): Option[Result] = {
+              pathToSecureConfigArgFlag: String = defaultSecureConfigArgFlag): Option[Result] =
 
-    val pathToSecureConfig: Path = {
+    val pathToSecureConfig: Path =
       val path = pathToSecureConfigFromArgs(userArgs, pathToSecureConfigArgFlag).getOrElse(SecureConfig.defaultSecureConfigPath())
       Paths.get(path)
-    }
 
     val handledArgs = Set(setupUserArgFlag, ignoreDefaultSecureConfigArg, pathToSecureConfigArgFlag)
 
     /** Has the user explicitly passed the '--setup' flag?
       */
-    if isSetupSpecified(userArgs, setupUserArgFlag) then {
+    if isSetupSpecified(userArgs, setupUserArgFlag) then
       val configSoFar                  = defaultConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
       val missingRequiredConfigEntries = missingRequiredConfigEntriesForConfig(configSoFar)
       secureConfig.setupSecureConfig(pathToSecureConfig, missingRequiredConfigEntries.sorted)
       None
-    } else {
+    else
       val secureConfigState: SecureConfigState = secureConfigForArgs(userArgs, ignoreDefaultSecureConfigArg, pathToSecureConfigArgFlag)
-      val parsedConfig = {
-        val baseConfig = secureConfigState match {
+      val parsedConfig =
+        val baseConfig = secureConfigState match
           case SecureConfigDoesntExist(path) => throw new IllegalStateException(s"Configuration at '$path' doesn't exist")
           case other                         => other.configOpt.fold(defaultConfig)(_.withFallback(defaultConfig))
-        }
         baseConfig.withUserArgs(userArgs, onUnrecognizedUserArg(handledArgs))
-      }
 
       runWithConfig(userArgs, pathToSecureConfig, secureConfigState, parsedConfig)
-    }
-  }
 
   protected def isSetupSpecified(userArgs: Array[String], setupArg: String): Boolean = userArgs.contains(setupArg)
 
   // if we have a 'secure' config, then we should obscure those values
-  protected def obscure(securePathsOpt: Option[Seq[String]])(configPath: String, value: String): String = {
-    securePathsOpt match {
+  protected def obscure(securePathsOpt: Option[Seq[String]])(configPath: String, value: String): String =
+    securePathsOpt match
       case Some(securePaths) =>
-        if securePaths.contains(configPath) then {
+        if securePaths.contains(configPath) then
           defaultObscuredText
-        } else {
+        else
           value
-        }
       case None => obscurePassword(configPath, value)
-    }
-  }
 
   /** @return the default config to overlay the user args over.
     */
@@ -211,13 +197,11 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     */
   def run(config: Config): Result
 
-  protected def onUnrecognizedUserArg(allowedArgs: Set[String])(arg: String): Config = {
-    if allowedArgs.contains(arg) then {
+  protected def onUnrecognizedUserArg(allowedArgs: Set[String])(arg: String): Config =
+    if allowedArgs.contains(arg) then
       ConfigFactory.empty
-    } else {
+    else
       ParseArg.Throw(arg)
-    }
-  }
 
   /**
     * Represents the state of the '--secure' config
@@ -229,32 +213,28 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
   protected case class SecureConfigParsed(path: Path, config: Config) extends SecureConfigState(Some(config))
   protected case object SecureConfigNotSpecified                      extends SecureConfigState(None)
 
-  protected def pathToSecureConfigFromArgs(userArgs: Array[String], pathToSecureConfigArg: String): Option[String] = {
+  protected def pathToSecureConfigFromArgs(userArgs: Array[String], pathToSecureConfigArg: String): Option[String] =
     // our KeyValue regex trims leading '-' characters, so if our 'pathToSecureConfigArgFlag' flag is e.g. '--secure' (i.e., the default),
     // then we need to drop those leading dashes
     val trimmedArg = pathToSecureConfigArg.dropWhile(_ == '-')
     userArgs.collectFirst {
       case KeyValue(`trimmedArg`, file) => file
     }
-  }
 
-  protected def secureConfigForArgs(userArgs: Array[String], ignoreDefaultSecureConfigArg: String, pathToSecureConfigArg: String): SecureConfigState = {
+  protected def secureConfigForArgs(userArgs: Array[String], ignoreDefaultSecureConfigArg: String, pathToSecureConfigArg: String): SecureConfigState =
 
-    def defaultSecureConfig(userArgs: Array[String]): Option[String] = {
+    def defaultSecureConfig(userArgs: Array[String]): Option[String] =
       Option(defaultSecureConfigPath()).filter(path => Files.exists(Paths.get(path)) && !userArgs.contains(ignoreDefaultSecureConfigArg))
-    }
 
     pathToSecureConfigFromArgs(userArgs, pathToSecureConfigArg)
       .orElse(defaultSecureConfig(userArgs))
       .map(Paths.get(_))
       .map { path =>
-        secureConfig.readSecureConfigAtPath(path) match {
+        secureConfig.readSecureConfigAtPath(path) match
           case Some(config) => SecureConfigParsed(path, config)
           case None         => SecureConfigDoesntExist(path)
-        }
       }
       .getOrElse(SecureConfigNotSpecified)
-  }
 
   /** @return he command-line argument flag which tells the application NOT to load the default secure config file if it exists.
     * e.g., try running the app without the secure config.
@@ -269,4 +249,3 @@ trait ConfigApp extends LowPriorityArgs4cImplicits {
     */
   protected def defaultSecureConfigArgFlag: String = envOrProp("DefaultSecureArgFlag").getOrElse("--secure")
 
-}

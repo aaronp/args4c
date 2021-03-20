@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 import com.typesafe.config.ConfigFactory
 
-class PromptTest extends BaseSpec {
+class PromptTest extends BaseSpec:
 
   "Prompt.format" should {
     List[Prompt](
@@ -22,4 +22,3 @@ class PromptTest extends BaseSpec {
       }
     }
   }
-}

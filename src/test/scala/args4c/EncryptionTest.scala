@@ -1,6 +1,6 @@
 package args4c
 
-class EncryptionTest extends BaseSpec {
+class EncryptionTest extends BaseSpec:
 
   "Encryption" should {
     "encrypt/decrypt" in {
@@ -19,4 +19,3 @@ class EncryptionTest extends BaseSpec {
       backAgain shouldBe original
     }
   }
-}

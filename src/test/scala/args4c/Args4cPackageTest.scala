@@ -6,7 +6,7 @@ import java.util.UUID
 import args4c.RichConfig.ParseArg
 import com.typesafe.config.{Config, ConfigFactory}
 
-class Args4cPackageTest extends BaseSpec {
+class Args4cPackageTest extends BaseSpec:
 
   "unquote" should {
     List(
@@ -71,13 +71,12 @@ class Args4cPackageTest extends BaseSpec {
 
       val fooConf = Paths.get(s"./target/foo-${UUID.randomUUID}.conf")
       Files.write(fooConf, """fromFile = true""".stripMargin.getBytes("UTF-8"))
-      try {
+      try
         val config = configForArgs(Array(fooConf.toAbsolutePath.toString, "test.conf"), ConfigFactory.empty)
         config.getBoolean("fromFile") shouldBe true
         config.getString("source") shouldBe "classpath file"
-      } finally {
+      finally
         Files.delete(fooConf)
-      }
     }
     "evaluate values from the command line which are referenced from the config file" in {
       val fallback = ConfigFactory.parseString("""
@@ -89,4 +88,3 @@ class Args4cPackageTest extends BaseSpec {
       conf.getString("some.other.value") shouldBe "bar"
     }
   }
-}
