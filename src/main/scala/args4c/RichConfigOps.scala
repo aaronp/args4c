@@ -94,12 +94,12 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits:
     val configs: Array[Config] = args.map {
       case KeyValue(k, v) if !isValidKey(k) =>
         val safeKey = ConfigUtil.quoteString(k)
-        asConfig(safeKey, v)
+        RichConfig.asConfig(safeKey, v)
       case KeyValue(k, v) if isSimpleList(k) =>
-        asConfig(k, java.util.Arrays.asList(v.split(",", -1): _*))
+        RichConfig.asConfig(k, java.util.Arrays.asList(v.split(",", -1): _*))
       case KeyValue(k, v) if isObjectList(k) =>
         sys.error(s"Path '$k' tried to override an object list with '$v'")
-      case KeyValue(k, v)    => asConfig(k, v)
+      case KeyValue(k, v)    => RichConfig.asConfig(k, v)
       case FilePathConfig(c) => c
       case UrlPathConfig(c)  => c
       case other =>
@@ -233,7 +233,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits:
       val key = e.getKey
       e.getValue match
         case list: ConfigList =>
-          import scala.collection.JavaConverters._
+          import scala.jdk.CollectionConverters.*
 
           val all = list.listIterator().asScala.zipWithIndex
 
