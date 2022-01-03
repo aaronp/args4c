@@ -6,10 +6,10 @@ import scala.language.implicitConversions
 
 trait LowPriorityArgs4cImplicits:
 
-  extension(str: String):
+  extension(str: String)
     def quoted = ConfigUtil.quoteString(str)
 
-  extension(userArgs: Array[String]):
+  extension(userArgs: Array[String])
     def asRichConfig(fallback: Config = defaultConfig(), onUnrecognizedArg: String => Config = ParseArg.Throw): RichConfig =
       configAsRichConfig(asConfig(fallback, onUnrecognizedArg))
 

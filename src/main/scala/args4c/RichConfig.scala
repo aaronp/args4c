@@ -22,7 +22,7 @@ object RichConfig:
     val Ignore = (_: String) => ConfigFactory.empty()
 
   private[args4c] def asConfig(key: String, value: Any, originDesc: String = "command-line"): Config =
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters.*
     ConfigImpl.fromPathMap(Map(key -> value).asJava, originDesc).toConfig
 
   private[args4c] object FilePathConfig:
