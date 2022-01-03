@@ -1,10 +1,9 @@
 Args4c
 ====
 
-[![Build Status](https://travis-ci.org/aaronp/args4c.svg?branch=master)](https://travis-ci.org/aaronp/args4c)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_2.13/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_2.13)
-[![Coverage Status](https://coveralls.io/repos/github/aaronp/args4c/badge.svg?branch=master)](https://coveralls.io/github/aaronp/args4c?branch=master)
-[![Scaladoc](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.13.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.github.aaronp/args4c_2.13)
+[![Build](https://github.com/aaronp/args4c/actions/workflows/scala.yml/badge.svg)](https://github.com/aaronp/args4c/actions/workflows/scala.yml)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_3/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.aaronp/args4c_3)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 An "arguments for config" zero-dependency* utility to aid in producing a [lightbend (typesafe) config](https://github.com/lightbend/config) from command-line arguments, as well as some convenience methods for working with configurations such as:
 
@@ -15,4 +14,4 @@ An "arguments for config" zero-dependency* utility to aid in producing a [lightb
 
 The minisite can be found [here](https://aaronp.github.io/args4c/index.html)
 
-\* It is zero-dependency as it declares a 'provided' dependency on the lightbend (typesafe) config so not to conflict with the explicit version used by your project   
+** It is zero-dependency as it declares a 'provided' dependency on the lightbend (typesafe) config so not to conflict with the explicit version used by your project   

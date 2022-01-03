@@ -13,7 +13,7 @@ enablePlugins(ParadoxMaterialThemePlugin) // see https://jonas.github.io/paradox
 //ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)
 
 val username     = "aaronp"
-val dottyVersion = "3.0.0-RC1"
+val dottyVersion = "3.1.0"
 scalaVersion := dottyVersion
 crossScalaVersions := Seq(dottyVersion)
 
@@ -34,22 +34,18 @@ ThisBuild / scalacOptions ++= List(
   "-source:3.0-migration",
   "-rewrite",
   "-indent",
-//  "-new-syntax",
-  //  "-indent",
 )
 
 siteSourceDirectory := target.value / "paradox" / "site" / "main"
 
 siteSubdirName in SiteScaladoc := "api/latest"
 
-libraryDependencies += "com.typesafe" % "config" % "1.3.4" % "provided"
+libraryDependencies += "com.typesafe" % "config" % "1.4.1" % "provided"
 
 libraryDependencies ++= List(
-  "org.scalatest"        %% "scalatest"               % "3.2.6"  % "test",
-  "org.pegdown"          % "pegdown"                  % "1.6.0"  % "test",
-  "junit"                % "junit"                    % "4.13.2" % "test",
-  "com.vladsch.flexmark" % "flexmark-profile-pegdown" % "0.36.8" % Test,
-  "javax.xml.bind"       % "jaxb-api"                 % "2.3.0"  % "provided"
+  "org.scalatest"        %% "scalatest"               % "3.2.9"  % Test,
+  "org.pegdown"          % "pegdown"                  % "1.6.0"  % Test,
+  "javax.xml.bind"       % "jaxb-api"                 % "2.3.1"  % "provided"
 )
 
 publishMavenStyle := true
@@ -83,9 +79,6 @@ buildInfoPackage := "args4c.build"
 // see http://scalameta.org/scalafmt/
 ThisBuild / scalafmtOnCompile := true
 ThisBuild / scalafmtVersion := "1.4.0"
-
-// see http://www.scalatest.org/user_guide/using_scalatest_with_sbt
-testOptions in Test += (Tests.Argument(TestFrameworks.ScalaTest, "-h", s"target/scalatest-reports", "-oN"))
 
 pomExtra := {
   <url>https://github.com/aaronp/args4c</url>

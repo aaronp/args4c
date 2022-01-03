@@ -307,7 +307,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits:
             def descOpt = Option(o.description)
             def line    = Option(o.lineNumber()).filterNot(_ < 0).map(": " + _).getOrElse("")
             Option(o.url()).map(_.toString).orElse(Option(o.filename)).orElse(resOpt).map(_ + line).orElse(descOpt).getOrElse("unknown origin")
-          import scala.collection.JavaConverters._
+          import scala.jdk.CollectionConverters.*
           val comments = value.origin().comments().asScala.toList
           StringEntry(comments, originString, key, unquote(stringValue))
       }
