@@ -202,7 +202,7 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits:
     * @return the configuration entries as a set of entries
     */
   def entries(arraySyntax: Boolean = true): Set[(String, ConfigValue)] =
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters.*
 
     def prepend(prefix: String, cv: ConfigValue): Set[(String, ConfigValue)] =
       cv match
@@ -211,7 +211,6 @@ trait RichConfigOps extends Dynamic with LowPriorityArgs4cImplicits:
             case (path, cv) => s"${prefix}.$path" -> cv
           }
         case list: ConfigList =>
-          import scala.collection.JavaConverters._
           val all = list.listIterator().asScala.zipWithIndex
 
           val expanded = if arraySyntax then
